@@ -1,0 +1,28 @@
+
+.QuestionBox{
+    height:auto;
+    width:70%;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transition:0.3s;
+    align: center;
+    margin:0 auto;
+    padding:20px;
+}
+.QuestionBox:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform:translateY(-3px);
+}
+.QuestionInput{
+    width:100%;
+    border-radius:3px;
+    padding:3px;
+    margin-top:10px;
+    border:1px solid darkgray;
+}
+.AnswerInput{
+    width:30%;
+    border-radius:3px;
+    padding:3px;
+    margin-top:10px;
+    border:1px solid darkgray;
+}

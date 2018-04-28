@@ -1,0 +1,80 @@
+.blackColor{
+    color:#424242;
+}
+
+.purple{
+    color:#ba68c8;
+}
+.Questrial{
+    font-family: 'Questrial', sans-serif;
+}
+.pointer{
+    cursor: pointer;
+}
+
+.mynav:hover{
+    color:#ba68c8;
+}
+
+.signupnav:hover{
+    color:#ffffff;
+    background-color: #ba68c8 ;
+}
+
+.signupnav{
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ba68c8;
+    border-radius: 3px;
+    background-color:#ffffff;
+    border:#ba68c8 1px solid;
+    transition:0.3s;
+    height:auto;
+    color:#ba68c8;
+    transition: 0.5s ease-in-out;
+}
+#myVideo {
+    position: fixed;
+    z-index: -10;
+}
+.righteous{
+    font-family: 'Righteous', cursive;
+}
+.footercss{
+    height:70px;
+    width:100%;
+    background-color:#424242;
+    color:white;
+    margin-top:20px
+}
+.cardboxBottom{
+    transition: 0.3s;
+    width: 30%;
+    height:auto;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.cardbox:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    transform:translateY(-7px);
+}
+
+.cardboxWidth{
+    width: 18rem;
+}
+
+#whyMotbaord{
+    height:500px;
+    width:100%;
+    background-color: #ffffff;
+}
+
+
+.inputInCreateSurvey{
+    padding-top:10px;
+    padding-bottom:10px;
+    margin-bottom:20px;
+    border-radius: 10px;
+    border:rgba(66,66,66,0.2) 1px solid;
+}
