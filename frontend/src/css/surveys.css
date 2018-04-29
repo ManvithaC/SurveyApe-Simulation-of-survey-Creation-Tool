@@ -1,0 +1,15 @@
+.surveyBox{
+    height:100vw;
+    background-color: lavenderblush;
+    width:100%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    transition:0.3s;
+    align: center;
+    margin:5px auto;
+    padding:20px;
+    text-align: center;
+}
+
+.surveyBox:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}

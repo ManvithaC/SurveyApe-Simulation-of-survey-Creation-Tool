@@ -6,6 +6,8 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import HomePage from './HomePage';
 import CreateNewSurvey from './CreateNewSurvey';
+import UserAccount from './UserAccount';
+import Surveys from "./Surveys";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -43,9 +45,13 @@ class LandingPage extends Component{
                                 }}><button class="signupnav">SIGN UP</button></a>
                             </li>
                             <li className="nav-item mynav ">
-                                <a className="nav-link pointer signIn mr-5" style={{'font-size':'1em','color':'black'}} onClick={() => {
+                                <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {
                                     this.props.history.push("/CreateNewSurvey");
                                 }}><button class="signupnav">CREATE A SURVEY</button></a>
+                            </li>
+                            <li className="nav-item mynav ">
+                                <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
+                                }}><UserAccount/></a>
                             </li>
                         </ul>
                     </nav>
@@ -69,6 +75,11 @@ class LandingPage extends Component{
                     <Route exact path="/signIn" render={() => (
                         <div>
                             <SignIn/>
+                        </div>
+                    )}/>
+                    <Route exact path="/Surveys" render={() => (
+                        <div>
+                            <Surveys/>
                         </div>
                     )}/>
                     <Route exact path="/CreateNewSurvey" render={() => (

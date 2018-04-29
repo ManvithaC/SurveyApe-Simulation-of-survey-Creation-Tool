@@ -27,6 +27,10 @@ class CreateNewSurvey extends Component{
         this.state={
             radioButton:false,
             dialogSelection: false,
+            radioButtonArray:[{
+                value:1,
+                label:'<input type={"text"} placeholder={"Option1"} class={"AnswerInput"}></input>'
+            }],
         };
 
     }
@@ -115,20 +119,10 @@ class CreateNewSurvey extends Component{
                             <div class="card-box QuestionBox">
                             <input type={"text"} placeholder="Enter your Question" class="QuestionInput"/><br/>
                                 <div>
-                                    <RadioButtonGroup name="shipSpeed" defaultSelected="not_light">
+                                    <RadioButtonGroup name="Q1" defaultSelected="not_light">
                                         <RadioButton
-                                            value="Option1"
-                                            label={<input type={"text"} placeholder={"Option1"} class={"AnswerInput"}></input>}
-                                            style={styles.radioButton}
-                                        />
-                                        <RadioButton
-                                            value="Option2"
-                                            label={<input type={"text"} placeholder={"Option1"} class={"AnswerInput"}></input>}
-                                            style={styles.radioButton}
-                                        />
-                                        <RadioButton
-                                            value="Option3"
-                                            label={<input type={"text"} placeholder={"Option1"} class={"AnswerInput"}></input>}
+                                            value={"Option"+this.state.radioButtonArray.length}
+                                            label={<input type={"text"} placeholder={"Option1"+this.state.radioButtonArray.length} class={"AnswerInput"}></input>}
                                             style={styles.radioButton}
                                         />
                                     </RadioButtonGroup>
