@@ -41,9 +41,11 @@ class UserAccount extends Component{
                 >
                     <Menu>
                         <MenuItem primaryText="My Surveys" onClick={() => {
+                            this.handleRequestClose();
                             this.props.history.push("/Surveys");}}/>
                         <MenuItem primaryText="My Account" />
                         <MenuItem primaryText="Sign out" onClick={() => {
+                            this.handleRequestClose();
                             this.props.history.push("/");}}/>
                     </Menu>
                 </Popover>

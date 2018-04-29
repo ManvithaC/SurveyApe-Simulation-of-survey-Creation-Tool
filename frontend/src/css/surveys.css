@@ -2,14 +2,29 @@
     height:100vw;
     background-color: lavenderblush;
     width:100%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
     transition:0.3s;
     align: center;
     margin:5px auto;
     padding:20px;
     text-align: center;
+    color: #222222;
 }
 
-.surveyBox:hover{
+.EachSurveyBox{
+    height:150px;
+    background-color: white;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    width:100%;
+    transition:0.3s;
+    text-align: center;
+    margin:5px auto;
+    padding:20px;
+    color: #222222;
+
+}
+.EachSurveyBox:hover{
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
