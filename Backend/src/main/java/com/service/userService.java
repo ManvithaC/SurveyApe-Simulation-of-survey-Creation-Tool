@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.repository.userRepository;
 
@@ -29,7 +30,7 @@ public class userService {
             userEntity.setEmail(email);
             userEntity.setFirstname(firstname);
             userEntity.setLastname(lastname);
-            userEntity.setPassword(password);
+            userEntity.setPassword(new BCryptPasswordEncoder().encode(password));
             userEntity.setEnable(0);
             String code = mailNotificationService.sendEmailVerificationCode(userEntity);
             userRepository.save(userEntity);
@@ -54,9 +55,11 @@ public class userService {
     }
 
 
+
     public ResponseEntity<?> login(String email, String password) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
+
 
         if(userEntity==null){
             message.put("code",404);
@@ -64,15 +67,17 @@ public class userService {
             return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
         }
         else {
-            if (userEntity.getPassword().equals(password) && userEntity.getEnable() == 1) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            if (passwordEncoder.matches(password, userEntity.getPassword()) && userEntity.getEnable() == 1) {
                 message.put("code", 200);
                 message.put("msg", "Login Successful");
                 return new ResponseEntity<>(message.toString(), HttpStatus.OK);
-            } else if (userEntity.getPassword().equals(password) && userEntity.getEnable() == 0) {
-                message.put("code", 201);
+            } else if (passwordEncoder.matches(password, userEntity.getPassword()) && userEntity.getEnable() == 0) {
+                message.put("code", 400);
                 message.put("msg", "Please Verify your account");
-                return new ResponseEntity<>(message.toString(), HttpStatus.OK);
-            } else if (!userEntity.getPassword().equals(password)) {
+                return new ResponseEntity<>(message.toString(), HttpStatus.BAD_REQUEST);
+            } else if (!passwordEncoder.matches(password, userEntity.getPassword())) {
                 message.put("code", 404);
                 message.put("msg", "Password Incorrect");
                 return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
