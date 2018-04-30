@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import Avatar from 'material-ui/Avatar';
-import DP from '../images/manvi.png';
+import DP from '../images/user.png';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
