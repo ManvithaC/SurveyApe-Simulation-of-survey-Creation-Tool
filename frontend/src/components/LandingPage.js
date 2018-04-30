@@ -8,6 +8,7 @@ import HomePage from './HomePage';
 import CreateNewSurvey from './CreateNewSurvey';
 import UserAccount from './UserAccount';
 import Surveys from "./Surveys";
+import SurveyBuilder from "./SuveryBuilder";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -85,6 +86,11 @@ class LandingPage extends Component{
                     <Route exact path="/CreateNewSurvey" render={() => (
                         <div>
                             <CreateNewSurvey/>
+                        </div>
+                    )}/>
+                    <Route exact path="/SurveyBuilder" render={() => (
+                        <div>
+                            <SurveyBuilder/>
                         </div>
                     )}/>
                 </div>
