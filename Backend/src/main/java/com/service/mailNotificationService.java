@@ -1,6 +1,6 @@
 package com.service;
 
-import com.entity.userEntity;
+import com.entity.User;
 import com.repository.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -20,7 +20,7 @@ public class mailNotificationService {
     @Autowired
     public userRepository userRepository;
 
-    public String sendEmailVerificationCode(userEntity userEntity) throws MailException {
+    public String sendEmailVerificationCode(User userEntity) throws MailException {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -38,10 +38,10 @@ public class mailNotificationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "asd";
+        return "created account";
     }
 
-    public void sendWelcomeEmail(userEntity userEntity) throws MailException {
+    public void sendWelcomeEmail(User userEntity) throws MailException {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(userEntity.getEmail());
