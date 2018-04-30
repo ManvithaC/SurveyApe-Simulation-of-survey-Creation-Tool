@@ -9,6 +9,7 @@ import CreateNewSurvey from './CreateNewSurvey';
 import UserAccount from './UserAccount';
 import Surveys from "./Surveys";
 import SurveyBuilder from "./SuveryBuilder";
+import ShareSurvey from "./ShareSurvey";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -47,7 +48,7 @@ class LandingPage extends Component{
                             </li>
                             <li className="nav-item mynav ">
                                 <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {
-                                    this.props.history.push("/CreateNewSurvey");
+                                    this.props.history.push("/SurveyBuilder");
                                 }}><button class="signupnav">CREATE A SURVEY</button></a>
                             </li>
                             <li className="nav-item mynav ">
@@ -91,6 +92,11 @@ class LandingPage extends Component{
                     <Route exact path="/SurveyBuilder" render={() => (
                         <div>
                             <SurveyBuilder/>
+                        </div>
+                    )}/>
+                    <Route exact path="/ShareSurvey" render={() => (
+                        <div>
+                            <ShareSurvey/>
                         </div>
                     )}/>
                 </div>
