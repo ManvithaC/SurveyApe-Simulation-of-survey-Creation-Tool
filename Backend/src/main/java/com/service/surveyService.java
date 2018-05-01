@@ -4,6 +4,7 @@ import com.entity.*;
 import com.repository.optionRepository;
 import com.repository.questionRepository;
 import com.repository.surveyRepository;
+import com.repository.valueRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,79 +33,98 @@ public class surveyService {
     public surveyRepository surveyrepository;
 
     @Autowired
+    public valueRepository valueRepository;
+
+
+    @Autowired
     public com.repository.answerRepository answerRepository;
 
-    public String createSuvey(JSONObject survey) {
-        //userEntity owner = userRepository.findByEmail(survey.getString("surveyorId"));
+    public String createSuvey(JSONObject survey, HttpSession session) {
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType(survey.getString("surveyType"));
+        User user = userRepository.findByEmail(survey.getString("surveyorId"));
+        user.getSurveyEntities().add(surveyEntity);
+        surveyEntity.setOwner(user);
         surveyEntity.setIsOpen(survey.getInt("isOpen"));
-        // surveyEntity.setExpiry((Date) survey.get("expiry"));
         surveyEntity.setIsPublished(survey.getInt("isPublished"));
-        //surveyEntity.setSurveyorId(owner.getEmail());
         List<Questions> questionEntityList = new ArrayList<>();
         JSONArray questionArray = survey.getJSONArray("questions");
-        List<Questions> questionEntities;
-        surveyrepository.save(surveyEntity);
-        for (int i = 0; i < questionArray.length(); i++) {
-            Questions questionEntity = new Questions();
-            JSONObject temp = (JSONObject) questionArray.get(i);
-            questionEntity.setType(temp.getString("questionType"));
-            questionEntity.setDescription(temp.getString("questionDescription"));
-            JSONArray optionsArray = temp.getJSONArray("options");
-            List<Options> optionsEntities;
-            questionEntity.setSurveyEntity(surveyEntity);
-            for (int j = 0; j < optionsArray.length(); j++) {
-                Options optionsEntity = new Options();
-                JSONObject temp2 = (JSONObject) optionsArray.get(j);
-                optionsEntity.setOptionValue(temp2.getString("value"));
-                optionsEntity.setQuestionEntity(questionEntity);
-                optionrepository.save(optionsEntity);
-                questionEntity.getOptionsEntities().add(optionsEntity);
+        if (surveyEntity.getSurveyType().equals("general")) {
+            for (int i = 0; i < questionArray.length(); i++) {
+                Questions questionEntity = new Questions();
+                JSONObject temp = (JSONObject) questionArray.get(i);
+                questionEntity.setType(temp.getString("type"));
+                questionEntity.setDescription(temp.getString("label"));
+                questionEntity.setSurveyEntity(surveyEntity);
+                if (questionEntity.getType().equals("date") ||
+                        questionEntity.getType().equals("text") || questionEntity.getType().equals("textarea")) {
+                    Options optionsEntity = new Options();
+                    optionsEntity.setOptionValue("TEXT");
+                    optionsEntity.setQuestionEntity(questionEntity);
+                    optionrepository.save(optionsEntity);
+                    questionEntity.getOptionsEntities().add(optionsEntity);
+                } else {
+                    JSONArray optionsArray = temp.getJSONArray("values");
+                    List<Options> optionsEntities;
+                    for (int j = 0; j < optionsArray.length(); j++) {
+                        Options optionsEntity = new Options();
+                        JSONObject temp2 = (JSONObject) optionsArray.get(j);
+                        optionsEntity.setOptionValue(temp2.getString("label"));
+                        optionsEntity.setQuestionEntity(questionEntity);
+                        optionrepository.save(optionsEntity);
+                        questionEntity.getOptionsEntities().add(optionsEntity);
+                    }
+                }
+                questionrepository.save(questionEntity);
+                surveyEntity.getQuestionEntityList().add(questionEntity);
             }
-
-            questionrepository.save(questionEntity);
-            surveyEntity.getQuestionEntityList().add(questionEntity);
+            surveyrepository.save(surveyEntity);
+            userRepository.save(user);
         }
-        surveyrepository.save(surveyEntity);
         return "sanjay";
     }
 
 
-
-
     public String submitSurvey(JSONObject survey, Integer surveyId) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
-        surveyEntity.setIsPublished(1);
-        surveyrepository.save(surveyEntity);
         String userId = survey.getString("userId");
         User userEntity = userRepository.findByEmail(userId);
-        userEntity.getSurveyEntities().add(surveyEntity);
+
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
         for (int i = 0; i < questionsArray.length(); i++) {
-            JSONObject temp = questionsArray.getJSONObject(i);
-            JSONArray answerArray = temp.getJSONArray("answers");
-            Answer answerEntity = new Answer();
-            answerEntity.setQuestionEntity(questionEntities.get(i));
-            for (int j = 0; j < answerArray.length(); j++) {
-                JSONObject temp1 = answerArray.getJSONObject(j);
-                System.out.println(temp1);
+            Answer answer = new Answer();
+            answer.setUserEntity(userEntity);
+            answer.setQuestionEntity(questionEntities.get(i));
+            questionEntities.get(i).getAnswerEntities().add(answer);
+            JSONObject temp = (JSONObject) questionsArray.get(i);
+            if (questionEntities.get(i).getType().equals("date") ||
+                    questionEntities.get(i).getType().equals("text") || questionEntities.get(i).getType().equals("textarea")) {
                 ValuesEntity valuesEntity = new ValuesEntity();
-                valuesEntity.setValue(temp1.getString("value"));
-                answerEntity.getValuesEntity().add(valuesEntity);
-                answerEntity.setUserEntity(userEntity);
-                valuesEntity.setAnswerEntity(answerEntity);
+                valuesEntity.setAnswerEntity(answer);
+                valuesEntity.setValue(temp.getString("value"));
+                answer.getValuesEntity().add(valuesEntity);
+                valueRepository.save(valuesEntity);
+            } else {
+                JSONArray optionsArray = temp.getJSONArray("values");
+                for (int j = 0; j < optionsArray.length(); j++) {
+                    JSONObject temp1 = (JSONObject) optionsArray.get(j);
+                    //   System.out.println(temp1);
+                    if (temp1.has("selected")) {
+                        //     System.out.println(temp1);
+                        ValuesEntity valuesEntity = new ValuesEntity();
+                        valuesEntity.setAnswerEntity(answer);
+                        valuesEntity.setValue(temp1.getString("label"));
+                        answer.getValuesEntity().add(valuesEntity);
+                        valueRepository.save(valuesEntity);
+                    }
+                }
             }
-            userEntity.getAnswerEntities().add(answerEntity);
-            answerRepository.save(answerEntity);
-            userRepository.save(userEntity);
-            userEntity.getSurveyEntities().add(surveyEntity);
-            surveyEntity.getUserEntities().add(userEntity);
-            questionEntities.get(i).getAnswerEntities().add(answerEntity);
+            answerRepository.save(answer);
             questionrepository.save(questionEntities.get(i));
         }
-
+        surveyEntity.getQuestionEntityList().addAll(questionEntities);
+        surveyrepository.save(surveyEntity);
         return "asdasd";
     }
 
@@ -113,16 +134,12 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         System.out.println(surveyEntity);
         JSONObject message = new JSONObject();
-        message.put("surveyType",surveyEntity.getSurveyType());
-        message.put("isOpen",surveyEntity.getIsOpen());
-        message.put("expiray",surveyEntity.getExpiry());
-        message.put("isPublished",surveyEntity.getIsPublished());
-        message.put("surveyorId",surveyEntity.getSurveyId());
-
-
-
-
+        message.put("surveyType", surveyEntity.getSurveyType());
+        message.put("isOpen", surveyEntity.getIsOpen());
+        message.put("expiray", surveyEntity.getExpiry());
+        message.put("isPublished", surveyEntity.getIsPublished());
+        message.put("surveyorId", surveyEntity.getSurveyId());
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
 
-        }
+    }
 }

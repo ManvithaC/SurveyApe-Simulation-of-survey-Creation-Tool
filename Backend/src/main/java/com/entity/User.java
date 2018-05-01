@@ -95,6 +95,18 @@ public class User {
 
     private int enable;
 
+    public List<Survey> getSurveys() {
+        return surveys;
+    }
+
+    public void setSurveys(List<Survey> surveys) {
+        this.surveys = surveys;
+    }
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL,mappedBy ="owner")
+    private List<Survey> surveys;
+
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "userEntities")

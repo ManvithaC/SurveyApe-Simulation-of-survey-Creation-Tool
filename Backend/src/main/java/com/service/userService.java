@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.repository.userRepository;
 
+import javax.servlet.http.HttpSession;
+
 @Service
 public class userService {
 
@@ -54,7 +56,7 @@ public class userService {
     }
 
 
-    public ResponseEntity<?> login(String email, String password) {
+    public ResponseEntity<?> login(String email, String password,HttpSession session) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
 
@@ -67,6 +69,9 @@ public class userService {
             if (userEntity.getPassword().equals(password) && userEntity.getEnable() == 1) {
                 message.put("code", 200);
                 message.put("msg", "Login Successful");
+                session.setAttribute("username",userEntity.getEmail());
+                System.out.println(session.getAttribute("username"));
+                System.out.println(session.getId());
                 return new ResponseEntity<>(message.toString(), HttpStatus.OK);
             } else if (userEntity.getPassword().equals(password) && userEntity.getEnable() == 0) {
                 message.put("code", 201);

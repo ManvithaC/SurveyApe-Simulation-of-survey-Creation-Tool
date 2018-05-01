@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping(path = "/")
 public class SurveyController {
@@ -20,12 +22,13 @@ public class SurveyController {
 
     @ResponseBody
     @PostMapping(path = "/survey",consumes = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
-    public String createSurvey(@RequestBody String  surveyrequest) {
+    public String createSurvey(@RequestBody String  surveyrequest,HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
+
         JSONObject survey = new JSONObject(surveyrequest);
-        String output=surveyService.createSuvey(survey);
+        String output=surveyService.createSuvey(survey,session);
         return "sanjya";
     }
 
@@ -35,7 +38,6 @@ public class SurveyController {
     public String submitSurvey(@RequestBody String  surveyrequest,@PathVariable("surveyId") Integer surveyId) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-
         JSONObject survey = new JSONObject(surveyrequest);
         String output=surveyService.submitSurvey(survey,surveyId);
         return "sanjya";

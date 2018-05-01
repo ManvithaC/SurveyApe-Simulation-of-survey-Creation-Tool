@@ -81,7 +81,7 @@ public class Survey {
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
-    private List<User> userEntities;
+    private List<User> userEntities=new ArrayList<>();
 
 
     private String surveyType;
@@ -89,6 +89,18 @@ public class Survey {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "surveyEntity")
     private List<Questions> questionEntityList =new ArrayList<>();
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    private User owner;
 
 
     @JsonIgnore

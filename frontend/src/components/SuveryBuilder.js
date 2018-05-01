@@ -31,19 +31,21 @@ class SurveyBuilder extends Component{
         };
 
         var options = {
-            disableFields: ['autocomplete','button','paragraph','number'],
+            disableFields: ['autocomplete','button','paragraph','number','hidden','header','actionButtons']
         };
-
-        let ed = $("#editor").formBuilder({fields,templates,options});
+        let ed = $("#editor").formBuilder(options);
         setTimeout(function(){ ed.actions.setData(formData); }, 50);
     }
-
-
 
     render() {
         return (
             <div>
-                <div id="editor"></div>
+                <div id="editor">
+                </div>
+                <button  onClick={() => {
+                }}>Save
+                </button>
+
             </div>
         );
     }
