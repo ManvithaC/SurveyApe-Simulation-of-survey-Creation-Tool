@@ -134,12 +134,87 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         System.out.println(surveyEntity);
         JSONObject message = new JSONObject();
+        JSONObject error = new JSONObject();
         message.put("surveyType", surveyEntity.getSurveyType());
         message.put("isOpen", surveyEntity.getIsOpen());
         message.put("expiray", surveyEntity.getExpiry());
         message.put("isPublished", surveyEntity.getIsPublished());
         message.put("surveyorId", surveyEntity.getSurveyId());
-        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+
+
+        if(surveyEntity.getIsPublished()==1) {
+            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+        }
+        else
+        {
+            error.put("code",400);
+            error.put("msg","No right to access this survey");
+            return new ResponseEntity<>(error.toString(), HttpStatus.BAD_REQUEST);
+        }
 
     }
+
+
+    public ResponseEntity<?> unPublishSurvey(Integer surveyId) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+        JSONObject message = new JSONObject();
+        if(surveyEntity!=null){
+            //check here if survey has anyy responses yet and unpublish
+            surveyEntity.setIsPublished(0);
+            surveyrepository.save(surveyEntity);
+            message.put("code",200);
+            message.put("msg", "Survey UnPublished");
+            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+        }
+        else
+        {
+            message.put("code",404);
+            message.put("msg", "Survey does not exist");
+            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+        }
+
+
+
+    }
+
+
+    public ResponseEntity<?> PublishSurvey(Integer surveyId) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+        JSONObject message = new JSONObject();
+        if(surveyEntity!=null){
+            surveyEntity.setIsPublished(1);
+            surveyrepository.save(surveyEntity);
+            message.put("code",200);
+            message.put("msg", "Survey Published");
+            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+        }
+        else
+        {
+            message.put("code",404);
+            message.put("msg", "Survey does not exist");
+            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    public ResponseEntity<?> closeSurvey(Integer surveyId) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+        JSONObject message = new JSONObject();
+        if(surveyEntity!=null){
+            surveyEntity.setIsOpen(0);
+            surveyrepository.save(surveyEntity);
+            message.put("code",200);
+            message.put("msg", "Survey Closed");
+            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+        }
+        else
+        {
+            message.put("code",404);
+            message.put("msg", "Survey does not exist");
+            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+
 }
