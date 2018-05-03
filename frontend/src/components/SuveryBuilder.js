@@ -95,7 +95,8 @@ class SurveyBuilder extends Component{
                     textFieldStyle={{'width':'150px'}}
                     />
                     <RaisedButton label="Save" style={styles}></RaisedButton>
-                    <RaisedButton label="Publish" style={styles} ></RaisedButton>
+                    <RaisedButton label="Publish" style={styles} onClick={() => {
+                        this.props.history.push("/ShareSurvey");}}></RaisedButton>
                 </div>
             <div>
                 <div id="editor"></div>

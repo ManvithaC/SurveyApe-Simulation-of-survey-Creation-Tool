@@ -10,6 +10,9 @@ import UserAccount from './UserAccount';
 import Surveys from "./Surveys";
 import SurveyBuilder from "./SuveryBuilder";
 import ShareSurvey from "./ShareSurvey";
+import TakeOpenSurvey from "./TakeOpenSurvey";
+import swal from 'sweetalert';
+import TakeClosedSurvey from "./TakeClosedSurvey";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -97,6 +100,16 @@ class LandingPage extends Component{
                     <Route exact path="/ShareSurvey" render={() => (
                         <div>
                             <ShareSurvey/>
+                        </div>
+                    )}/>
+                    <Route exact path="/TakeOpenSurvey" render={() => (
+                        <div>
+                            <TakeOpenSurvey/>
+                        </div>
+                    )}/>
+                    <Route exact path="/TakeClosedSurvey" render={() => (
+                        <div>
+                            <TakeClosedSurvey/>
                         </div>
                     )}/>
                 </div>

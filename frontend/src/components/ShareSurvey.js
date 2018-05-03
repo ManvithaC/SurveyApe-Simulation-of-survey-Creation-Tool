@@ -23,16 +23,64 @@ class ShareSurvey extends Component{
             SurveyType : 'open',
             SurveyeesEmail:[],
             value: 0,
-            SurveyURL:"https://surveyape.com/r/E8R5HH"
+            SurveyURL:"E8R5HH"
         }
     }
-    handleChange = (event, index, value) => this.setState({value});
 
-    addSurveyees = () =>{
+
+    componentDidMount(){
+        console.log('Routerrrr'+this.props.location.search);
+    }
+    handleChange = (event, index, value) => {
+        this.setState({value});
+        this.setState({SurveyeesEmail:[]});
+    }
+
+
+    addSurveyees =()=>{
         var email = this.refs.SurveyeeField.getValue();
-        // console.log('got the email'+this.refs.SurveyeeField.getValue());
         emailList.push(email);
         this.setState({SurveyeesEmail:emailList});
+    }
+
+    addLinkSurveyees = () =>{
+
+        var surveyType;
+        if(this.state.value == '1'){
+            surveyType = 'General Survey'
+        }
+        else if (this.state.value == '2'){
+            surveyType = 'Closed Survey'
+        }
+        else if (this.state.value == '3'){
+            surveyType = 'Open Unique Survey'
+        }
+        var toSendJSON = {
+            'SurveyType' : surveyType,
+            'SendVia' : 'link',
+            'SurveyeesEmail':this.state.SurveyeesEmail
+        }
+        console.log(toSendJSON);
+    }
+
+    addQRCodeSurveyees = () =>{
+
+        var surveyType;
+        if(this.state.value == '1'){
+            surveyType = 'General Survey'
+        }
+        else if (this.state.value == '2'){
+            surveyType = 'Closed Survey'
+        }
+        else if (this.state.value == '3'){
+            surveyType = 'Open Unique Survey'
+        }
+        var toSendJSON = {
+            'SurveyType' : surveyType,
+            'SendVia' : 'QRCode',
+            'SurveyeesEmail':this.state.SurveyeesEmail
+        }
+        console.log(toSendJSON);
     }
 
     render(){
@@ -46,16 +94,16 @@ class ShareSurvey extends Component{
                         style={styles.customWidth}
                         autoWidth={true}
                     >
-                        <MenuItem value={1} primaryText="Open Survey" />
+                        <MenuItem value={1} primaryText="General Survey" />
                         <MenuItem value={2} primaryText="Closed Survey" />
-                        <MenuItem value={3} primaryText="Weeknights" />
+                        <MenuItem value={3} primaryText="Open Unique Survey" />
                     </DropDownMenu>
                 </div>
                 <div class="row pt-3 justify-content-center typeOfSurvey">
                     {
-                        this.state.value =='1'?(
+                        this.state.value =='3'?(
                             <div>
-                                <h3 className='Questrial'>Open Survey</h3>
+                                <h3 className='Questrial'>Open Unique Survey</h3>
                                 <div>The Link to Share is <span>
                                     <a class="surveyURL ml-2" href={this.state.SurveyURL}>{this.state.SurveyURL}</a>
                                 </span> </div>
@@ -63,10 +111,16 @@ class ShareSurvey extends Component{
                         ):''
                     }
                     {
-                        this.state.value == '2' ? (
+                        this.state.value == '2' || this.state.value == '1' ? (
                             <div>
                                 <div>
-                                    <h3 className='Questrial'>Closed Survey</h3>
+
+                                    <h3 className='Questrial'>
+                                        {
+                                            this.state.value == '1'?'General Survey':'Closed Survey'
+
+                                        }
+                                    </h3>
                                     <div className="mr-5 pr-5 pb-1">
                                         <TextField
                                             hintText="Add Email"
@@ -81,11 +135,11 @@ class ShareSurvey extends Component{
                     }
                 </div>
                 {
-                    this.state.value == '2' ? (
+                    this.state.value == '2' || this.state.value == '1'  ? (
                         <div class="row justify-content-center">
                             <div class="col-md-4">
                                 <Paper zDepth={2}>
-                                    <div class="p-3">
+                                    <div class="p-5">
                                         <h3 className='Questrial'>Surveyees List</h3>
                                         <Divider />
                                         {this.state.SurveyeesEmail.map((elem, index) => (
@@ -96,6 +150,10 @@ class ShareSurvey extends Component{
                                         ))}
                                     </div>
                                 </Paper>
+                            </div>
+                            <div class="col-md-2">
+                                <RaisedButton label="Send link in Email" onClick={this.addLinkSurveyees} fullWidth={true} className={"mb-3"} primary={true}/>
+                                <RaisedButton label="Send QR Code in Email" onClick={this.addQRCodeSurveyees} fullWidth={true} className={"mb-3"} primary={true}/>
                             </div>
                         </div>):''
                 }

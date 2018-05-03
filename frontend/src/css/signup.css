@@ -26,6 +26,21 @@
   color:#ffffff;
 }
 
+.ybuttonEmail{
+  padding-top:10px;
+  padding-bottom:10px;
+  margin-bottom:10px;
+  margin-top:10px;
+  padding-left:10px;
+  padding-right:10px;
+  width:50%;
+  border-radius: 5px;
+  background-color:#ffffff;
+  border:#ba68c8 1px solid;
+  transition:0.3s;
+  height:auto;
+  color:#ba68c8;
+}
 
 .ybutton:hover{
   border:#ba68c8 1px solid;
