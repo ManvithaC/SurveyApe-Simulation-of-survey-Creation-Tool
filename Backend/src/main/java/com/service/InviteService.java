@@ -43,54 +43,79 @@ public class InviteService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public String addInvite(Integer surveyId, JSONObject inviteDetails){
+    public String addInvite(Integer surveyId, JSONObject inviteDetails) {
         System.out.println("addInvite 1");
 
-       JSONArray emails =  inviteDetails.getJSONArray("emails");
-       List<String> emailIds =  new ArrayList<String>();
-       for(int i=0;i<emails.length();i++){
-           emailIds.add((String) emails.get(i));
-       }
+        JSONArray emails = inviteDetails.getJSONArray("SurveyeesEmail");
+        String  sendvia  =  inviteDetails.getString("SendVia");
+        List<String> emailIds = new ArrayList<String>();
+        for (int i = 0; i < emails.length(); i++) {
+            emailIds.add((String) emails.get(i));
+        }
 
-       Survey s =  surveyrepository.findBySurveyId(surveyId);
-       String surveyType =  s.getSurveyType();
+        Survey s = surveyrepository.findBySurveyId(surveyId);
+        String surveyType = s.getSurveyType();
 
-       if(surveyType.equals("General")){
-           System.out.println("addInvite 1");
-           String surveylink = "http://localhost:8080/takeSurvey/"+surveyId;
-           String imagePath = ""+surveyId+".png";
-           saveQRImage(surveylink,imagePath);
-           for(String e: emailIds){
-               Invites i = new Invites();
-               i.setEmailId(e);
-               i.setSurveyEntity(s);
-               i.setIsAccessed(0);
-               i.setSurveyURL(surveylink);
-               i.setQRImagePath(imagePath);
-               inviteRepository.save(i);
-               sendEmailInvitations(e, surveylink);
-               sendEmailWithQRImage(e,imagePath);
-           }
+        if (surveyType.equals("General")) {
+            System.out.println("addInvite 1");
+            String surveylink = "http://localhost:3000/takeSurvey/general/:" + surveyId;
+            String imagePath = "" + surveyId + ".png";
+            saveQRImage(surveylink, imagePath);
+            for (String e : emailIds) {
+                Invites i = new Invites();
+                i.setEmailId(e);
+                i.setSurveyEntity(s);
+                i.setIsAccessed(0);
+                i.setSurveyURL(surveylink);
+                i.setQRImagePath(imagePath);
+                inviteRepository.save(i);
+                if(sendvia.equals("link"))
+                   sendEmailInvitations(e, surveylink);
+                if(sendvia.equals("QRCode"))
+                   sendEmailWithQRImage(e, imagePath);
+            }
 
-       }else if(surveyType.equals("Closed") || surveyType.equals("Open")){
-           for(String e: emailIds){
-               Invites i = new Invites();
-               i.setEmailId(e);
-               i.setSurveyEntity(s);
-               i.setIsAccessed(0);
-               Invites invitationAfterSaving = inviteRepository.save(i);
-               int id = invitationAfterSaving.getInviteid();
-               String surveylink = "http://localhost:9000/takeSurvey/"+surveyId+"_"+id;
-               String imagePath = ""+surveyId+"_"+id+".png";
-               invitationAfterSaving.setSurveyURL(surveylink);
-               invitationAfterSaving.setQRImagePath(imagePath);
-               inviteRepository.save(invitationAfterSaving);
-               sendEmailInvitations(e, surveylink);
-               saveQRImage(surveylink,imagePath);
-           }
+        } else if (surveyType.equals("Closed")) {
+            for (String e : emailIds) {
+                Invites i = new Invites();
+                i.setEmailId(e);
+                i.setSurveyEntity(s);
+                i.setIsAccessed(0);
+                Invites invitationAfterSaving = inviteRepository.save(i);
+                int id = invitationAfterSaving.getInviteid();
+                String surveylink = "http://localhost:3000/takeSurvey/closed/:" + surveyId + "_" + id;
+                String imagePath = "" + surveyId + "_" + id + ".png";
+                invitationAfterSaving.setSurveyURL(surveylink);
+                invitationAfterSaving.setQRImagePath(imagePath);
+                inviteRepository.save(invitationAfterSaving);
+                if(sendvia.equals("link"))
+                    sendEmailInvitations(e, surveylink);
+                if(sendvia.equals("QRCode"))
+                    sendEmailWithQRImage(e, imagePath);
+            }
 
-       }
-  return "Invitations sent";
+        } else if (surveyType.equals("Open")) {
+            for (String e : emailIds) {
+                Invites i = new Invites();
+                i.setEmailId(e);
+                i.setSurveyEntity(s);
+                i.setIsAccessed(0);
+                Invites invitationAfterSaving = inviteRepository.save(i);
+                int id = invitationAfterSaving.getInviteid();
+                String surveylink = "http://localhost:3000/takeSurvey/open/:" + surveyId + "_" + id;
+                String imagePath = "" + surveyId + "_" + id + ".png";
+                invitationAfterSaving.setSurveyURL(surveylink);
+                invitationAfterSaving.setQRImagePath(imagePath);
+                inviteRepository.save(invitationAfterSaving);
+                if(sendvia.equals("link"))
+                    sendEmailInvitations(e, surveylink);
+                if(sendvia.equals("QRCode"))
+                    sendEmailWithQRImage(e, imagePath);
+
+            }
+
+        }
+        return "Invitations sent";
     }
 
     public void sendEmailInvitations(String emailID, String surveyLink){
@@ -150,8 +175,10 @@ public class InviteService {
         System.out.println("getSurveyURL");
         Survey s =  surveyrepository.findBySurveyId(surveyID);
         String surveyType =  s.getSurveyType();
-        if(surveyType.equals("General")||surveyType.equals("Open")) {
-            return "http://localhost:9000/takeSurvey"+surveyID;
+        if(surveyType.equals("General")) {
+            return "http://localhost:3000/takeSurvey/general/:"+surveyID;
+        }else if (surveyType.equals("Open")) {
+            return "http://localhost:3000/takeSurvey/open/:" + surveyID;
         }else {
             return "no unique survey link";
         }
