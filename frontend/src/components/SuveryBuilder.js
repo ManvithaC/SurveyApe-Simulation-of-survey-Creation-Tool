@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
+import TextField from 'material-ui/TextField';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -18,6 +19,7 @@ const optionsStyle = {
     maxWidth: 255,
     marginRight: 'auto',
 };
+var editor;
 class SurveyBuilder extends Component{
     constructor(props){
         super(props);
@@ -31,7 +33,7 @@ class SurveyBuilder extends Component{
     }
 
     componentDidMount(){
-        var formData = '[{"type":"text","label":"Survey Name","subtype":"text","className":"form-control","name":"text-1476748004559"}]';
+        var formData = '';
         var fields = [{
             label: 'Star Rating',
             attrs: {
@@ -54,10 +56,11 @@ class SurveyBuilder extends Component{
         };
 
         var options = {
-            disableFields: ['autocomplete','button','paragraph','number','hidden','header','actionButtons']
+            disableFields: ['autocomplete','button','paragraph','number','hidden','header','actionButtons'],
+            showActionButtons: false
         };
-        let ed = $("#editor").formBuilder(options);
-        setTimeout(function(){ ed.actions.setData(formData); }, 50);
+        editor = $("#editor").formBuilder(options);
+        setTimeout(function(){ editor.actions.setData(formData); }, 50);
     }
 
     handleChangeMinDate = (event, date) => {
@@ -75,10 +78,20 @@ class SurveyBuilder extends Component{
     handleChangeTimePicker24 = (event, date) => {
         this.setState({value24: date});
     };
+    saveTheForm = () =>{
+        console.log('surveyName: '+this.refs.surveyName.getValue());
+        alert(editor.actions.getData('json'));
+    }
     render() {
         return (
             <div>
                 <div class="row justify-content-end">
+                    <TextField
+                        hintText="Enter Survey Name"
+                        maxLength="20"
+                        ref="surveyName"
+                        style={{'margin-top':'24px','margin-right':'5px'}}
+                    />
                     <DatePicker
                         onChange={this.handleChangeMinDate}
                         autoOk={true}
@@ -94,12 +107,16 @@ class SurveyBuilder extends Component{
                     style={{'margin-top':'24px','margin-right':'5px'}}
                     textFieldStyle={{'width':'150px'}}
                     />
-                    <RaisedButton label="Save" style={styles}></RaisedButton>
+                    <RaisedButton label="Save" style={styles}
+                        onClick={this.saveTheForm}
+                    ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
                         this.props.history.push("/ShareSurvey");}}></RaisedButton>
                 </div>
-            <div>
+            <div class="row justify-content-center">
+                <div class="col-md-10 mt-2">
                 <div id="editor"></div>
+                </div>
             </div>
             </div>
         );
