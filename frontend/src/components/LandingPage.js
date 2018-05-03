@@ -5,12 +5,13 @@ import '../css/landingpage.css';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import HomePage from './HomePage';
-import CreateNewSurvey from './CreateNewSurvey';
 import UserAccount from './UserAccount';
+import Team from './Team';
 import Surveys from "./Surveys";
 import SurveyBuilder from "./SuveryBuilder";
 import ShareSurvey from "./ShareSurvey";
 import TakeOpenSurvey from "./TakeOpenSurvey";
+import About from "./About";
 import swal from 'sweetalert';
 import TakeClosedSurvey from "./TakeClosedSurvey";
 class LandingPage extends Component{
@@ -87,11 +88,6 @@ class LandingPage extends Component{
                             <Surveys/>
                         </div>
                     )}/>
-                    <Route exact path="/CreateNewSurvey" render={() => (
-                        <div>
-                            <CreateNewSurvey/>
-                        </div>
-                    )}/>
                     <Route exact path="/SurveyBuilder" render={() => (
                         <div>
                             <SurveyBuilder/>
@@ -110,6 +106,16 @@ class LandingPage extends Component{
                     <Route exact path="/TakeClosedSurvey" render={() => (
                         <div>
                             <TakeClosedSurvey/>
+                        </div>
+                    )}/>
+                    <Route exact path="/Team" render={() => (
+                        <div>
+                            <Team/>
+                        </div>
+                    )}/>
+                    <Route exact path="/About" render={() => (
+                        <div>
+                            <About/>
                         </div>
                     )}/>
                 </div>

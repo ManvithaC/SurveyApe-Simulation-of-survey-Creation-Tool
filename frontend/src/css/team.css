@@ -1,0 +1,35 @@
+.bandw:hover{
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    transition: 0.5s ease-in-out;
+}
+
+.cardboxWidth{
+    width: 15rem;
+}
+
+.cardboxBottom{
+    transition: 0.3s;
+    width: 30%;
+    height:auto;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+
+.TeamContainer{
+    font-size: 20px;
+    color: darkgrey;
+    font-weight: bold;
+    text-shadow: #fed136;
+}
+.TeamText{
+    font-size: 15px;
+    color: black;
+}
+
+.inspired{
+    font-size:200px;
+    color:rgba(0,0,0,0.2);
+    text-align:center;
+}
