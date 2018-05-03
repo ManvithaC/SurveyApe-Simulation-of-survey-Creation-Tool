@@ -26,6 +26,7 @@ class BalloonPage extends Component {
         }
 
         $(rotateTerm);
+
     }
 
 
