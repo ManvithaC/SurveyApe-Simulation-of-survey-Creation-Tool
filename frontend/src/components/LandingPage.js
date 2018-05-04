@@ -10,10 +10,10 @@ import Team from './Team';
 import Surveys from "./Surveys";
 import SurveyBuilder from "./SuveryBuilder";
 import ShareSurvey from "./ShareSurvey";
-import TakeOpenSurvey from "./TakeOpenSurvey";
+import TakeSurvey from "./TakeOpenSurvey";
+import UniqueLinkSurvey from "./UniqueLinkSurvey";
 import About from "./About";
 import swal from 'sweetalert';
-import TakeClosedSurvey from "./TakeClosedSurvey";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -98,14 +98,14 @@ class LandingPage extends Component{
                             <ShareSurvey/>
                         </div>
                     )}/>
-                    <Route exact path="/TakeOpenSurvey" render={() => (
+                    <Route exact path='/TakeSurvey/:type/:surveyId' render={(props) => (
                         <div>
-                            <TakeOpenSurvey/>
+                            <TakeSurvey {...props}/>
                         </div>
                     )}/>
-                    <Route exact path="/TakeClosedSurvey" render={() => (
+                    <Route exact path='/TakeSurvey/u/:surveyId' render={(props) => (
                         <div>
-                            <TakeClosedSurvey/>
+                            <UniqueLinkSurvey {...props}/>
                         </div>
                     )}/>
                     <Route exact path="/Team" render={() => (

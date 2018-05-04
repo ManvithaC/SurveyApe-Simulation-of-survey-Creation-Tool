@@ -7,7 +7,9 @@ class TakeSurvey extends Component{
     constructor(props){
         super(props);
         this.state={
-            email:''
+            email:'',
+            typeOfSurvey:'',
+            surveyID:'',
         }
     }
 
@@ -16,11 +18,22 @@ class TakeSurvey extends Component{
         swal('Email Sent');
     }
 
+    componentWillMount(){
+        console.log('type of survey---'+this.props.match.params.type);
+        console.log('surveyId---'+this.props.match.params.surveyId);
+        this.setState({
+            typeOfSurvey:this.props.match.params.type,
+            surveyID:this.props.match.params.surveyId,
+        })
+    }
+
     render(){
         return (
             <div>
                 <div>
                     <div className="row justify-content-center ">
+                        {
+                            this.state.typeOfSurvey == 'o'?(
 
                         <div className="col-md-6 cardbox">
                             <h2 style={{'text-align': 'center'}}>Thanks! We are excited to know opinion.</h2>
@@ -58,6 +71,33 @@ class TakeSurvey extends Component{
                             </div>
 
                         </div>
+                            ):''
+                        }
+
+                        {
+                            this.state.typeOfSurvey == 'c'?(
+
+                                <div className="col-md-6 cardbox">
+                                    <h2 style={{'text-align': 'center'}}>Thanks! We are excited to know opinion.</h2>
+                                    <br/>
+                                    <p style={{'text-align': 'center','font-size':'15px','color':'#424242'}}>
+                                        How do you want you complete the survey?
+                                    </p>
+                                    <div className="row justify-content-center">
+                                        <button className="ybutton" onClick={() => {
+                                            this.props.history.push("/signIn");
+                                        }}>SIGN IN
+                                        </button>
+                                    </div>
+                                    <div className="row justify-content-center">
+                                        <button className="ybuttonEmail" onClick={() => {
+                                            this.props.history.push("/signUp");
+                                        }}>SIGN UP
+                                        </button>
+                                    </div>
+                                </div>
+                            ):''
+                        }
                     </div>
                 </div>
             </div>
