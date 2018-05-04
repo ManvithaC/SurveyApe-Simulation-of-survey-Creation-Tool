@@ -74,12 +74,6 @@ class BalloonPage extends Component {
                          style={{"padding-top": "55px", "padding-bottom": "70px", "margin-top": "100px"}}>
                         <div>
                             <div id="whyMotbaord" className="container indexZ">
-                                <div className="row justify-content-start">
-                                    <div className="mr-5 mb-5 Questrial inspired-text">
-                                        How do I get Inspired?
-                                    </div>
-                                    <br/>
-                                </div>
                                 <div className="row justify-content-center">
 
                                     <div className="card cardboxBottom cardbox mr-5 Questrial cardboxWidth"
