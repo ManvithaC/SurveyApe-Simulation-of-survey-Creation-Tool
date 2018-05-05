@@ -33,7 +33,7 @@ class TakeSurvey extends Component{
                 <div>
                     <div className="row justify-content-center ">
                         {
-                            this.state.typeOfSurvey == 'o'?(
+                            this.state.typeOfSurvey == 'open' || this.state.typeOfSurvey == 'general'?(
 
                         <div className="col-md-6 cardbox">
                             <h2 style={{'text-align': 'center'}}>Thanks! We are excited to know opinion.</h2>
@@ -75,7 +75,7 @@ class TakeSurvey extends Component{
                         }
 
                         {
-                            this.state.typeOfSurvey == 'c'?(
+                            this.state.typeOfSurvey == 'closed'?(
 
                                 <div className="col-md-6 cardbox">
                                     <h2 style={{'text-align': 'center'}}>Thanks! We are excited to know opinion.</h2>
