@@ -98,12 +98,12 @@ class LandingPage extends Component{
                             <ShareSurvey/>
                         </div>
                     )}/>
-                    <Route exact path='/TakeSurvey/:type/:surveyId' render={(props) => (
+                    <Route exact path='/takeSurvey/:type/:surveyId' render={(props) => (
                         <div>
                             <TakeSurvey {...props}/>
                         </div>
                     )}/>
-                    <Route exact path='/TakeSurvey/u/:surveyId' render={(props) => (
+                    <Route exact path='/takeSurvey/u/:surveyId' render={(props) => (
                         <div>
                             <UniqueLinkSurvey {...props}/>
                         </div>
