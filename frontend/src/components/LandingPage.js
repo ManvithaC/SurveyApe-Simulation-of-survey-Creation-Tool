@@ -14,6 +14,7 @@ import TakeSurvey from "./TakeOpenSurvey";
 import UniqueLinkSurvey from "./UniqueLinkSurvey";
 import About from "./About";
 import swal from 'sweetalert';
+import EditSurvey from "./EditSurvey";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -111,6 +112,11 @@ class LandingPage extends Component{
                     <Route exact path="/Team" render={() => (
                         <div>
                             <Team/>
+                        </div>
+                    )}/>
+                    <Route exact path="/editSurvey" render={() => (
+                        <div>
+                            <EditSurvey/>
                         </div>
                     )}/>
                     <Route exact path="/About" render={() => (
