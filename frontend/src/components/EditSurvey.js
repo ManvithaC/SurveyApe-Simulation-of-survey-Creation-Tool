@@ -22,7 +22,7 @@ const optionsStyle = {
     marginRight: 'auto',
 };
 var editor;
-class SurveyBuilder extends Component{
+class EditSurvey extends Component{
     constructor(props){
         super(props);
 
@@ -35,55 +35,22 @@ class SurveyBuilder extends Component{
     }
 
     componentDidMount(){
-        var formData = '';
-        let fields = [{
-            label: 'Star Rating',
-            attrs: {
-                type: 'starRating'
-            },
-            icon: '🌟'
-        },
-            {
-                label: 'Image Choices',
-                attrs: {
-                    type: 'ImageChoice'
-                },
-                icon: '🏞'
-            }];
+        //TODO:Need to add a backend call that gets the data of the form to be edited
+        //TODO:Fill the survey name text input with value
+        //TODO:Fill the expiry values based on the json that is retrieved from backend
+        ;(function($) {
+            var fbRender = document.getElementById("fb-render"),
+                formData =
+                    '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
 
-        let templates;
-        templates = {
-            starRating: function (fieldData) {
-                return {
-                    field: '<span id="' + fieldData.name + '">',
-                    onRender: function () {
-                        $(document.getElementById(fieldData.name)).rateYo({
-                            rating: 3.5
-                        });
-                    }
-                };
-            },
-            ImageChoice: function (fieldData) {
-                return {
-                    field: '<span id="' + fieldData.name + '">',
-                    onRender: function () {
-                        $(document.getElementById(fieldData.name)).text('hi');
-                    }
-                };
-            }
-        };
+            var formRenderOpts = {
+                formData,
+                dataType: "json"
+            };
 
-        var options = {
-            disableFields: ['autocomplete','button','paragraph','number','hidden','header','actionButtons'],
-            showActionButtons: false,
-        };
-        //TODO:Below code works for star rating
-        editor = $("#editor").formBuilder({fields, templates});
+            $('#fb-edit').formBuilder(formRenderOpts);
+        })($);
 
-        //TODO:Below code works for options
-        //editor = $("#editor").formBuilder(options);
-
-        setTimeout(function(){ editor.actions.setData(formData); }, 50);
     }
 
     handleChangeMinDate = (event, date) => {
@@ -101,7 +68,7 @@ class SurveyBuilder extends Component{
     handleChangeTimePicker24 = (event, date) => {
         this.setState({value24: date});
     };
-    saveTheForm = () =>{
+    EditTheForm = () =>{
         console.log('surveyName: '+this.refs.surveyName.getValue());
         alert(editor.actions.getData('json'));
     }
@@ -131,14 +98,14 @@ class SurveyBuilder extends Component{
                     textFieldStyle={{'width':'150px'}}
                     />
                     <RaisedButton label="Save" style={styles}
-                        onClick={this.saveTheForm}
+                        onClick={this.EditTheForm}
                     ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
                         this.props.history.push("/ShareSurvey");}}></RaisedButton>
                 </div>
             <div class="row justify-content-center">
                 <div class="col-md-10 mt-2">
-                <div id="editor"></div>
+                    <form id="fb-edit"></form>
                 </div>
             </div>
             </div>
@@ -146,4 +113,4 @@ class SurveyBuilder extends Component{
     }
 }
 
-export default withRouter(SurveyBuilder);
+export default withRouter(EditSurvey);
