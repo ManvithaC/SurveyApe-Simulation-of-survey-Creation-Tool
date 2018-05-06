@@ -16,6 +16,7 @@ import About from "./About";
 import swal from 'sweetalert';
 import EditSurvey from "./EditSurvey";
 import CodeVerify from "./CodeVerify";
+import AddSurveyee from "./AddSurveyee";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -128,6 +129,11 @@ class LandingPage extends Component{
                     <Route exact path="/AccountVerify" render={() => (
                         <div>
                             <CodeVerify/>
+                        </div>
+                    )}/>
+                    <Route exact path="/AddSurveyee" render={() => (
+                        <div>
+                            <AddSurveyee/>
                         </div>
                     )}/>
                 </div>

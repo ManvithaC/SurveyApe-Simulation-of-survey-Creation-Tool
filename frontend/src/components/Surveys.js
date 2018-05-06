@@ -3,12 +3,20 @@ import {Route, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import '../css/surveys.css';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/image/edit';
+import ContentEdit from 'material-ui/svg-icons/image/edit';
+import AddSurveyee from 'material-ui/svg-icons/social/group-add';
 
 const style = {
     marginLeft: 250,
-
+    textAlign: 'right',
 };
+
+const styleAdd ={
+    height: 30,
+    width:30,
+    color:'#424242',
+    marginLeft:10,
+}
 
 class Surveys extends Component{
     constructor(props){
@@ -59,17 +67,23 @@ class Surveys extends Component{
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                 >
-                                                    <ContentAdd />
+                                                    <ContentEdit />
                                                 </FloatingActionButton>
                                             ) : (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                                       disabled={true}
                                                 >
-                                                    <ContentAdd />
+                                                    <ContentEdit />
                                                 </FloatingActionButton>
                                             )
                                         }
+                                        <AddSurveyee style={styleAdd}
+                                                     className={"pointer"}
+                                                     onClick={() => {
+                                                         this.props.history.push("/AddSurveyee");
+                                                     }}
+                                        />
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
@@ -93,14 +107,14 @@ class Surveys extends Component{
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                 >
-                                                    <ContentAdd />
+                                                    <ContentEdit />
                                                 </FloatingActionButton>
                                             ) : (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                                       disabled={true}
                                                 >
-                                                    <ContentAdd />
+                                                    <ContentEdit />
                                                 </FloatingActionButton>
                                             )
                                         }

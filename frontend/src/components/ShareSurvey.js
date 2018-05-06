@@ -86,19 +86,20 @@ class ShareSurvey extends Component{
     render(){
         return (
             <div>
-                <div class="row start pl-5 ml-3 mt-1">
-                    <div class="Questrial" style={{'font-size':'30px'}}>Select Survey Type </div>
-                    <DropDownMenu
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                        style={styles.customWidth}
-                        autoWidth={true}
-                    >
-                        <MenuItem value={1} primaryText="General Survey" />
-                        <MenuItem value={2} primaryText="Closed Survey" />
-                        <MenuItem value={3} primaryText="Open Unique Survey" />
-                    </DropDownMenu>
-                </div>
+                    <div class="row start pl-5 ml-3 mt-1">
+                        <div class="Questrial" style={{'font-size': '30px'}}>Select Survey Type</div>
+                        <DropDownMenu
+                            value={this.state.value}
+                            onChange={this.handleChange}
+                            style={styles.customWidth}
+                            autoWidth={true}
+                        >
+                            <MenuItem value={1} primaryText="General Survey"/>
+                            <MenuItem value={2} primaryText="Closed Survey"/>
+                            <MenuItem value={3} primaryText="Open Unique Survey"/>
+                        </DropDownMenu>
+                    </div>
+
                 <div class="row pt-3 justify-content-center typeOfSurvey">
                     {
                         this.state.value =='3'?(
