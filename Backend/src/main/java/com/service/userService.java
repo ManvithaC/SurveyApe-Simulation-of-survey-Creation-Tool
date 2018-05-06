@@ -20,6 +20,9 @@ public class userService {
     @Autowired
     public mailNotificationService mailNotificationService;
 
+    @Autowired
+    public surveyService surveyService;
+
     public ResponseEntity<?> register(String email, String password, String firstname, String lastname) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
@@ -60,7 +63,7 @@ public class userService {
     public ResponseEntity<?> login(String email, String password,HttpSession session) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
-
+        surveyService.renderForm(1);
 
         if(userEntity==null){
             message.put("code",404);
@@ -69,8 +72,8 @@ public class userService {
         }
         else {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
             if (passwordEncoder.matches(password, userEntity.getPassword()) && userEntity.getEnable() == 1) {
+
                 message.put("code", 200);
                 message.put("msg", "Login Successful");
                 session.setAttribute("username",userEntity.getEmail());
