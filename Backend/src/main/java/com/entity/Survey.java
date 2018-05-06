@@ -62,11 +62,11 @@ public class Survey {
         this.isOpen = isOpen;
     }
 
-    public Date getExpiry() {
+    public Long getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(Date expiry) {
+    public void setExpiry(Long expiry) {
         this.expiry = expiry;
     }
 
@@ -111,6 +111,6 @@ public class Survey {
 
     private Integer isOpen;
 
-    private Date expiry;
+    private Long expiry;
 
 }

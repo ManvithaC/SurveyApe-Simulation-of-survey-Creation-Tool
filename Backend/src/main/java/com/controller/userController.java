@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 
 
 @Controller    // This means that this class is a Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RequestMapping(path = "/") // This means URL's start with /demo (after Application path)
 public class userController {
 
@@ -31,6 +31,11 @@ public class userController {
         return userService.register(user.getString("email"), user.getString("password"), user.getString("firstname"), user.getString("lastname"));
     }
 
+
+
+
+
+
     @ResponseBody
     @PostMapping(path = "/verifyaccount") // Map ONLY POST Requests
     public String verifyaccount(@RequestParam String email, @RequestParam String code) {
@@ -46,6 +51,7 @@ public class userController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         JSONObject user = new JSONObject(userDetails);
+
         return userService.login(user.getString("email"), user.getString("password"),session);
     }
 }
