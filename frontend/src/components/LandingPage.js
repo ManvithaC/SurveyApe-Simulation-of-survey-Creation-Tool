@@ -15,6 +15,7 @@ import UniqueLinkSurvey from "./UniqueLinkSurvey";
 import About from "./About";
 import swal from 'sweetalert';
 import EditSurvey from "./EditSurvey";
+import CodeVerify from "./CodeVerify";
 class LandingPage extends Component{
     constructor(props){
         super(props);
@@ -122,6 +123,11 @@ class LandingPage extends Component{
                     <Route exact path="/About" render={() => (
                         <div>
                             <About/>
+                        </div>
+                    )}/>
+                    <Route exact path="/AccountVerify" render={() => (
+                        <div>
+                            <CodeVerify/>
                         </div>
                     )}/>
                 </div>

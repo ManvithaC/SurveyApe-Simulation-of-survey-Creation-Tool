@@ -27,6 +27,7 @@ class Homepage extends Component {
             .post(`${ROOT_URL}/register`, temp)
             .then(response => {
                 swal("Successfully Created Account Please click verify");
+                this.props.history.push("/CodeVerify");
             })
             .catch(error => {
                 swal("Signup/ Invalid Credentials");
