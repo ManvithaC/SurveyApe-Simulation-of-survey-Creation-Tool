@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as $ from "jquery";
 import axios from "axios/index";
 import '../css/surveys.css';
+import swal from "sweetalert";
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -44,17 +45,18 @@ class UniqueLinkSurvey extends Component {
         };
         //var form;
         var originalFormData;
+        var field;
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`, temp, axiosConfig)
             .then(response => {
                 ;(function ($) {
                     var fbRender = document.getElementById("fb-render"),
                         //  formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
-                        formData = JSON.stringify(response.data);
+                      formData = JSON.stringify(response.data);
                     originalFormData = JSON.parse(formData);
 
                     var formRenderOpts = {
-                        formData,
+                        formData:formData,
                         dataType: "json"
                     };
                     $(fbRender).formRender(formRenderOpts);
@@ -73,56 +75,52 @@ class UniqueLinkSurvey extends Component {
                                 return filter;
                             });
                         }
-
                         function setValue(name, value) {
-                            var field = getObj(originalFormData, 'name', name)[0];
-
+                             field = getObj(originalFormData, 'name', name)[0];
                             if (!field) {
                                 return;
                             }
-
                             if (['select', 'checkbox-group', 'radio-group'].indexOf(field.type) !== -1) {
                                 for (var fieldOption of field.values) {
                                     if (value.indexOf(fieldOption.value) !== -1) {
                                         fieldOption.selected = true;
-                                    } else {
-                                        delete fieldOption.selected;
                                     }
-                                    ;
                                 }
                             } else {
                                 field.value = value;
                             }
                         }
-
-                        console.log('Original formData: ', originalFormData);
                         for (var key of formData.keys()) {
                             setValue(key, formData.getAll(key));
                         }
-                        //  alert(JSON.stringify(originalFormData));
+                        let axiosConfig = {
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                "Access-Control-Allow-Origin": true
+                            }
+                        };
+
+                        var payload={data:originalFormData};
+
+                        axios.create({withCredentials: true})
+                            .post(`${ROOT_URL}/submitsurvey/`+temp.surveyId,payload, axiosConfig)
+                            .then(response => {
+                                swal("successfully submited");
+                                  console.log(response);
+                            })
+                            .catch(error => {
+                                swal("got error");
+                                console.log(error);
+                            });
                         console.log('Updated formData: ', originalFormData);
                     };
-
                 })($);
             })
             .catch(error => {
                 console.log(error);
             });
 
-        // ;(function ($) {
-        //     var fbRender = document.getElementById("fb-render"),
-        //         formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
-        //     //formData=this.state.formData;
-        //
-        //     var formRenderOpts = {
-        //         formData,
-        //         dataType: "json"
-        //     };
-        //     $(fbRender).formRender(formRenderOpts);
-        // })($);
-
     }
-
     render() {
         return (
             <div>
@@ -132,7 +130,7 @@ class UniqueLinkSurvey extends Component {
                 <div className="row justify-content-center">
                     <div className="col-md-8 surveyBoxUniqueSurvey">
                         <form id="fb-render"></form>
-                        <button type="button" id="get-formdata">Get Updated formData</button>
+                        <button className="btn btn-primary" id="get-formdata">Submit</button>
                     </div>
                 </div>
             </div>

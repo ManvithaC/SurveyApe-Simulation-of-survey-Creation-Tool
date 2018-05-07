@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -57,7 +58,10 @@ public class surveyService {
             JSONObject temp = new JSONObject();
             temp.put("type", questions1.getType());
             temp.put("label", questions1.getDescription());
-            temp.put("name", "temporary");
+
+            Random rand = new Random();
+            int  n = rand.nextInt(50) + 1;
+            temp.put("name", "temporary"+String.valueOf(n));
             List<Options> options = questions1.getOptionsEntities();
             JSONArray values = new JSONArray();
             if (!questions1.getType().equals("text") && !questions1.getType().equals("textarea") && !questions1.getType().equals("date")) {
@@ -65,6 +69,7 @@ public class surveyService {
                     Options options1 = options.get(j);
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("label", options1.getOptionValue());
+                    jsonObject.put("value",options1.getOptionValue()+"asd");
                     values.put(jsonObject);
                 }
                 temp.put("values", values);
@@ -135,7 +140,7 @@ public class surveyService {
         }
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType("general");
-        User user = userRepository.findByEmail("hknitw@gmail.com");
+        User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
         user.getSurveyEntities().add(surveyEntity);
         surveyEntity.setOwner(user);
         surveyEntity.setSurveyName(survey.getString("surveyName"));
@@ -187,8 +192,8 @@ public class surveyService {
 
     public String submitSurvey(JSONObject survey, Integer surveyId) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
-        String userId = survey.getString("userId");
-        User userEntity = userRepository.findByEmail(userId);
+        //String userId = survey.getString("userId");
+        User userEntity = userRepository.findByEmail("sanjayraghu05@gmail.com");
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
         List<Answer> answers = new ArrayList<>();
@@ -202,7 +207,8 @@ public class surveyService {
                     questionEntities.get(i).getType().equals("text") || questionEntities.get(i).getType().equals("textarea")) {
                 ValuesEntity valuesEntity = new ValuesEntity();
                 valuesEntity.setAnswerEntity(answer);
-                valuesEntity.setValue(temp.getString("value"));
+                JSONArray p=temp.getJSONArray("value");
+                valuesEntity.setValue((String) p.get(0));
                 answer.getValuesEntity().add(valuesEntity);
                 valueRepository.save(valuesEntity);
             } else {
