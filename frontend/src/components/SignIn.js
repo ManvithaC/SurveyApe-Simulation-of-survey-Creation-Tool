@@ -26,16 +26,24 @@ class Homepage extends Component {
         axios
             .post(`${ROOT_URL}/login`, temp)
             .then(response => {
-                if (response.data.code == 201) {
-                   swal("please verify the account");
+                if (response.data.code == 401) {
+                    swal("Wrong Password", "Please enter a valid password", "warning")
                 }
-                    else {
-                    swal("Successfully Signed");
+                else if(response.data.code==200){
                     this.setState(
                         {
                             "isLoggedin": true
                         }
                     )
+                    this.props.history.push("/SurveyBuilder");
+                }
+                else if(response.data.code==400){
+                    swal("Account UnVerified", "Please verify your Account", "warning")
+                    this.props.history.push("/AccountVerify");
+                }
+                else{
+                    swal("Invalid User", "User does not exist.Please Sign up", "error")
+                    this.props.history.push("/signUp");
                 }
             })
             .catch(error => {

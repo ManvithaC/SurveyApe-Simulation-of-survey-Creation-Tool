@@ -21,17 +21,22 @@ class Homepage extends Component {
         }
     }
     handleSignUpSubmit(){
-     alert("inside signuopi");
         const temp = this.state.userdata;
         axios
             .post(`${ROOT_URL}/register`, temp)
             .then(response => {
-                swal("Successfully Created Account Please click verify");
-                this.props.history.push("/CodeVerify");
+                if(response.data.code==200) {
+                    swal("Congratulations", "Account created Successfully.Please Verfiy your account.An Email is sent with Verification Code", "success")
+                    this.props.history.push("/AccountVerify");
+                }
+                else
+                {
+                    swal("User Already exists", "Please Sign in", "warning")
+                    this.props.history.push("/signIn");
+                }
             })
             .catch(error => {
-                swal("Signup/ Invalid Credentials");
-                console.log("send error");
+                swal("Error", "Please try again", "error")
             });
     }
     render() {
