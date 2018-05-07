@@ -2,7 +2,6 @@ package com.controller;
 
 
 import com.service.surveyService;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.hibernate.query.criteria.internal.CriteriaSubqueryImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
