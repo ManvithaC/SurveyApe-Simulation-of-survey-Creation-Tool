@@ -26,6 +26,16 @@ public class Survey {
         return surveyType;
     }
 
+    public String getSurveyName() {
+        return surveyName;
+    }
+
+    public void setSurveyName(String surveyName) {
+        this.surveyName = surveyName;
+    }
+
+    public String surveyName;
+
     public void setSurveyType(String surveyType) {
         this.surveyType = surveyType;
     }
@@ -62,11 +72,11 @@ public class Survey {
         this.isOpen = isOpen;
     }
 
-    public Date getExpiry() {
+    public Long getExpiry() {
         return expiry;
     }
 
-    public void setExpiry(Date expiry) {
+    public void setExpiry(Long expiry) {
         this.expiry = expiry;
     }
 
@@ -111,6 +121,6 @@ public class Survey {
 
     private Integer isOpen;
 
-    private Date expiry;
+    private Long expiry;
 
 }

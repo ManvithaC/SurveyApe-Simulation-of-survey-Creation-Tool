@@ -3,9 +3,14 @@ import {Route, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import '../css/surveys.css';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+
 import ContentEdit from 'material-ui/svg-icons/image/edit';
 import AddSurveyee from 'material-ui/svg-icons/social/group-add';
 import Chart from 'material-ui/svg-icons/editor/insert-chart';
+import ContentAdd from 'material-ui/svg-icons/image/edit';
+import * as $ from "jquery";
+import axios from "axios/index";
+//import swal from "sweetalert/typings/sweetalert";
 
 const style = {
     marginLeft: 200,
@@ -27,6 +32,7 @@ const ChartStyle ={
 
 }
 
+const ROOT_URL = 'http://localhost:8080';
 class Surveys extends Component{
     constructor(props){
         super(props);
@@ -58,6 +64,60 @@ class Surveys extends Component{
         }
     }
 
+
+
+    componentWillMount() {
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .get(`${ROOT_URL}/surveys`, axiosConfig)
+            .then(response => {
+                this.setState({
+                    surveysCreated: response.data[0],
+                    surveysToSubmit:response.data[1]
+                });
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    }
+
+clickedEdit=(temp,name)=>{
+    let axiosConfig = {
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            "Access-Control-Allow-Origin": true
+        }
+    };
+    console.log(temp);
+    console.log(name);
+    var surveyid={"surveyId":temp};
+
+    axios.create({withCredentials: true})
+        .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+        .then(response => {
+          //  console.log(response);
+            this.props.history.push({
+                pathname: '/SurveyBuilder',
+                state:{data:response.data,
+                surveyId:surveyid,
+                surveyName:name
+                }
+            })
+        })
+        .catch(error => {
+            //swal("got error");
+            console.log(error);
+        });
+    };
+
     render(){
         return (
             <div>
@@ -76,6 +136,7 @@ class Surveys extends Component{
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
+                                                onClick={()=>this.clickedEdit(card.id,card.name)}
                                                 >
                                                     <ContentEdit/>
                                                 </FloatingActionButton>
