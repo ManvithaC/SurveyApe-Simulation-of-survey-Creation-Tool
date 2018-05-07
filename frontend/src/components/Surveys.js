@@ -5,9 +5,10 @@ import '../css/surveys.css';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentEdit from 'material-ui/svg-icons/image/edit';
 import AddSurveyee from 'material-ui/svg-icons/social/group-add';
+import Chart from 'material-ui/svg-icons/editor/insert-chart';
 
 const style = {
-    marginLeft: 250,
+    marginLeft: 200,
     textAlign: 'right',
 };
 
@@ -15,7 +16,15 @@ const styleAdd ={
     height: 30,
     width:30,
     color:'#424242',
+    marginLeft:100,
+
+}
+const ChartStyle ={
+    height: 30,
+    width:30,
+    color:'#424242',
     marginLeft:10,
+
 }
 
 class Surveys extends Component{
@@ -62,12 +71,13 @@ class Surveys extends Component{
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <div className="icon">
                                         {
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                 >
-                                                    <ContentEdit />
+                                                    <ContentEdit/>
                                                 </FloatingActionButton>
                                             ) : (
                                                 <FloatingActionButton mini={true}
@@ -78,19 +88,31 @@ class Surveys extends Component{
                                                 </FloatingActionButton>
                                             )
                                         }
-                                        {
-                                            card.status == 'published' ? (
-                                                <AddSurveyee style={styleAdd}
-                                                             className={"pointer"}
-                                                             onClick={() => {
-                                                                 this.props.history.push("/AddSurveyee");
-                                                             }}
-                                                />) : ''
-                                        }
+
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
                                         <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
+                                        <div className="icon pull-right">
+                                        {
+                                            card.status == 'published' ? (
+                                                <div>
+                                                    <AddSurveyee style={styleAdd}
+                                                                 className="pointer"
+                                                                 onClick={() => {
+                                                                     this.props.history.push("/AddSurveyee");
+                                                                 }}
+                                                    />
+                                                    <Chart className="icon pointer" style={ChartStyle}
+                                                    onClick={()=>{this.props.history.push({
+                                                        pathname: '/Stats'
+                                                    })}}
+                                                    />
+                                                </div>) : ''
+
+                                        }
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -105,6 +127,7 @@ class Surveys extends Component{
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <div className="icon">
                                         {
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
@@ -121,7 +144,7 @@ class Surveys extends Component{
                                                 </FloatingActionButton>
                                             )
                                         }
-
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
