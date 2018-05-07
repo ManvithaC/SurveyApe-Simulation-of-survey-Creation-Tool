@@ -192,7 +192,7 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
-                        value={this.state.surveyName}
+                        
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
