@@ -71,16 +71,32 @@ class ShareSurvey extends Component{
             }
         };
 
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/generalSurvey`,toSendJSON, axiosConfig)
-            .then(response => {
-                //  console.log(response);
+        if(this.state.value == '1') {
 
-            })
-            .catch(error => {
-                //swal("got error");
-                console.log(error);
-            });
+            axios.create({withCredentials: true})
+                .post(`${ROOT_URL}/generalSurvey`, toSendJSON, axiosConfig)
+                .then(response => {
+                    //  console.log(response);
+
+                })
+                .catch(error => {
+                    //swal("got error");
+                    console.log(error);
+                });
+        }
+        else if(this.state.value == '2'){
+
+            axios.create({withCredentials: true})
+                .post(`${ROOT_URL}/closedSurvey`, toSendJSON, axiosConfig)
+                .then(response => {
+                    //  console.log(response);
+
+                })
+                .catch(error => {
+                    //swal("got error");
+                    console.log(error);
+                });
+        }
 
 
 

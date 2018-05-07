@@ -31,6 +31,7 @@ public class SurveyController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         System.out.println(surveyrequest);
+        System.out.println(session.getAttribute("username"));
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
         int surveyId = surveyService.createSuvey(survey, session);
@@ -46,6 +47,15 @@ public class SurveyController {
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
         return surveyService.generalSurvey(survey);
+    }
+
+
+    @PostMapping(path = "/closedSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> closedSurvey(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println(survey);
+        return surveyService.closedSurvey(survey);
     }
 
 
