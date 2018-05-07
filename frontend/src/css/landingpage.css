@@ -12,8 +12,9 @@
     cursor: pointer;
 }
 
-.mynav:hover{
-    color:#ba68c8;
+
+.pointer:hover {
+    color: #BA68C8;
 }
 
 .signupnav:hover{
@@ -78,3 +79,4 @@
     border-radius: 10px;
     border:rgba(66,66,66,0.2) 1px solid;
 }
+

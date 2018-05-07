@@ -11,8 +11,19 @@
     color: #222222;
 }
 
+.surveyBoxUniqueSurvey{
+    height:100vw;
+    background-color: lavenderblush;
+    width:100%;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+    transition:0.3s;
+    margin:5px auto;
+    padding:20px;
+    color: #222222;
+}
+
 .EachSurveyBox{
-    height:150px;
+    height:120px;
     background-color: white;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;

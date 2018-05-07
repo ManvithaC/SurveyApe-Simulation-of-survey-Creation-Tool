@@ -17,7 +17,7 @@ class BalloonPage extends Component {
     }
 
     componentDidMount() {
-        var terms = ["logo designs", "favourite colors", "favourite textures"];
+        var terms = ["Are my employees happy at work?", "Are my customers actually satisfied?", "Will my product be a success or a flop.","Do poeple like attending my events?"];
 
         function rotateTerm() {
             var ct = $("#rotate").data("term") || 0;
@@ -26,6 +26,7 @@ class BalloonPage extends Component {
         }
 
         $(rotateTerm);
+
     }
 
 
@@ -62,9 +63,9 @@ class BalloonPage extends Component {
                             "padding-top": "30px",
                             "text-align": "right",
                             "font-size": "3em"
-                        }}>Get that Inspiration.
+                        }}>Aren't you just a little bit curious?
                         </h1>
-                        <p style={{"text-align":"right","font-size": "25px"}}>Share your <span id="rotate" style={{"text-shadow": "black 0px 0px 0.1px"}}>this</span></p>
+                        <p style={{"text-align":"right","font-size": "25px"}}><span id="rotate" style={{"text-shadow": "black 0px 0px 0.1px"}}>this</span></p>
                     </div>
                 </section>
 
@@ -73,12 +74,6 @@ class BalloonPage extends Component {
                          style={{"padding-top": "55px", "padding-bottom": "70px", "margin-top": "100px"}}>
                         <div>
                             <div id="whyMotbaord" className="container indexZ">
-                                <div className="row justify-content-start">
-                                    <div className="mr-5 mb-5 Questrial inspired-text">
-                                        How do I get Inspired?
-                                    </div>
-                                    <br/>
-                                </div>
                                 <div className="row justify-content-center">
 
                                     <div className="card cardboxBottom cardbox mr-5 Questrial cardboxWidth"

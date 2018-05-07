@@ -26,6 +26,22 @@
   color:#ffffff;
 }
 
+.ybuttonEmail{
+  padding-top:10px;
+  padding-bottom:10px;
+  margin-bottom:10px;
+  margin-top:10px;
+  padding-left:10px;
+  padding-right:10px;
+  width:50%;
+  border-radius: 5px;
+  background-color:#ffffff;
+  border:#ba68c8 1px solid;
+  transition:0.3s;
+  height:auto;
+  color:#ba68c8;
+}
+
 .ybutton:hover{
   border:#ba68c8 1px solid;
   background-color:#ffffff;
@@ -57,4 +73,15 @@
   border-radius: 40px;
   border:rgba(66,66,66,0.2) 1px solid;
   font-size: 17px;
+}
+.inputfieldCode{
+  padding-top:30px;
+  padding-bottom:30px;
+  margin-bottom:10px;
+  padding-left:10px;
+  padding-right:10px;
+  width:100%;
+  border-radius: 30px;
+  border:rgba(66,66,66,0.2) 1px solid;
+  font-size: 30px;
 }
