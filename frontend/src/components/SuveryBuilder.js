@@ -37,14 +37,19 @@ class SurveyBuilder extends Component {
             minDate: null,
             maxDate: null,
             value24: null,
-            formData: ''
+            formData: '',
+            surveyId: '',
+            surveyName:''
         };
 
     }
 
     componentWillMount() {
-        //    alert(this.props.location.state);
-        console.log(this.props.location.state);
+        if (this.props.location.state) {
+            this.setState({
+              surveyName:this.props.location.state.surveyName
+            })
+        }
     }
 
     componentDidMount() {
@@ -52,8 +57,10 @@ class SurveyBuilder extends Component {
         var formData;
         if (this.props.location.state) {
             form = [];
-            formData =JSON.stringify(this.props.location.state);
-        console.log(formData);
+            this.setState({
+                surveyId: this.props.location.state.surveyId
+            });
+            formData = JSON.stringify(this.props.location.state.data);
         }
         let fields = [{
             label: 'Star Rating',
@@ -113,6 +120,7 @@ class SurveyBuilder extends Component {
         this.setState({
             minDate: date,
         });
+
     };
 
     handleChangeMaxDate = (event, date) => {
@@ -135,10 +143,13 @@ class SurveyBuilder extends Component {
         payload.surveyName = this.refs.surveyName.getValue();
         payload.surveyType = "";
         payload.isOpen = 1;
-        var ts = Date.parse(this.state.value24);
+        var ts = Date.parse(this.state.minDate);
         //time stamp in milli seconds.
         payload.expiry = ts / 1000;
         payload.isPublished = 0;
+        if (this.state.surveyId != '') {
+            payload.surveyId = this.state.surveyId
+        }
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -148,7 +159,6 @@ class SurveyBuilder extends Component {
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/survey`, payload, axiosConfig)
             .then(response => {
-
             })
             .catch(error => {
                 swal("got error");
@@ -164,6 +174,7 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
+                        value={this.state.surveyName}
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
