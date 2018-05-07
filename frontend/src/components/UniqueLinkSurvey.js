@@ -5,6 +5,7 @@ import * as $ from "jquery";
 import axios from "axios/index";
 import '../css/surveys.css';
 import swal from "sweetalert";
+import RaisedButton from 'material-ui/RaisedButton';
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -52,7 +53,7 @@ class UniqueLinkSurvey extends Component {
                 ;(function ($) {
                     var fbRender = document.getElementById("fb-render"),
                         //  formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
-                      formData = JSON.stringify(response.data);
+                        formData = JSON.stringify(response.data);
                     originalFormData = JSON.parse(formData);
 
                     var formRenderOpts = {
@@ -76,7 +77,7 @@ class UniqueLinkSurvey extends Component {
                             });
                         }
                         function setValue(name, value) {
-                             field = getObj(originalFormData, 'name', name)[0];
+                            field = getObj(originalFormData, 'name', name)[0];
                             if (!field) {
                                 return;
                             }
@@ -106,7 +107,7 @@ class UniqueLinkSurvey extends Component {
                             .post(`${ROOT_URL}/submitsurvey/`+temp.surveyId,payload, axiosConfig)
                             .then(response => {
                                 swal("successfully submited");
-                                  console.log(response);
+                                console.log(response);
                             })
                             .catch(error => {
                                 swal("got error");
@@ -124,13 +125,17 @@ class UniqueLinkSurvey extends Component {
     render() {
         return (
             <div>
-                <div className="row  justify-content-center">
+                <div className="row  justify-content-center Questrial">
                     <h2 style={{'text-align': 'center', 'color': '#424242'}}>Survey Number :{this.state.surveyID}</h2>
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-md-8 surveyBoxUniqueSurvey">
                         <form id="fb-render"></form>
-                        <button className="btn btn-primary" id="get-formdata">Submit</button>
+                        <div className={"row justify-content-center"}>
+                            <RaisedButton className={"Questrial"} style={{'padding':'10px','margin':'10px'}}>Save</RaisedButton>
+                            <RaisedButton className={"Questrial"} style={{'padding':'10px','margin':'10px'}} id="get-formdata">Submit</RaisedButton>
+
+                        </div>
                     </div>
                 </div>
             </div>
