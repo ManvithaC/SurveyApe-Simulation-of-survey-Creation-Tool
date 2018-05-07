@@ -11,6 +11,8 @@ import swal from 'sweetalert';
 import axios from 'axios';
 import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -48,7 +50,8 @@ class SurveyBuilder extends Component {
             imageChoice:[1],
             formData: '',
             surveyId: '',
-            surveyName:''
+            surveyName:'',
+            ImageOptionType:''
         };
 
     }
@@ -183,11 +186,58 @@ class SurveyBuilder extends Component {
         });
     }
 
+    handleChange = (event, index, ImageOptionType) => {
+        this.setState({ImageOptionType});
+    }
+
     SaveImageQuestion =() =>{
         //TODO:Upload the images and get the links of images
         //Insert into div
         //Insert the divs into radiobutton option JSON
         //Append the form builder JSON and setState so the it adds to the Question Area
+
+        console.log('Image Question Type:'+this.state.ImageOptionType);
+        console.log('Image Question:'+this.refs.surveyQuestion.getValue());
+        var ImageOptionTypeToAdd ={}
+        if(this.state.ImageOptionType == '1'){
+            ImageOptionTypeToAdd={
+                "type":"checkbox-group",
+                "label":"Checkbox Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>',
+                        "selected":true
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>',
+                    }
+                ]
+            }
+        }
+        else if (this.state.ImageOptionType == '2'){
+            ImageOptionTypeToAdd={
+                "type":"radio-group",
+                "label":"Radio Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 3",
+                        "value":'<img src="..."/>'
+                    }
+                ]
+            }
+        }
     }
     render() {
         const actions = [
@@ -248,14 +298,28 @@ class SurveyBuilder extends Component {
                     modal={true}
                     contentStyle={customContentStyle}
                     open={this.state.open}
+                    autoScrollBodyContent={true}
                 ><div>
-                    <TextField
-                        hintText="Enter Survey Question"
-                        maxLength="50"
-                        ref="surveyQuestion"
-                        fullWidth={true}
-                        style={{'margin-top':'24px','margin-right':'5px','margin-bottom':'10px'}}
-                    /><br/>
+                    <div class="row">
+                            <TextField
+                                hintText="Enter Survey Question"
+                                maxLength="50"
+                                ref="surveyQuestion"
+                                fullWidth={true}
+                                style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                            />
+                            <div class="Questrial" style={{'font-size': '15px'}}>Select Question Type</div>
+                            <DropDownMenu
+                                value={this.state.ImageOptionType}
+                                onChange={this.handleChange}
+                                style={styles.customWidth}
+                                autoWidth={true}
+                            >
+                                <MenuItem value={1} primaryText="CheckBox"/>
+                                <MenuItem value={2} primaryText="Radio Button"/>
+                            </DropDownMenu>
+                    </div>
+                    <br/>
                     {
                         this.state.imageChoice.map((image,index)=>(
                             <div key={index}>
