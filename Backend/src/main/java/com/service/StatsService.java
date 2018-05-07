@@ -100,12 +100,13 @@ public class StatsService {
 
            }
 
-           message.put("startDate",surveyEntity.getStartDate());
-           message.put("endDate",surveyEntity.getExpiry());
-           message.put("InvitationCount",invs.size());
-           message.put("SubmissionsCount",answered);
+            message.put("Questions",allques);
+            message.put("Startime",surveyEntity.getStartDate());
+            message.put("Endtime",surveyEntity.getExpiry());
+            message.put("NumberofInvitees",invs.size());
+            message.put("NumberofRespondents",answered);
             message.put("code",200);
-            message.put("msg", "Survey Closed");
+            message.put("surveyName", surveyEntity.getSurveyName());
             return new ResponseEntity<>(message.toString(), HttpStatus.OK);
         }
         else
