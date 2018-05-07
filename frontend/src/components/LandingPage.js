@@ -5,7 +5,6 @@ import '../css/landingpage.css';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import HomePage from './HomePage';
-import UserAccount from './UserAccount';
 import Team from './Team';
 import Surveys from "./Surveys";
 import SurveyBuilder from "./SuveryBuilder";
@@ -18,6 +17,11 @@ import EditSurvey from "./EditSurvey";
 import CodeVerify from "./CodeVerify";
 import AddSurveyee from "./AddSurveyee";
 import Radium, {StyleRoot} from 'radium';
+import Avatar from 'material-ui/Avatar';
+import DP from '../images/user.png';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 import {slideInRight, slideInLeft, fadeInUp,fadeIn,fadeInDown} from 'react-animations';
 import Stats from "./Stats";
 
@@ -47,8 +51,26 @@ const styles = {
 class LandingPage extends Component{
     constructor(props){
         super(props);
+        this.state = {
+            open: false,
+            isLoggedin:false,
+        };
     }
+    handleClick = (event) => {
+        event.preventDefault();
 
+        this.setState({
+            open: true,
+            anchorEl: event.currentTarget,
+
+        });
+    };
+
+    handleRequestClose = () => {
+        this.setState({
+            open: false,
+        });
+    };
     render(){
         return (
             <div>
@@ -87,7 +109,27 @@ class LandingPage extends Component{
                             </li>
                             <li className="nav-item mynav ">
                                 <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
-                                }}><UserAccount/></a>
+                                }}><div>
+                                    {alert("Landing  statee"+this.state.isLoggedin)}
+                                    {alert("Landing  propss"+this.props.isLoggedin)}
+                                    <Avatar src={DP} onClick={this.handleClick} />
+                                    <Popover
+                                        open={this.state.open}
+                                        anchorEl={this.state.anchorEl}
+                                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                        onRequestClose={this.handleRequestClose}
+                                    >
+                                        <Menu>
+                                            <MenuItem primaryText="My Surveys" onClick={() => {
+                                                this.handleRequestClose();
+                                                this.props.history.push("/Surveys");}}/>
+                                            <MenuItem primaryText="Sign out" onClick={() => {
+                                                this.handleRequestClose();
+                                                this.props.history.push("/");}}/>
+                                        </Menu>
+                                    </Popover>
+                                </div></a>
                             </li>
                         </ul>
                     </nav>
@@ -107,10 +149,10 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
-                    <Route exact path="/signIn" render={() => (
+                    <Route exact path="/signIn" render={(props) => (
                         <StyleRoot>
                             <div className="fadeInDown" style={styles.fadeInDown}>
-                                <SignIn/>
+                                <SignIn {...props}/>
                             </div>
                         </StyleRoot>
                     )}/>
