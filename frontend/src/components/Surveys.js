@@ -11,6 +11,7 @@ import ContentAdd from 'material-ui/svg-icons/image/edit';
 import * as $ from "jquery";
 import axios from "axios/index";
 //import swal from "sweetalert/typings/sweetalert";
+import IconButton from 'material-ui/IconButton';
 
 const style = {
     marginLeft: 200,
@@ -159,17 +160,21 @@ clickedEdit=(temp,name)=>{
                                         {
                                             card.status == 'published' ? (
                                                 <div>
+                                                    <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
                                                     <AddSurveyee style={styleAdd}
                                                                  className="pointer"
                                                                  onClick={() => {
                                                                      this.props.history.push("/AddSurveyee");
                                                                  }}
                                                     />
+                                                    </IconButton>
+                                                    <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
                                                     <Chart className="icon pointer" style={ChartStyle}
                                                     onClick={()=>{this.props.history.push({
                                                         pathname: '/Stats'
                                                     })}}
                                                     />
+                                                    </IconButton>
                                                 </div>) : ''
 
                                         }
