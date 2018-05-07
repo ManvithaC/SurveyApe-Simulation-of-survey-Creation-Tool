@@ -1,0 +1,35 @@
+.statsBox{
+    background-color: lavenderblush;
+    width:100%;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+    transition:0.3s;
+    margin:15px auto;
+    padding:20px;
+}
+.statsBox:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+.boxText{
+    color: #424242;
+    font-size: 20px;
+    font-weight: bold;
+    text-align:center;
+}
+.boxHeading{
+    color: rgba(0,0,0,0.5);
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.chartBox{
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+    transition:0.3s;
+    margin:15px auto;
+    padding:20px;
+    background-color: #fff;
+    margin:15px auto;
+
+}
+.barChartColor{
+    color:#ba68c8;
+}

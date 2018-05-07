@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
+import Dialog from 'material-ui/Dialog';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -21,6 +22,11 @@ const optionsStyle = {
     maxWidth: 255,
     marginRight: 'auto',
 };
+const customContentStyle = {
+    width: '80%',
+    maxWidth: 'none',
+};
+
 var editor;
 class SurveyBuilder extends Component{
     constructor(props){
@@ -30,10 +36,18 @@ class SurveyBuilder extends Component{
             minDate: null,
             maxDate: null,
             value24:null,
+            open: false,
+            imageChoice:[]
         };
 
     }
+    handleOpen = () => {
+        this.setState({open: true});
+    };
 
+    handleClose = () => {
+        this.setState({open: false});
+    };
     componentDidMount(){
         var formData = '';
         let fields = [{
@@ -106,6 +120,18 @@ class SurveyBuilder extends Component{
         alert(editor.actions.getData('json'));
     }
     render() {
+        const actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+        ];
         return (
             <div>
                 <div class="row justify-content-end">
@@ -121,26 +147,47 @@ class SurveyBuilder extends Component{
                         floatingLabelText="Pick Expiry Date"
                     />
                     <TimePicker
-                    autoOk={true}
-                    format="24hr"
-                    hintText="Pick Expiry Time"
-                    value={this.state.value24}
-                    onChange={this.handleChangeTimePicker24}
-                    defaultTime={null}
-                    style={{'margin-top':'24px','margin-right':'5px'}}
-                    textFieldStyle={{'width':'150px'}}
+                        autoOk={true}
+                        format="24hr"
+                        hintText="Pick Expiry Time"
+                        value={this.state.value24}
+                        onChange={this.handleChangeTimePicker24}
+                        defaultTime={null}
+                        style={{'margin-top':'24px','margin-right':'5px'}}
+                        textFieldStyle={{'width':'150px'}}
                     />
                     <RaisedButton label="Save" style={styles}
-                        onClick={this.saveTheForm}
+                                  onClick={this.saveTheForm}
                     ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
                         this.props.history.push("/ShareSurvey");}}></RaisedButton>
                 </div>
-            <div class="row justify-content-center">
-                <div class="col-md-10 mt-2">
-                <div id="editor"></div>
+                <div class="row justify-content-center">
+                    <div class="col-md-10 mt-2">
+                        <div id="editor"></div>
+                    </div>
                 </div>
-            </div>
+                <div class="row justify-content-end">
+                    <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
+                </div>
+                <Dialog
+                    title="Image Choice Question"
+                    actions={actions}
+                    modal={true}
+                    contentStyle={customContentStyle}
+                    open={this.state.open}
+                ><div>
+                    <TextField
+                        hintText="Enter Survey Question"
+                        maxLength="50"
+                        ref="surveyQuestion"
+                        fullWidth={true}
+                        style={{'margin-top':'24px','margin-right':'5px'}}
+                    /><br/>
+                    <input type="file" Place/><br/>
+
+                </div>
+                </Dialog>
             </div>
         );
     }

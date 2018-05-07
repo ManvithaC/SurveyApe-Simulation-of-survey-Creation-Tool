@@ -83,7 +83,7 @@ public class InviteService {
                 i.setIsAccessed(0);
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
-                String surveylink = "http://localhost:3000/takeSurvey/closed/:" + surveyId + "_" + id;
+                String surveylink = "http://localhost:3000/takeSurvey/closed/" + surveyId + "_" + id;
                 String imagePath = "" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
@@ -102,7 +102,7 @@ public class InviteService {
                 i.setIsAccessed(0);
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
-                String surveylink = "http://localhost:3000/takeSurvey/open/:" + surveyId + "_" + id;
+                String surveylink = "http://localhost:3000/takeSurvey/open/" + surveyId + "_" + id;
                 String imagePath = "" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
@@ -176,9 +176,9 @@ public class InviteService {
         Survey s =  surveyrepository.findBySurveyId(surveyID);
         String surveyType =  s.getSurveyType();
         if(surveyType.equals("General")) {
-            return "http://localhost:3000/takeSurvey/general/:"+surveyID;
+            return "http://localhost:3000/takeSurvey/general/"+surveyID;
         }else if (surveyType.equals("Open")) {
-            return "http://localhost:3000/takeSurvey/open/:" + surveyID;
+            return "http://localhost:3000/takeSurvey/open/" + surveyID;
         }else {
             return "no unique survey link";
         }

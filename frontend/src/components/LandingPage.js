@@ -19,6 +19,7 @@ import CodeVerify from "./CodeVerify";
 import AddSurveyee from "./AddSurveyee";
 import Radium, {StyleRoot} from 'radium';
 import {slideInRight, slideInLeft, fadeInUp,fadeIn,fadeInDown} from 'react-animations';
+import Stats from "./Stats";
 
 const styles = {
     slideInRight: {
@@ -180,6 +181,13 @@ class LandingPage extends Component{
                         <StyleRoot>
                             <div className="fadeIn" style={styles.fadeIn}>
                                 <AddSurveyee/>
+                            </div>
+                        </StyleRoot>
+                    )}/>
+                    <Route exact path="/Stats" render={() => (
+                        <StyleRoot>
+                            <div className="fadeIn" style={styles.fadeIn}>
+                                <Stats/>
                             </div>
                         </StyleRoot>
                     )}/>
