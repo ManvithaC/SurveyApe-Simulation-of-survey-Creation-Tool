@@ -139,12 +139,15 @@ clickedEdit=(temp,name)=>{
                                                 </FloatingActionButton>
                                             )
                                         }
-                                        <AddSurveyee style={styleAdd}
-                                                     className={"pointer"}
-                                                     onClick={() => {
-                                                         this.props.history.push("/AddSurveyee");
-                                                     }}
-                                        />
+                                        {
+                                            card.status == 'published' ? (
+                                                <AddSurveyee style={styleAdd}
+                                                             className={"pointer"}
+                                                             onClick={() => {
+                                                                 this.props.history.push("/AddSurveyee");
+                                                             }}
+                                                />) : ''
+                                        }
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
