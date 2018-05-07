@@ -19,7 +19,35 @@ class CodeVerify extends Component {
     }
     handleAccountSubmit(){
         const temp = this.state.userdata;
-        this.props.history.push("/SignIn");
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/verifyaccount`, temp,axiosConfig)
+            .then(response => {
+                if(response.data.code==200) {
+                    swal("Congratulations", "Account Verified Successfully.Please Sign in.", "success")
+                    this.props.history.push("/SignIn");
+                }
+                else if(response.data.code==400){
+                    swal("Already Verified", "Account Verified already.Please Sign in.", "warning")
+                    this.props.history.push("/SignIn");
+                }
+                else
+                {
+                    swal("Invalid User", "Please Sign up.", "error")
+                    this.props.history.push("/SignUp");
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                console.log('hk')
+            });
     }
     render() {
         return (

@@ -7,12 +7,17 @@ import DatePicker from 'material-ui/DatePicker';
 import TimePicker from 'material-ui/TimePicker';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
+import swal from 'sweetalert';
+import axios from 'axios';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
 require('formBuilder');
 require('rateyo/min/jquery.rateyo.min');
 require('rateyo/min/jquery.rateyo.min.css');
+
+
+const ROOT_URL = 'http://localhost:8080';
 
 const styles = {
     margin: 12,
@@ -28,8 +33,9 @@ const customContentStyle = {
 };
 
 var editor;
-class SurveyBuilder extends Component{
-    constructor(props){
+
+class SurveyBuilder extends Component {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -37,7 +43,10 @@ class SurveyBuilder extends Component{
             maxDate: null,
             value24:null,
             open: false,
-            imageChoice:[]
+            imageChoice:[],
+            formData: '',
+            surveyId: '',
+            surveyName:''
         };
 
     }
@@ -48,8 +57,17 @@ class SurveyBuilder extends Component{
     handleClose = () => {
         this.setState({open: false});
     };
-    componentDidMount(){
-        var formData = '';
+
+    componentDidMount() {
+        var form;
+        var formData;
+        if (this.props.location.state) {
+            form = [];
+            this.setState({
+                surveyId: this.props.location.state.surveyId
+            });
+            formData = JSON.stringify(this.props.location.state.data);
+        }
         let fields = [{
             label: 'Star Rating',
             attrs: {
@@ -63,7 +81,9 @@ class SurveyBuilder extends Component{
                     type: 'ImageChoice'
                 },
                 icon: '🏞'
-            }];
+            }
+
+        ];
 
         let templates;
         templates = {
@@ -88,22 +108,25 @@ class SurveyBuilder extends Component{
         };
 
         var options = {
-            disableFields: ['autocomplete','button','paragraph','number','hidden','header','actionButtons'],
-            showActionButtons: false,
+            disableFields: ['autocomplete', 'button', 'paragraph', 'number', 'hidden', 'header', 'actionButtons'],
+            showActionButtons: false
         };
         //TODO:Below code works for star rating
-        editor = $("#editor").formBuilder({fields, templates});
+        editor = $("#editor").formBuilder(options);
 
         //TODO:Below code works for options
         //editor = $("#editor").formBuilder(options);
 
-        setTimeout(function(){ editor.actions.setData(formData); }, 50);
+        setTimeout(function () {
+            editor.actions.setData(formData);
+        }, 50);
     }
 
     handleChangeMinDate = (event, date) => {
         this.setState({
             minDate: date,
         });
+
     };
 
     handleChangeMaxDate = (event, date) => {
@@ -115,10 +138,40 @@ class SurveyBuilder extends Component{
     handleChangeTimePicker24 = (event, date) => {
         this.setState({value24: date});
     };
-    saveTheForm = () =>{
-        console.log('surveyName: '+this.refs.surveyName.getValue());
-        alert(editor.actions.getData('json'));
-    }
+
+    saveTheForm = () => {
+        let surveydata = editor.actions.getData('json');
+        alert(surveydata);
+        console.log(surveydata);
+        let payload = {};
+        let data = JSON.parse(surveydata);
+        payload.questions = data;
+        payload.surveyName = this.refs.surveyName.getValue();
+        payload.surveyType = "";
+        payload.isOpen = 1;
+        var ts = Date.parse(this.state.minDate);
+        //time stamp in milli seconds.
+        payload.expiry = ts / 1000;
+        payload.isPublished = 0;
+        if (this.state.surveyId != '') {
+            payload.surveyId = this.state.surveyId
+        }
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/survey`, payload, axiosConfig)
+            .then(response => {
+            })
+            .catch(error => {
+                swal("got error");
+                console.log(error);
+            });
+    };
+
     render() {
         const actions = [
             <FlatButton
@@ -139,7 +192,8 @@ class SurveyBuilder extends Component{
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
-                        style={{'margin-top':'24px','margin-right':'5px'}}
+                        value={this.state.surveyName}
+                        style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
                         onChange={this.handleChangeMinDate}
@@ -160,7 +214,8 @@ class SurveyBuilder extends Component{
                                   onClick={this.saveTheForm}
                     ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
-                        this.props.history.push("/ShareSurvey");}}></RaisedButton>
+                        this.props.history.push("/ShareSurvey");
+                    }}></RaisedButton>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">

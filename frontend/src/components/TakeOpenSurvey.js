@@ -16,7 +16,7 @@ class TakeSurvey extends Component{
     sendTheLinkToEmail = () =>{
         console.log(this.state.email);
         swal('Email Sent');
-    }
+    };
 
     componentWillMount(){
         console.log('type of survey---'+this.props.match.params.type);

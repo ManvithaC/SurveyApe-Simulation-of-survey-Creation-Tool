@@ -38,7 +38,9 @@ class EditSurvey extends Component{
         //TODO:Need to add a backend call that gets the data of the form to be edited
         //TODO:Fill the survey name text input with value
         //TODO:Fill the expiry values based on the json that is retrieved from backend
-        ;(function($) {
+
+
+        (function($) {
             var fbRender = document.getElementById("fb-render"),
                 formData =
                     '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
@@ -71,7 +73,7 @@ class EditSurvey extends Component{
     EditTheForm = () =>{
         console.log('surveyName: '+this.refs.surveyName.getValue());
         alert(editor.actions.getData('json'));
-    }
+    };
     render() {
         return (
             <div>
