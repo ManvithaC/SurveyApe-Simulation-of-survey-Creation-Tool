@@ -13,6 +13,7 @@ import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -45,8 +46,9 @@ class SurveyBuilder extends Component {
         this.state = {
             minDate: null,
             maxDate: null,
-            value24:null,
+            value24: null,
             open: false,
+
             imageChoice:[1],
             formData: '',
             surveyId: '',
@@ -55,6 +57,7 @@ class SurveyBuilder extends Component {
         };
 
     }
+
     handleOpen = () => {
         this.setState({open: true});
     };
@@ -71,6 +74,7 @@ class SurveyBuilder extends Component {
             this.setState({
                 surveyId: this.props.location.state.surveyId
             });
+
             formData = JSON.stringify(this.props.location.state.data);
         }
         let fields = [{
@@ -170,6 +174,11 @@ class SurveyBuilder extends Component {
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/survey`, payload, axiosConfig)
             .then(response => {
+
+              console.log(response);
+                this.setState({
+                    surveyId: response.data.surveyId
+                })
             })
             .catch(error => {
                 swal("got error");
@@ -259,7 +268,7 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
-                        value={this.state.surveyName}
+
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
@@ -274,14 +283,18 @@ class SurveyBuilder extends Component {
                         value={this.state.value24}
                         onChange={this.handleChangeTimePicker24}
                         defaultTime={null}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
-                        textFieldStyle={{'width':'150px'}}
+                        style={{'margin-top': '24px', 'margin-right': '5px'}}
+                        textFieldStyle={{'width': '150px'}}
                     />
                     <RaisedButton label="Save" style={styles}
                                   onClick={this.saveTheForm}
                     ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
-                        this.props.history.push("/ShareSurvey");
+                        this.props.history.push({
+                            pathname: '/ShareSurvey',
+                            state: this.state.surveyId
+                        })
+
                     }}></RaisedButton>
                 </div>
                 <div class="row justify-content-center">
@@ -331,7 +344,8 @@ class SurveyBuilder extends Component {
                         <ContentAdd onClick={()=>{this.addImageOption()}}/>
                     </IconButton>
 
-                </div>
+
+                    </div>
                 </Dialog>
             </div>
         );

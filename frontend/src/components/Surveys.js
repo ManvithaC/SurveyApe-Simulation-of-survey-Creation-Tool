@@ -13,6 +13,8 @@ import axios from "axios/index";
 //import swal from "sweetalert/typings/sweetalert";
 import IconButton from 'material-ui/IconButton';
 
+const ROOT_URL = 'http://localhost:8080';
+
 const style = {
     marginLeft: 200,
     textAlign: 'right',
@@ -33,7 +35,6 @@ const ChartStyle ={
 
 }
 
-const ROOT_URL = 'http://localhost:8080';
 class Surveys extends Component{
     constructor(props){
         super(props);

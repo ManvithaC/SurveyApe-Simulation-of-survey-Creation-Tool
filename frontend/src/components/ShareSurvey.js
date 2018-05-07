@@ -8,6 +8,8 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
+import axios from 'axios';
+const ROOT_URL = 'http://localhost:8080';
 
 const styles = {
     customWidth: {
@@ -58,10 +60,33 @@ class ShareSurvey extends Component{
         var toSendJSON = {
             'SurveyType' : surveyType,
             'SendVia' : 'link',
-            'SurveyeesEmail':this.state.SurveyeesEmail
-        }
+            'SurveyeesEmail':this.state.SurveyeesEmail,
+            'surveyId':this.props.location.state
+        };
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/generalSurvey`,toSendJSON, axiosConfig)
+            .then(response => {
+                //  console.log(response);
+
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+
+
+
+
         console.log(toSendJSON);
-    }
+    };
 
     addQRCodeSurveyees = () =>{
 
@@ -75,11 +100,30 @@ class ShareSurvey extends Component{
         else if (this.state.value == '3'){
             surveyType = 'Open Unique Survey'
         }
+
         var toSendJSON = {
             'SurveyType' : surveyType,
             'SendVia' : 'QRCode',
-            'SurveyeesEmail':this.state.SurveyeesEmail
-        }
+            'SurveyeesEmail':this.state.SurveyeesEmail,
+            'surveyId':this.props.location.state
+        };
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/generalSurvey`,toSendJSON, axiosConfig)
+            .then(response => {
+                //  console.log(response);
+
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
         console.log(toSendJSON);
     }
 

@@ -44,7 +44,7 @@ public class InviteService {
     private JavaMailSender javaMailSender;
 
     public String addInvite(Integer surveyId, JSONObject inviteDetails) {
-        System.out.println("addInvite 1");
+     //   System.out.println("addInvite 1");
 
         JSONArray emails = inviteDetails.getJSONArray("SurveyeesEmail");
         String  sendvia  =  inviteDetails.getString("SendVia");
@@ -52,13 +52,12 @@ public class InviteService {
         for (int i = 0; i < emails.length(); i++) {
             emailIds.add((String) emails.get(i));
         }
-
         Survey s = surveyrepository.findBySurveyId(surveyId);
         String surveyType = s.getSurveyType();
 
         if (surveyType.equals("General")) {
             System.out.println("addInvite 1");
-            String surveylink = "http://localhost:3000/takeSurvey/general/:" + surveyId;
+            String surveylink = "http://localhost:3000/takeSurvey/u/" + surveyId;
             String imagePath = "" + surveyId + ".png";
             saveQRImage(surveylink, imagePath);
             for (String e : emailIds) {
@@ -170,6 +169,7 @@ public class InviteService {
 
 
     }
+
 
     public String getSurveyURL(Integer surveyID){
         System.out.println("getSurveyURL");
