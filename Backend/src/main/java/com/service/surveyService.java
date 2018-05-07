@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,6 +42,7 @@ public class surveyService {
     public com.repository.answerRepository answerRepository;
 
 
+    // questions rendering
     public ResponseEntity<?> renderQuestions(int surveyID) {
         System.out.println("inside Questions rendering");
         Survey survey = surveyrepository.findBySurveyId(surveyID);
@@ -66,8 +69,11 @@ public class surveyService {
             }
             questions.put(temp);
         }
-        System.out.println(questions);
 
+        System.out.println(questions);
+//        JSONObject surveyName =new JSONObject();
+//        surveyName.put("surveyName",survey.getSurveyName());
+//        questions.put(surveyName);
         return new ResponseEntity<>(questions.toString(), HttpStatus.OK);
     }
 
@@ -115,11 +121,22 @@ public class surveyService {
 
 
     public String createSuvey(JSONObject survey, HttpSession session) {
+        if (survey.has("surveyId")) {
+            // delete that survey
+            System.out.println("inside delete survey");
+            JSONObject jsonObject = survey.getJSONObject("surveyId");
+            Survey survey1 = surveyrepository.findBySurveyId(jsonObject.getInt("surveyId"));
+            User user = survey1.getOwner();
+            user.getSurveys().remove(survey1);
+            survey1.setOwner(null);
+            surveyrepository.delete(survey1);
+        }
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType("general");
         User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
         user.getSurveyEntities().add(surveyEntity);
         surveyEntity.setOwner(user);
+        surveyEntity.setSurveyName(survey.getString("surveyName"));
         surveyEntity.setIsOpen(survey.getInt("isOpen"));
         surveyEntity.setIsPublished(survey.getInt("isPublished"));
         surveyEntity.setExpiry(survey.getLong("expiry"));
@@ -281,24 +298,32 @@ public class surveyService {
         JSONArray finaloutput = new JSONArray();
         for (int i = 0; i < user.getSurveys().size(); i++) {
             JSONObject message = new JSONObject();
-            message.put("name", user.getSurveys().get(i).getSurveyId());
+            message.put("name", user.getSurveys().get(i).getSurveyName());
+            message.put("id", user.getSurveys().get(i).getSurveyId());
             if (user.getSurveys().get(i).getIsPublished() == 1) {
                 message.put("status", "published");
             } else {
                 message.put("status", "Saved");
             }
-            message.put("expiryDate", user.getSurveys().get(i).getExpiry());
+            Date currentTime = new Date(user.getSurveys().get(i).getExpiry()*1000);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+            String dateString = formatter.format(currentTime);
+            message.put("expiryDate", dateString);
+            System.out.println(dateString);
             output.put(message);
-
         }
-        System.out.println(user.getSurveyEntities());
+        //System.out.println(user.getSurveyEntities());
         for (int i = 0; i < user.getSurveyEntities().size(); i++) {
             JSONObject message2 = new JSONObject();
-            message2.put("name", user.getSurveyEntities().get(i).getSurveyId());
+            message2.put("id", user.getSurveyEntities().get(i).getSurveyId());
+            message2.put("name",user.getSurveyEntities().get(i).getSurveyName());
             message2.put("status", "Submitted");
-            message2.put("expiryDate", user.getSurveyEntities().get(i).getExpiry());
+            Date currentTime = new Date(user.getSurveys().get(i).getExpiry()*1000);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+            String dateString = formatter.format(currentTime);
+            System.out.println(dateString);
+            message2.put("expiryDate", dateString);
             output1.put(message2);
-
         }
         finaloutput.put(output);
         finaloutput.put(output1);

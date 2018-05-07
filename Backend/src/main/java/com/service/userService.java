@@ -63,7 +63,6 @@ public class userService {
     public ResponseEntity<?> login(String email, String password,HttpSession session) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
-        surveyService.renderForm(1);
 
         if(userEntity==null){
             message.put("code",404);
