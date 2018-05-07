@@ -9,6 +9,10 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import swal from 'sweetalert';
 import axios from 'axios';
+import IconButton from 'material-ui/IconButton';
+import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
 window.jQuery = $;
 window.$ = $;
@@ -29,7 +33,7 @@ const optionsStyle = {
     marginRight: 'auto',
 };
 const customContentStyle = {
-    width: '80%',
+    width: '50%',
     maxWidth: 'none',
 };
 
@@ -44,10 +48,12 @@ class SurveyBuilder extends Component {
             maxDate: null,
             value24: null,
             open: false,
-            imageChoice: [],
+
+            imageChoice:[1],
             formData: '',
-            surveyId: 0,
-            surveyName: ''
+            surveyId: '',
+            surveyName:'',
+            ImageOptionType:''
         };
 
     }
@@ -180,6 +186,68 @@ class SurveyBuilder extends Component {
             });
     };
 
+    addImageOption =() =>{
+
+        var newInput = this.state.imageChoice;
+        newInput.push(1);
+        this.setState({
+            imageChoice:newInput
+        });
+    }
+
+    handleChange = (event, index, ImageOptionType) => {
+        this.setState({ImageOptionType});
+    }
+
+    SaveImageQuestion =() =>{
+        //TODO:Upload the images and get the links of images
+        //Insert into div
+        //Insert the divs into radiobutton option JSON
+        //Append the form builder JSON and setState so the it adds to the Question Area
+
+        console.log('Image Question Type:'+this.state.ImageOptionType);
+        console.log('Image Question:'+this.refs.surveyQuestion.getValue());
+        var ImageOptionTypeToAdd ={}
+        if(this.state.ImageOptionType == '1'){
+            ImageOptionTypeToAdd={
+                "type":"checkbox-group",
+                "label":"Checkbox Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>',
+                        "selected":true
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>',
+                    }
+                ]
+            }
+        }
+        else if (this.state.ImageOptionType == '2'){
+            ImageOptionTypeToAdd={
+                "type":"radio-group",
+                "label":"Radio Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 3",
+                        "value":'<img src="..."/>'
+                    }
+                ]
+            }
+        }
+    }
     render() {
         const actions = [
             <FlatButton
@@ -190,7 +258,7 @@ class SurveyBuilder extends Component {
             <FlatButton
                 label="Submit"
                 primary={true}
-                onClick={this.handleClose}
+                onClick={this.SaveImageQuestion}
             />,
         ];
         return (
@@ -243,16 +311,39 @@ class SurveyBuilder extends Component {
                     modal={true}
                     contentStyle={customContentStyle}
                     open={this.state.open}
-                >
-                    <div>
-                        <TextField
-                            hintText="Enter Survey Question"
-                            maxLength="50"
-                            ref="surveyQuestion"
-                            fullWidth={true}
-                            style={{'margin-top': '24px', 'margin-right': '5px'}}
-                        /><br/>
-                        <input type="file" Place/><br/>
+                    autoScrollBodyContent={true}
+                ><div>
+                    <div class="row">
+                            <TextField
+                                hintText="Enter Survey Question"
+                                maxLength="50"
+                                ref="surveyQuestion"
+                                fullWidth={true}
+                                style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                            />
+                            <div class="Questrial" style={{'font-size': '15px'}}>Select Question Type</div>
+                            <DropDownMenu
+                                value={this.state.ImageOptionType}
+                                onChange={this.handleChange}
+                                style={styles.customWidth}
+                                autoWidth={true}
+                            >
+                                <MenuItem value={1} primaryText="CheckBox"/>
+                                <MenuItem value={2} primaryText="Radio Button"/>
+                            </DropDownMenu>
+                    </div>
+                    <br/>
+                    {
+                        this.state.imageChoice.map((image,index)=>(
+                            <div key={index}>
+                                {index+1}. <input type="file" style={{'margin-bottom':'10px'}}/>
+                            </div>
+                        ))
+                    }
+                    <IconButton tooltip="Add Option" touch={true} tooltipPosition="bottom-right">
+                        <ContentAdd onClick={()=>{this.addImageOption()}}/>
+                    </IconButton>
+
 
                     </div>
                 </Dialog>
