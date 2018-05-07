@@ -125,19 +125,16 @@ class SurveyBuilder extends Component {
 
         //TODO:Below code works for options
         //editor = $("#editor").formBuilder(options);
-
         setTimeout(function () {
             editor.actions.setData(formData);
         }, 50);
     }
-
     handleChangeMinDate = (event, date) => {
         this.setState({
             minDate: date,
         });
 
     };
-
     handleChangeMaxDate = (event, date) => {
         this.setState({
             maxDate: date,

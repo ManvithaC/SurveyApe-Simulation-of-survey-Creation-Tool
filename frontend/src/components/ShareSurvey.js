@@ -141,7 +141,7 @@ class ShareSurvey extends Component{
                 console.log(error);
             });
         console.log(toSendJSON);
-    }
+    };
 
     render(){
         return (

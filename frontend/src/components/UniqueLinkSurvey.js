@@ -43,18 +43,66 @@ class UniqueLinkSurvey extends Component {
             'surveyId': this.props.match.params.surveyId
         };
         //var form;
+        var originalFormData;
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`, temp, axiosConfig)
             .then(response => {
                 ;(function ($) {
                     var fbRender = document.getElementById("fb-render"),
-                      //  formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
-                    formData=JSON.stringify(response.data);
+                        //  formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
+                        formData = JSON.stringify(response.data);
+                    originalFormData = JSON.parse(formData);
+
                     var formRenderOpts = {
                         formData,
                         dataType: "json"
                     };
                     $(fbRender).formRender(formRenderOpts);
+                    document.getElementById('get-formdata').onclick = function () {
+                        var formData = new FormData(fbRender);
+
+                        function getObj(objs, key, val) {
+                            val = val.replace('[]', '');
+                            return objs.filter(function (obj) {
+                                var filter = false;
+                                if (val) {
+                                    filter = (obj[key] === val);
+                                } else if (obj[key]) {
+                                    filter = true;
+                                }
+                                return filter;
+                            });
+                        }
+
+                        function setValue(name, value) {
+                            var field = getObj(originalFormData, 'name', name)[0];
+
+                            if (!field) {
+                                return;
+                            }
+
+                            if (['select', 'checkbox-group', 'radio-group'].indexOf(field.type) !== -1) {
+                                for (var fieldOption of field.values) {
+                                    if (value.indexOf(fieldOption.value) !== -1) {
+                                        fieldOption.selected = true;
+                                    } else {
+                                        delete fieldOption.selected;
+                                    }
+                                    ;
+                                }
+                            } else {
+                                field.value = value;
+                            }
+                        }
+
+                        console.log('Original formData: ', originalFormData);
+                        for (var key of formData.keys()) {
+                            setValue(key, formData.getAll(key));
+                        }
+                        //  alert(JSON.stringify(originalFormData));
+                        console.log('Updated formData: ', originalFormData);
+                    };
+
                 })($);
             })
             .catch(error => {
@@ -84,6 +132,7 @@ class UniqueLinkSurvey extends Component {
                 <div className="row justify-content-center">
                     <div className="col-md-8 surveyBoxUniqueSurvey">
                         <form id="fb-render"></form>
+                        <button type="button" id="get-formdata">Get Updated formData</button>
                     </div>
                 </div>
             </div>
