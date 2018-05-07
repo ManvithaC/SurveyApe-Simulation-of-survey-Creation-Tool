@@ -2,7 +2,7 @@ package com.controller;
 
 
 import com.service.surveyService;
-import jdk.nashorn.internal.parser.JSONParser;
+import org.hibernate.query.criteria.internal.CriteriaSubqueryImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +30,14 @@ public class SurveyController {
     ResponseEntity<?> createSurvey(@RequestBody String surveyrequest, HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        System.out.println(surveyrequest);
+        //System.out.println(surveyrequest);
+        //System.out.println(session.getAttribute("username"));
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println(survey);
+        //System.out.println(survey);
         int surveyId = surveyService.createSuvey(survey, session);
         JSONObject message = new JSONObject();
         message.put("surveyId", surveyId);
-        return new ResponseEntity <>(message.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 
 
@@ -44,8 +45,17 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> generalSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println(survey);
+        //System.out.println(survey);
         return surveyService.generalSurvey(survey);
+    }
+
+
+    @PostMapping(path = "/closedSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> closedSurvey(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println(survey);
+        return surveyService.closedSurvey(survey);
     }
 
 
@@ -61,15 +71,20 @@ public class SurveyController {
     }
 
 
-    @ResponseBody
-    @PostMapping(path = "/survey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
-    public String submitSurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId) {
-        // @ResponseBody means the returned String is the response, not a view name
+    @PostMapping(path = "/submitsurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest,@PathVariable("surveyId") Integer surveyId, HttpSession session) {
+         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        JSONObject survey = new JSONObject(surveyrequest);
-        String output = surveyService.submitSurvey(survey, surveyId);
-        return "sanjya";
+        //System.out.println(surveyrequest);
+        JSONObject survey=new JSONObject(surveyrequest);
+        JSONObject temp=new JSONObject();
+        temp.put("questions",survey.getJSONArray("data"));
+        String output = surveyService.submitSurvey(temp, surveyId);
+        return null;
     }
+
 
 
     @ResponseBody
@@ -85,9 +100,8 @@ public class SurveyController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         System.out.println("ffffkkkkk");
+
         return surveyService.fetchSurvey(surveyId);
-
-
     }
 
 

@@ -2,8 +2,10 @@ package com.service;
 
 
 import com.entity.Survey;
+import com.entity.User;
 import com.repository.inviteRepository;
 import com.repository.surveyRepository;
+import com.repository.userRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,8 @@ public class InviteService {
     public surveyRepository surveyrepository;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    public userRepository userRepository;
 
     public String addInvite(Integer surveyId, JSONObject inviteDetails) {
      //   System.out.println("addInvite 1");
@@ -87,10 +91,14 @@ public class InviteService {
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
-                if(sendvia.equals("link"))
-                    sendEmailInvitations(e, surveylink);
-                if(sendvia.equals("QRCode"))
-                    sendEmailWithQRImage(e, imagePath);
+                if(sendvia.equals("link")) {
+                    User userEntity = userRepository.findByEmail(e);
+                    if(userEntity!=null) {
+                        sendEmailInvitations(e, surveylink);
+                    }
+                }
+//                if(sendvia.equals("QRCode"))
+//                    sendEmailWithQRImage(e, imagePath);
             }
 
         } else if (surveyType.equals("Open")) {

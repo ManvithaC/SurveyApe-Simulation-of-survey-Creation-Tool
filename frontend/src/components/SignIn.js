@@ -16,7 +16,7 @@ class Homepage extends Component {
                 "email": "",
                 "password": ""
             },
-            "isLoggedin": ""
+            isLoggedin: false,
         };
     }
 
@@ -32,7 +32,7 @@ class Homepage extends Component {
                 else if(response.data.code==200){
                     this.setState(
                         {
-                            "isLoggedin": true
+                            isLoggedin: true
                         }
                     )
                     this.props.history.push("/SurveyBuilder");

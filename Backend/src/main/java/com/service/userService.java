@@ -26,6 +26,7 @@ public class userService {
     public ResponseEntity<?> register(String email, String password, String firstname, String lastname) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
+       // System.out.println(session.getAttribute("username"));
         if (userEntity != null) {
             message.put("message","Username Already Registered");
             message.put("code",400);

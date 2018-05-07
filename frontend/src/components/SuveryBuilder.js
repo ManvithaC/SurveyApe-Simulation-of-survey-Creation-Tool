@@ -82,15 +82,8 @@ class SurveyBuilder extends Component {
             attrs: {
                 type: 'starRating'
             },
-            icon: '🌟'
-        },
-            {
-                label: 'Image Choices',
-                attrs: {
-                    type: 'ImageChoice'
-                },
-                icon: '🏞'
-            }
+            icon: '⭐'
+        }
 
         ];
 
@@ -105,14 +98,6 @@ class SurveyBuilder extends Component {
                         });
                     }
                 };
-            },
-            ImageChoice: function (fieldData) {
-                return {
-                    field: '<span id="' + fieldData.name + '">',
-                    onRender: function () {
-                        $(document.getElementById(fieldData.name)).text('hi');
-                    }
-                };
             }
         };
 
@@ -121,23 +106,23 @@ class SurveyBuilder extends Component {
             showActionButtons: false
         };
         //TODO:Below code works for star rating
-        editor = $("#editor").formBuilder(options);
+        var editor_t = $("#editor_t").formBuilder({fields, templates});
+
+        $("#editor_t").hide();
 
         //TODO:Below code works for options
-        //editor = $("#editor").formBuilder(options);
-
+        editor = $("#editor").formBuilder(options);
         setTimeout(function () {
             editor.actions.setData(formData);
+            //editor.actions.setData(options);
         }, 50);
     }
-
     handleChangeMinDate = (event, date) => {
         this.setState({
             minDate: date,
         });
 
     };
-
     handleChangeMaxDate = (event, date) => {
         this.setState({
             maxDate: date,
@@ -300,9 +285,10 @@ class SurveyBuilder extends Component {
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">
                         <div id="editor"></div>
+                        <div id="editor_t"></div>
                     </div>
                 </div>
-                <div class="row justify-content-end">
+                <div class="row col-md-11 justify-content-end">
                     <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
                 </div>
                 <Dialog
