@@ -69,8 +69,6 @@ class Surveys extends Component{
         axios.create({withCredentials: true})
             .get(`${ROOT_URL}/surveys`, axiosConfig)
             .then(response => {
-                alert("asdasd");
-                console.log(response.data);
                 this.setState({
                     surveysCreated: response.data[0],
                     surveysToSubmit:response.data[1]
@@ -82,23 +80,27 @@ class Surveys extends Component{
             });
     }
 
-clickedEdit=(temp)=>{
-
+clickedEdit=(temp,name)=>{
     let axiosConfig = {
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             "Access-Control-Allow-Origin": true
         }
     };
-
+    console.log(temp);
+    console.log(name);
     var surveyid={"surveyId":temp};
+
     axios.create({withCredentials: true})
         .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
         .then(response => {
-            console.log(response);
+          //  console.log(response);
             this.props.history.push({
                 pathname: '/SurveyBuilder',
-                state:response.data
+                state:{data:response.data,
+                surveyId:surveyid,
+                surveyName:name
+                }
             })
         })
         .catch(error => {
@@ -124,7 +126,7 @@ clickedEdit=(temp)=>{
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
-                                                onClick={()=>this.clickedEdit(card.name)}
+                                                onClick={()=>this.clickedEdit(card.id,card.name)}
                                                 >
                                                     <ContentEdit />
                                                 </FloatingActionButton>

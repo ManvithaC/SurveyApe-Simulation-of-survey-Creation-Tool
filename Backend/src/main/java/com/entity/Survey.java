@@ -26,6 +26,16 @@ public class Survey {
         return surveyType;
     }
 
+    public String getSurveyName() {
+        return surveyName;
+    }
+
+    public void setSurveyName(String surveyName) {
+        this.surveyName = surveyName;
+    }
+
+    public String surveyName;
+
     public void setSurveyType(String surveyType) {
         this.surveyType = surveyType;
     }
