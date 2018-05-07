@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -183,6 +184,7 @@ public class surveyService {
         JSONObject message = new JSONObject();
         if(surveyEntity!=null){
             surveyEntity.setIsPublished(1);
+            surveyEntity.setStartDate(new Date());
             surveyrepository.save(surveyEntity);
             message.put("code",200);
             message.put("msg", "Survey Published");
