@@ -123,8 +123,8 @@ public class InviteService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
-            message.setSubject("Inviatation to Survey");
-            message.setText("Please the survey using the link "+surveyLink);
+            message.setSubject("Invitation to Survey");
+            message.setText("Please take the survey using the link "+surveyLink);
             javaMailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
