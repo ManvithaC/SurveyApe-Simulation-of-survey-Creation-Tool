@@ -290,6 +290,7 @@ public class surveyService {
         JSONObject message = new JSONObject();
         if (surveyEntity != null) {
             surveyEntity.setIsPublished(1);
+            surveyEntity.setStartDate(new Date());
             surveyrepository.save(surveyEntity);
             message.put("code", 200);
             message.put("msg", "Survey Published");
