@@ -11,6 +11,8 @@ import * as $ from "jquery";
 import axios from "axios/index";
 //import swal from "sweetalert/typings/sweetalert";
 
+const ROOT_URL = 'http://localhost:8080';
+
 const style = {
     marginLeft: 250,
     textAlign: 'right',
@@ -23,7 +25,6 @@ const styleAdd ={
     marginLeft:10,
 }
 
-const ROOT_URL = 'http://localhost:8080';
 class Surveys extends Component{
     constructor(props){
         super(props);

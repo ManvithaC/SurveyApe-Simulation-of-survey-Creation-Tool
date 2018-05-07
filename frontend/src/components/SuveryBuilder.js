@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import swal from 'sweetalert';
 import axios from 'axios';
+
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -41,15 +42,16 @@ class SurveyBuilder extends Component {
         this.state = {
             minDate: null,
             maxDate: null,
-            value24:null,
+            value24: null,
             open: false,
-            imageChoice:[],
+            imageChoice: [],
             formData: '',
-            surveyId: '',
-            surveyName:''
+            surveyId: 0,
+            surveyName: ''
         };
 
     }
+
     handleOpen = () => {
         this.setState({open: true});
     };
@@ -66,6 +68,7 @@ class SurveyBuilder extends Component {
             this.setState({
                 surveyId: this.props.location.state.surveyId
             });
+
             formData = JSON.stringify(this.props.location.state.data);
         }
         let fields = [{
@@ -165,6 +168,11 @@ class SurveyBuilder extends Component {
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/survey`, payload, axiosConfig)
             .then(response => {
+
+              console.log(response);
+                this.setState({
+                    surveyId: response.data.surveyId
+                })
             })
             .catch(error => {
                 swal("got error");
@@ -192,7 +200,7 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
-                        
+
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
@@ -207,14 +215,18 @@ class SurveyBuilder extends Component {
                         value={this.state.value24}
                         onChange={this.handleChangeTimePicker24}
                         defaultTime={null}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
-                        textFieldStyle={{'width':'150px'}}
+                        style={{'margin-top': '24px', 'margin-right': '5px'}}
+                        textFieldStyle={{'width': '150px'}}
                     />
                     <RaisedButton label="Save" style={styles}
                                   onClick={this.saveTheForm}
                     ></RaisedButton>
                     <RaisedButton label="Publish" style={styles} onClick={() => {
-                        this.props.history.push("/ShareSurvey");
+                        this.props.history.push({
+                            pathname: '/ShareSurvey',
+                            state: this.state.surveyId
+                        })
+
                     }}></RaisedButton>
                 </div>
                 <div class="row justify-content-center">
@@ -231,17 +243,18 @@ class SurveyBuilder extends Component {
                     modal={true}
                     contentStyle={customContentStyle}
                     open={this.state.open}
-                ><div>
-                    <TextField
-                        hintText="Enter Survey Question"
-                        maxLength="50"
-                        ref="surveyQuestion"
-                        fullWidth={true}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
-                    /><br/>
-                    <input type="file" Place/><br/>
+                >
+                    <div>
+                        <TextField
+                            hintText="Enter Survey Question"
+                            maxLength="50"
+                            ref="surveyQuestion"
+                            fullWidth={true}
+                            style={{'margin-top': '24px', 'margin-right': '5px'}}
+                        /><br/>
+                        <input type="file" Place/><br/>
 
-                </div>
+                    </div>
                 </Dialog>
             </div>
         );

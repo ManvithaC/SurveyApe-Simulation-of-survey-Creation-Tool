@@ -37,6 +37,8 @@ public class surveyService {
     @Autowired
     public valueRepository valueRepository;
 
+    @Autowired
+    public InviteService inviteService;
 
     @Autowired
     public com.repository.answerRepository answerRepository;
@@ -46,7 +48,7 @@ public class surveyService {
     public ResponseEntity<?> renderQuestions(int surveyID) {
         System.out.println("inside Questions rendering");
         Survey survey = surveyrepository.findBySurveyId(surveyID);
-        User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
+    //    User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
         JSONArray questions = new JSONArray();
         JSONObject output = new JSONObject();
         List<Questions> questionsList = survey.getQuestionEntityList();
@@ -120,7 +122,7 @@ public class surveyService {
     }
 
 
-    public String createSuvey(JSONObject survey, HttpSession session) {
+    public int createSuvey(JSONObject survey, HttpSession session) {
         if (survey.has("surveyId")) {
             // delete that survey
             System.out.println("inside delete survey");
@@ -179,7 +181,7 @@ public class surveyService {
         surveyrepository.save(surveyEntity);
         userRepository.save(user);
 
-        return "sanjay";
+        return surveyEntity.getSurveyId();
     }
 
 
@@ -228,6 +230,17 @@ public class surveyService {
         surveyEntity.getQuestionEntityList().addAll(questionEntities);
         surveyrepository.save(surveyEntity);
         return "asdasd";
+    }
+
+
+    public ResponseEntity<?> generalSurvey(JSONObject survey) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
+        surveyEntity.setSurveyType("General");
+        surveyEntity.setIsPublished(1);
+        //{"SurveyType":"General Survey","surveyId":12,"SurveyeesEmail":["sanjayraghu05@gmail.com"],"SendVia":"link"}
+        String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
+        System.out.println("inside general survey");
+        return null;
     }
 
 
@@ -305,7 +318,7 @@ public class surveyService {
             } else {
                 message.put("status", "Saved");
             }
-            Date currentTime = new Date(user.getSurveys().get(i).getExpiry()*1000);
+            Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
             SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
             String dateString = formatter.format(currentTime);
             message.put("expiryDate", dateString);
@@ -316,9 +329,9 @@ public class surveyService {
         for (int i = 0; i < user.getSurveyEntities().size(); i++) {
             JSONObject message2 = new JSONObject();
             message2.put("id", user.getSurveyEntities().get(i).getSurveyId());
-            message2.put("name",user.getSurveyEntities().get(i).getSurveyName());
+            message2.put("name", user.getSurveyEntities().get(i).getSurveyName());
             message2.put("status", "Submitted");
-            Date currentTime = new Date(user.getSurveys().get(i).getExpiry()*1000);
+            Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
             SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
             String dateString = formatter.format(currentTime);
             System.out.println(dateString);

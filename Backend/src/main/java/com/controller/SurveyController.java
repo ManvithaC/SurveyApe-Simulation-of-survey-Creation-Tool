@@ -6,6 +6,7 @@ import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,19 @@ public class SurveyController {
         System.out.println(surveyrequest);
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
-        String output = surveyService.createSuvey(survey, session);
-        return null;
+        int surveyId = surveyService.createSuvey(survey, session);
+        JSONObject message = new JSONObject();
+        message.put("surveyId", surveyId);
+        return new ResponseEntity <>(message.toString(), HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/generalSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> generalSurvey(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println(survey);
+        return surveyService.generalSurvey(survey);
     }
 
 
@@ -43,7 +55,7 @@ public class SurveyController {
     ResponseEntity<?> rendersurvey(@RequestBody String surveyrequest, HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        //System.out.println(surveyrequest);
+        System.out.println(surveyrequest);
         JSONObject survey = new JSONObject(surveyrequest);
         return surveyService.renderQuestions(survey.getInt("surveyId"));
     }
