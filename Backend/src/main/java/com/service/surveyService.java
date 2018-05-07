@@ -135,7 +135,7 @@ public class surveyService {
         }
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType("general");
-        User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
+        User user = userRepository.findByEmail("hknitw@gmail.com");
         user.getSurveyEntities().add(surveyEntity);
         surveyEntity.setOwner(user);
         surveyEntity.setSurveyName(survey.getString("surveyName"));
@@ -244,6 +244,17 @@ public class surveyService {
     }
 
 
+    public ResponseEntity<?> closedSurvey(JSONObject survey) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
+        surveyEntity.setSurveyType("Closed");
+        surveyEntity.setIsPublished(1);
+        //{"SurveyType":"General Survey","surveyId":12,"SurveyeesEmail":["sanjayraghu05@gmail.com"],"SendVia":"link"}
+        String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
+        System.out.println("inside closed survey");
+        return null;
+    }
+
+
     public ResponseEntity<?> fetchSurvey(Integer surveyId) {
         System.out.println("ffffffffff");
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
@@ -305,7 +316,7 @@ public class surveyService {
 
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // String usermail = session.getAttribute("email").toString();
-        String usermail = "sanjayraghu05@gmail.com";
+        String usermail = "hknitw@gmail.com";
         User user = userRepository.findByEmail(usermail);
         JSONArray output = new JSONArray();
         JSONArray output1 = new JSONArray();
