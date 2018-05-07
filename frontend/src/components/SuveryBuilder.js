@@ -9,6 +9,8 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import swal from 'sweetalert';
 import axios from 'axios';
+import IconButton from 'material-ui/IconButton';
+import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -28,7 +30,7 @@ const optionsStyle = {
     marginRight: 'auto',
 };
 const customContentStyle = {
-    width: '80%',
+    width: '50%',
     maxWidth: 'none',
 };
 
@@ -43,7 +45,7 @@ class SurveyBuilder extends Component {
             maxDate: null,
             value24:null,
             open: false,
-            imageChoice:[],
+            imageChoice:[1],
             formData: '',
             surveyId: '',
             surveyName:''
@@ -172,6 +174,21 @@ class SurveyBuilder extends Component {
             });
     };
 
+    addImageOption =() =>{
+
+        var newInput = this.state.imageChoice;
+        newInput.push(1);
+        this.setState({
+            imageChoice:newInput
+        });
+    }
+
+    SaveImageQuestion =() =>{
+        //TODO:Upload the images and get the links of images
+        //Insert into div
+        //Insert the divs into radiobutton option JSON
+        //Append the form builder JSON and setState so the it adds to the Question Area
+    }
     render() {
         const actions = [
             <FlatButton
@@ -182,7 +199,7 @@ class SurveyBuilder extends Component {
             <FlatButton
                 label="Submit"
                 primary={true}
-                onClick={this.handleClose}
+                onClick={this.SaveImageQuestion}
             />,
         ];
         return (
@@ -237,9 +254,18 @@ class SurveyBuilder extends Component {
                         maxLength="50"
                         ref="surveyQuestion"
                         fullWidth={true}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
+                        style={{'margin-top':'24px','margin-right':'5px','margin-bottom':'10px'}}
                     /><br/>
-                    <input type="file" Place/><br/>
+                    {
+                        this.state.imageChoice.map((image,index)=>(
+                            <div key={index}>
+                                {index+1}. <input type="file" style={{'margin-bottom':'10px'}}/>
+                            </div>
+                        ))
+                    }
+                    <IconButton tooltip="Add Option" touch={true} tooltipPosition="bottom-right">
+                        <ContentAdd onClick={()=>{this.addImageOption()}}/>
+                    </IconButton>
 
                 </div>
                 </Dialog>
