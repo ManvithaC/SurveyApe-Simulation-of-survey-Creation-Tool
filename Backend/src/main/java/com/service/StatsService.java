@@ -60,10 +60,10 @@ public class StatsService {
 
            for(Questions q: ques){
 
-               if(q.getType().equals("date") ||
-                       q.getType().equals("text") || q.getType().equals("textarea")){
-                   continue;
-               }
+               if(q.getType().equals("checkbox-group") ||
+                       q.getType().equals("select") || q.getType().equals("radio-group")){
+
+
 
                List<Options> options = q.getOptionsEntities();
                Map<String,Integer>  map =  new HashMap<String,Integer>();
@@ -82,6 +82,7 @@ public class StatsService {
 
                JSONObject eachques = new JSONObject();
                eachques.put("QuestionDesc",q.getDescription());
+               eachques.put("QuestionType",q.getType());
 
                JSONObject alloptions  [] = new JSONObject[map.size()];
                int i=0;
@@ -97,6 +98,8 @@ public class StatsService {
                eachques.put("Answers",alloptions);
                allques[j] = eachques;
                j++;
+
+               }
 
            }
 
