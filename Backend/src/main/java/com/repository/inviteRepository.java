@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface inviteRepository extends CrudRepository<Invites, String> {
     List<Invites> findBySurveyEntity(Survey survey);
-
+    Invites findByInviteid(int p);
 }
 
