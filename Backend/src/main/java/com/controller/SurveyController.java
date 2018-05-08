@@ -88,7 +88,7 @@ public class SurveyController {
             JSONObject message = new JSONObject();
             message.put("UploadedFilePath", UploadedFilePath);
             System.out.println("Message " + message.toString());
-            return new ResponseEntity<>(message, HttpStatus.CREATED);
+            return new ResponseEntity<>(message.toString(), HttpStatus.CREATED);
         }
     }
 
