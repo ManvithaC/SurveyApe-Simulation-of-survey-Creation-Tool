@@ -36,14 +36,13 @@ public class surveyService {
     public valueRepository valueRepository;
 
     @Autowired
-    public inviteRepository inviteRepository;
-
-    @Autowired
     public InviteService inviteService;
 
     @Autowired
     public com.repository.answerRepository answerRepository;
 
+    @Autowired
+    public inviteRepository inviteRepository;
 
     // questions rendering
     public ResponseEntity<?> renderQuestions(int surveyID) {
@@ -197,14 +196,14 @@ public class surveyService {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
         } else {
             userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
-           List<Invites> invites = surveyEntity.getInvitesEntities();
-           for(int k=0;k<invites.size();k++){
-               if(invites.get(k).getEmailId().equals(userEntity.getEmail())){
-                   invites.get(k).setIsAccessed(1);
-                   inviteRepository.save(invites.get(k));
-                   break;
-               }
-           }
+            List<Invites> invites = surveyEntity.getInvitesEntities();
+            for (int k = 0; k < invites.size(); k++) {
+                if (invites.get(k).getEmailId().equals(userEntity.getEmail())) {
+                    invites.get(k).setIsAccessed(1);
+                    inviteRepository.save(invites.get(k));
+                    break;
+                }
+            }
         }
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
@@ -388,8 +387,7 @@ public class surveyService {
 
             if (invites.get(j).getIsAccessed() == 0) {
                 message3.put("status", "To be Submitted");
-            }
-            else{
+            } else {
                 message3.put("status", "Submitted");
             }
             Date currentTime = new Date(invites.get(j).getSurveyEntity().getExpiry() * 1000);

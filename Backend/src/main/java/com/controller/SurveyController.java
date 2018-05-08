@@ -112,13 +112,6 @@ public class SurveyController {
     }
 
 
-    @PostMapping(path = "/openUnique", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
-        JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println("Inside open unique " + survey);
-        return surveyService.openSurvey(survey);
-    }
 
 
     @PostMapping(path = "/openSendEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,6 +122,17 @@ public class SurveyController {
         return surveyService.openSendEmail(survey);
         //return null;
     }
+
+
+    @PostMapping(path = "/openUnique", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println("Inside open unique "+survey);
+
+        return surveyService.openSurvey(survey);
+    }
+
 
 
     @PostMapping(path = "/renderSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -197,6 +201,7 @@ public class SurveyController {
         System.out.println("INSIDE SUBMIT SURVEY");
         System.out.println("------------------------------------");
         System.out.println(surveyrequest);
+        //System.out.println(surveyrequest);
         JSONObject survey = new JSONObject(surveyrequest);
         JSONObject temp = new JSONObject();
         temp.put("questions", survey.getJSONArray("data"));

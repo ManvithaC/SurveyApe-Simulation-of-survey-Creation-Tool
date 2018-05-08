@@ -20,6 +20,7 @@ class TakeSurvey extends Component {
     sendTheLinkToEmail = () => {
         console.log(this.state.email);
         // backend call for third type of survey
+
         alert("clicked button");
         let axiosConfig = {
             headers: {
