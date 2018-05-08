@@ -322,7 +322,7 @@ public class surveyService {
 
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // String usermail = session.getAttribute("email").toString();
-        String usermail = "hknitw@gmail.com";
+        String usermail = "sanjayraghu05@gmail.com";
         User user = userRepository.findByEmail(usermail);
         JSONArray output = new JSONArray();
         JSONArray output1 = new JSONArray();

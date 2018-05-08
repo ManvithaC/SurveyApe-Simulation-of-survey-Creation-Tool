@@ -1,6 +1,7 @@
 package com.controller;
 
 
+import com.entity.User;
 import com.service.surveyService;
 import org.hibernate.query.criteria.internal.CriteriaSubqueryImpl;
 import org.json.JSONArray;
@@ -91,6 +92,7 @@ public class SurveyController {
     @GetMapping(path = "/surveys") // Map ONLY POST Requests
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // //if(session.getAttribute("email")!=null){
+
         return surveyService.fetchcreatedsubmittedSurveys(session);
     }
 
