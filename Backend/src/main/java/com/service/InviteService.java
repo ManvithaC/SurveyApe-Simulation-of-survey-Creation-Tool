@@ -2,8 +2,10 @@ package com.service;
 
 
 import com.entity.Survey;
+import com.entity.User;
 import com.repository.inviteRepository;
 import com.repository.surveyRepository;
+import com.repository.userRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +44,11 @@ public class InviteService {
     public surveyRepository surveyrepository;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    public userRepository userRepository;
 
     public String addInvite(Integer surveyId, JSONObject inviteDetails) {
-        System.out.println("addInvite 1");
+     //   System.out.println("addInvite 1");
 
         JSONArray emails = inviteDetails.getJSONArray("SurveyeesEmail");
         String  sendvia  =  inviteDetails.getString("SendVia");
@@ -52,13 +56,12 @@ public class InviteService {
         for (int i = 0; i < emails.length(); i++) {
             emailIds.add((String) emails.get(i));
         }
-
         Survey s = surveyrepository.findBySurveyId(surveyId);
         String surveyType = s.getSurveyType();
 
         if (surveyType.equals("General")) {
             System.out.println("addInvite 1");
-            String surveylink = "http://localhost:3000/takeSurvey/general/:" + surveyId;
+            String surveylink = "http://localhost:3000/takeSurvey/u/" + surveyId;
             String imagePath = "" + surveyId + ".png";
             saveQRImage(surveylink, imagePath);
             for (String e : emailIds) {
@@ -88,10 +91,14 @@ public class InviteService {
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
-                if(sendvia.equals("link"))
-                    sendEmailInvitations(e, surveylink);
-                if(sendvia.equals("QRCode"))
-                    sendEmailWithQRImage(e, imagePath);
+                if(sendvia.equals("link")) {
+                    User userEntity = userRepository.findByEmail(e);
+                    if(userEntity!=null) {
+                        sendEmailInvitations(e, surveylink);
+                    }
+                }
+//                if(sendvia.equals("QRCode"))
+//                    sendEmailWithQRImage(e, imagePath);
             }
 
         } else if (surveyType.equals("Open")) {
@@ -124,8 +131,8 @@ public class InviteService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
-            message.setSubject("Inviatation to Survey");
-            message.setText("Please the survey using the link "+surveyLink);
+            message.setSubject("Invitation to Survey");
+            message.setText("Please take the survey using the link "+surveyLink);
             javaMailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,6 +177,7 @@ public class InviteService {
 
 
     }
+
 
     public String getSurveyURL(Integer surveyID){
         System.out.println("getSurveyURL");

@@ -6,13 +6,17 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 
 import ContentEdit from 'material-ui/svg-icons/image/edit';
 import AddSurveyee from 'material-ui/svg-icons/social/group-add';
+import Chart from 'material-ui/svg-icons/editor/insert-chart';
 import ContentAdd from 'material-ui/svg-icons/image/edit';
 import * as $ from "jquery";
 import axios from "axios/index";
 //import swal from "sweetalert/typings/sweetalert";
+import IconButton from 'material-ui/IconButton';
+
+const ROOT_URL = 'http://localhost:8080';
 
 const style = {
-    marginLeft: 250,
+    marginLeft: 200,
     textAlign: 'right',
 };
 
@@ -20,10 +24,17 @@ const styleAdd ={
     height: 30,
     width:30,
     color:'#424242',
+    marginLeft:100,
+
+}
+const ChartStyle ={
+    height: 30,
+    width:30,
+    color:'#424242',
     marginLeft:10,
+
 }
 
-const ROOT_URL = 'http://localhost:8080';
 class Surveys extends Component{
     constructor(props){
         super(props);
@@ -122,13 +133,14 @@ clickedEdit=(temp,name)=>{
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <div className="icon">
                                         {
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                 onClick={()=>this.clickedEdit(card.id,card.name)}
                                                 >
-                                                    <ContentEdit />
+                                                    <ContentEdit/>
                                                 </FloatingActionButton>
                                             ) : (
                                                 <FloatingActionButton mini={true}
@@ -139,16 +151,35 @@ clickedEdit=(temp,name)=>{
                                                 </FloatingActionButton>
                                             )
                                         }
-                                        <AddSurveyee style={styleAdd}
-                                                     className={"pointer"}
-                                                     onClick={() => {
-                                                         this.props.history.push("/AddSurveyee");
-                                                     }}
-                                        />
+
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
                                         <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
+                                        <div className="icon pull-right">
+                                        {
+                                            card.status == 'published' ? (
+                                                <div>
+                                                    <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
+                                                    <AddSurveyee style={styleAdd}
+                                                                 className="pointer"
+                                                                 onClick={() => {
+                                                                     this.props.history.push("/AddSurveyee");
+                                                                 }}
+                                                    />
+                                                    </IconButton>
+                                                    <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
+                                                    <Chart className="icon pointer" style={ChartStyle}
+                                                    onClick={()=>{this.props.history.push({
+                                                        pathname: '/Stats'
+                                                    })}}
+                                                    />
+                                                    </IconButton>
+                                                </div>) : ''
+
+                                        }
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -163,6 +194,7 @@ clickedEdit=(temp,name)=>{
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <div className="icon">
                                         {
                                             card.status == 'Saved' ? (
                                                 <FloatingActionButton mini={true}
@@ -179,7 +211,7 @@ clickedEdit=(temp,name)=>{
                                                 </FloatingActionButton>
                                             )
                                         }
-
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>

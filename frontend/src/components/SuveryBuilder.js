@@ -9,6 +9,11 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import swal from 'sweetalert';
 import axios from 'axios';
+import IconButton from 'material-ui/IconButton';
+import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -28,10 +33,14 @@ const optionsStyle = {
     marginRight: 'auto',
 };
 const customContentStyle = {
-    width: '80%',
+    width: '50%',
     maxWidth: 'none',
 };
+const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
 
+const headers = {
+    'Accept': 'application/json'
+};
 var editor;
 
 class SurveyBuilder extends Component {
@@ -41,15 +50,19 @@ class SurveyBuilder extends Component {
         this.state = {
             minDate: null,
             maxDate: null,
-            value24:null,
+            value24: null,
             open: false,
-            imageChoice:[],
+
+            imageChoice:[1],
             formData: '',
             surveyId: '',
-            surveyName:''
+            surveyName:'',
+            ImageOptionType:'',
+            ImageOptionsArray:[]
         };
 
     }
+
     handleOpen = () => {
         this.setState({open: true});
     };
@@ -66,6 +79,7 @@ class SurveyBuilder extends Component {
             this.setState({
                 surveyId: this.props.location.state.surveyId
             });
+
             formData = JSON.stringify(this.props.location.state.data);
         }
         let fields = [{
@@ -73,15 +87,8 @@ class SurveyBuilder extends Component {
             attrs: {
                 type: 'starRating'
             },
-            icon: '🌟'
-        },
-            {
-                label: 'Image Choices',
-                attrs: {
-                    type: 'ImageChoice'
-                },
-                icon: '🏞'
-            }
+            icon: '⭐'
+        }
 
         ];
 
@@ -96,14 +103,6 @@ class SurveyBuilder extends Component {
                         });
                     }
                 };
-            },
-            ImageChoice: function (fieldData) {
-                return {
-                    field: '<span id="' + fieldData.name + '">',
-                    onRender: function () {
-                        $(document.getElementById(fieldData.name)).text('hi');
-                    }
-                };
             }
         };
 
@@ -112,23 +111,23 @@ class SurveyBuilder extends Component {
             showActionButtons: false
         };
         //TODO:Below code works for star rating
-        editor = $("#editor").formBuilder(options);
+        var editor_t = $("#editor_t").formBuilder({fields, templates});
+
+        $("#editor_t").hide();
 
         //TODO:Below code works for options
-        //editor = $("#editor").formBuilder(options);
-
+        editor = $("#editor").formBuilder(options);
         setTimeout(function () {
             editor.actions.setData(formData);
+            //editor.actions.setData(options);
         }, 50);
     }
-
     handleChangeMinDate = (event, date) => {
         this.setState({
             minDate: date,
         });
 
     };
-
     handleChangeMaxDate = (event, date) => {
         this.setState({
             maxDate: date,
@@ -162,16 +161,119 @@ class SurveyBuilder extends Component {
                 "Access-Control-Allow-Origin": true
             }
         };
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/survey`, payload, axiosConfig)
-            .then(response => {
+
+        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
+
+        const headers = {
+            'Accept': 'application/json'
+        };
+
+        fetch(`${api}/survey`, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            credentials: 'include'
+        }).then(response => {
+            this.setState({
+                surveyId: response.data.surveyId
             })
+        })
             .catch(error => {
                 swal("got error");
                 console.log(error);
             });
     };
 
+    addImageOption =() =>{
+
+        var newInput = this.state.imageChoice;
+        newInput.push(1);
+        this.setState({
+            imageChoice:newInput
+        });
+    }
+
+    handleChange = (event, index, ImageOptionType) => {
+        this.setState({ImageOptionType});
+    }
+
+    uploadTheImages = (event) =>{
+        const payload = new FormData();
+        payload.append("name",event.target.files[0].name);
+        payload.append("file", event.target.files[0]);
+        payload.append('username', this.state.username);
+
+        fetch(`${api}/uploadImage`, {
+            method: 'POST',
+            body: payload,
+            headers: {
+                ...headers,
+            },
+            credentials:'include'
+        }).then((response) => {
+            //alert("uploadFile: "+res.status);
+            console.log('respon'+Object.keys(response));
+            console.log('responsee'+response.UploadedFilePath);
+            //var Images = this.state.ImageOptionsArray;
+            //this.setState({ImageOptionsArray:Images.push(res)});
+
+        }).catch(error => {
+            console.log("uploadFile - This is error");
+            return error;
+        });
+    }
+    SaveImageQuestion =() =>{
+        //TODO:Upload the images and get the links of images
+        //Insert into div
+        //Insert the divs into radiobutton option JSON
+        //Append the form builder JSON and setState so the it adds to the Question Area
+
+        console.log('Image Question Type:'+this.state.ImageOptionType);
+        console.log('Image Question:'+this.refs.surveyQuestion.getValue());
+        var ImageOptionTypeToAdd ={}
+        if(this.state.ImageOptionType == '1'){
+            ImageOptionTypeToAdd={
+                "type":"checkbox-group",
+                "label":"Checkbox Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>',
+                        "selected":true
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>',
+                    }
+                ]
+            }
+        }
+        else if (this.state.ImageOptionType == '2'){
+            ImageOptionTypeToAdd={
+                "type":"radio-group",
+                "label":"Radio Group",
+                "name":this.refs.surveyQuestion.getValue(),
+                "values":[
+                    {
+                        "label":"Option 1",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 2",
+                        "value":'<img src="..."/>'
+                    },
+                    {
+                        "label":"Option 3",
+                        "value":'<img src="..."/>'
+                    }
+                ]
+            }
+        }
+    }
     render() {
         const actions = [
             <FlatButton
@@ -182,7 +284,7 @@ class SurveyBuilder extends Component {
             <FlatButton
                 label="Submit"
                 primary={true}
-                onClick={this.handleClose}
+                onClick={this.SaveImageQuestion}
             />,
         ];
         return (
@@ -192,7 +294,7 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="20"
                         ref="surveyName"
-                        value={this.state.surveyName}
+
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
@@ -207,22 +309,27 @@ class SurveyBuilder extends Component {
                         value={this.state.value24}
                         onChange={this.handleChangeTimePicker24}
                         defaultTime={null}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
-                        textFieldStyle={{'width':'150px'}}
+                        style={{'margin-top': '24px', 'margin-right': '5px'}}
+                        textFieldStyle={{'width': '150px'}}
                     />
                     <RaisedButton label="Save" style={styles}
                                   onClick={this.saveTheForm}
-                    ></RaisedButton>
+                    />
                     <RaisedButton label="Publish" style={styles} onClick={() => {
-                        this.props.history.push("/ShareSurvey");
-                    }}></RaisedButton>
+                        this.props.history.push({
+                            pathname: '/ShareSurvey',
+                            state: this.state.surveyId
+                        })
+
+                    }}/>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">
                         <div id="editor"></div>
+                        <div id="editor_t"></div>
                     </div>
                 </div>
-                <div class="row justify-content-end">
+                <div class="row col-md-11 justify-content-end">
                     <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
                 </div>
                 <Dialog
@@ -231,15 +338,39 @@ class SurveyBuilder extends Component {
                     modal={true}
                     contentStyle={customContentStyle}
                     open={this.state.open}
+                    autoScrollBodyContent={true}
                 ><div>
-                    <TextField
-                        hintText="Enter Survey Question"
-                        maxLength="50"
-                        ref="surveyQuestion"
-                        fullWidth={true}
-                        style={{'margin-top':'24px','margin-right':'5px'}}
-                    /><br/>
-                    <input type="file" Place/><br/>
+                    <div class="row">
+                        <TextField
+                            hintText="Enter Survey Question"
+                            maxLength="50"
+                            ref="surveyQuestion"
+                            fullWidth={true}
+                            style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                        />
+                        <div class="Questrial" style={{'font-size': '15px'}}>Select Question Type</div>
+                        <DropDownMenu
+                            value={this.state.ImageOptionType}
+                            onChange={this.handleChange}
+                            style={styles.customWidth}
+                            autoWidth={true}
+                        >
+                            <MenuItem value={1} primaryText="CheckBox"/>
+                            <MenuItem value={2} primaryText="Radio Button"/>
+                        </DropDownMenu>
+                    </div>
+                    <br/>
+                    {
+                        this.state.imageChoice.map((image,index)=>(
+                            <div key={index}>
+                                {index+1}. <input type="file" style={{'margin-bottom':'10px'}} onChange={this.uploadTheImages}/>
+                            </div>
+                        ))
+                    }
+                    <IconButton tooltip="Add Option" touch={true} tooltipPosition="bottom-right">
+                        <ContentAdd onClick={()=>{this.addImageOption()}}/>
+                    </IconButton>
+                    {console.log("ImagesArray"+this.state.ImageOptionsArray)}
 
                 </div>
                 </Dialog>
