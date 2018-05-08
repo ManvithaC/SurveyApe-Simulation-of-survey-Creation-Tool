@@ -30,6 +30,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;

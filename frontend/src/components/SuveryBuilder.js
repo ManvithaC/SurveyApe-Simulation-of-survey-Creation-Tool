@@ -161,7 +161,6 @@ class SurveyBuilder extends Component {
                 "Access-Control-Allow-Origin": true
             }
         };
-
         const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
 
         const headers = {
@@ -181,6 +180,7 @@ class SurveyBuilder extends Component {
                 surveyId: response.data.surveyId
             })
         })
+
             .catch(error => {
                 swal("got error");
                 console.log(error);
