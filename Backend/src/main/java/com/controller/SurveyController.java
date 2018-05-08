@@ -82,7 +82,7 @@ public class SurveyController {
         JSONObject survey=new JSONObject(surveyrequest);
         JSONObject temp=new JSONObject();
         temp.put("questions",survey.getJSONArray("data"));
-        String output = surveyService.submitSurvey(temp, surveyId);
+        String output = surveyService.submitSurvey(temp, surveyId,session);
         return null;
     }
 
@@ -92,7 +92,7 @@ public class SurveyController {
     @GetMapping(path = "/surveys") // Map ONLY POST Requests
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // //if(session.getAttribute("email")!=null){
-
+         System.out.println("inside fetch submitted"+session.getAttribute("username"));
         return surveyService.fetchcreatedsubmittedSurveys(session);
     }
 

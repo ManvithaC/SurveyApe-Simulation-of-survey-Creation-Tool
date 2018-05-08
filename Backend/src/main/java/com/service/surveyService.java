@@ -49,7 +49,6 @@ public class surveyService {
     public ResponseEntity<?> renderQuestions(int surveyID) {
         System.out.println("inside Questions rendering");
         Survey survey = surveyrepository.findBySurveyId(surveyID);
-    //    User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
         JSONArray questions = new JSONArray();
         JSONObject output = new JSONObject();
         List<Questions> questionsList = survey.getQuestionEntityList();
@@ -85,10 +84,10 @@ public class surveyService {
     }
 
 
-    public JSONArray renderForm(int surveyID) {
+    public JSONArray renderForm(int surveyID,HttpSession session) {
         System.out.println("inside survey");
         Survey survey = surveyrepository.findBySurveyId(surveyID);
-        User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
+        User user = userRepository.findByEmail(session.getAttribute("username").toString());
         JSONArray questions = new JSONArray();
         JSONObject output = new JSONObject();
         List<Questions> questionsList = survey.getQuestionEntityList();
@@ -140,7 +139,7 @@ public class surveyService {
         }
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType("general");
-        User user = userRepository.findByEmail("sanjayraghu05@gmail.com");
+        User user = userRepository.findByEmail(session.getAttribute("username").toString());
         user.getSurveyEntities().add(surveyEntity);
         surveyEntity.setOwner(user);
         surveyEntity.setSurveyName(survey.getString("surveyName"));
@@ -190,10 +189,10 @@ public class surveyService {
     }
 
 
-    public String submitSurvey(JSONObject survey, Integer surveyId) {
+    public String submitSurvey(JSONObject survey, Integer surveyId,HttpSession session) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         //String userId = survey.getString("userId");
-        User userEntity = userRepository.findByEmail("sanjayraghu05@gmail.com");
+        User userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
         List<Answer> answers = new ArrayList<>();
@@ -243,7 +242,6 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("General");
         surveyEntity.setIsPublished(1);
-        //{"SurveyType":"General Survey","surveyId":12,"SurveyeesEmail":["sanjayraghu05@gmail.com"],"SendVia":"link"}
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
         System.out.println("inside general survey");
         return null;
@@ -254,7 +252,6 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("Closed");
         surveyEntity.setIsPublished(1);
-        //{"SurveyType":"General Survey","surveyId":12,"SurveyeesEmail":["sanjayraghu05@gmail.com"],"SendVia":"link"}
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
         System.out.println("inside closed survey");
         return null;
@@ -322,7 +319,8 @@ public class surveyService {
 
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // String usermail = session.getAttribute("email").toString();
-        String usermail = "sanjayraghu05@gmail.com";
+      //  System.out.println("asdddddddddddddd"+session.getAttribute("username"));
+        String usermail = (String) session.getAttribute("username");
         User user = userRepository.findByEmail(usermail);
         JSONArray output = new JSONArray();
         JSONArray output1 = new JSONArray();
