@@ -196,7 +196,7 @@ clickedEdit=(temp,name)=>{
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
                                         <div className="icon">
                                         {
-                                            card.status == 'Saved' ? (
+                                            card.status == 'Saved' || card.status=='To be Submitted'? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
                                                 >

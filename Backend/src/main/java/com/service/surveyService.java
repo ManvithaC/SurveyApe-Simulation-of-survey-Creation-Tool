@@ -5,6 +5,7 @@ import com.repository.optionRepository;
 import com.repository.questionRepository;
 import com.repository.surveyRepository;
 import com.repository.valueRepository;
+import com.repository.inviteRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class surveyService {
 
     @Autowired
     public valueRepository valueRepository;
+
+    @Autowired
+    public inviteRepository inviteRepository;
 
     @Autowired
     public InviteService inviteService;
@@ -255,7 +259,7 @@ public class surveyService {
     }
 
 
-    public ResponseEntity<?> closedSurvey(JSONObject survey) {
+    public ResponseEntity<?> closedSurvey(JSONObject survey,HttpSession session) {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("Closed");
         surveyEntity.setIsPublished(1);
@@ -361,6 +365,25 @@ public class surveyService {
             message2.put("expiryDate", dateString);
             output1.put(message2);
         }
+        List<Invites> invites = inviteRepository.findByemailId(usermail);
+        for(int j=0;j<invites.size();j++){
+            JSONObject message3 = new JSONObject();
+            if(invites.get(j).getIsAccessed()==0){
+            message3.put("id", invites.get(j).getSurveyEntity().getSurveyId());
+            message3.put("name",invites.get(j).getSurveyEntity().getSurveyName());
+            message3.put("status","To be Submitted");
+            Date currentTime=new Date(invites.get(j).getSurveyEntity().getExpiry()*1000);
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+            String dateString = formatter.format(currentTime);
+            System.out.println(dateString);
+            message3.put("expiryDate", dateString);
+            output1.put(message3);
+
+            }
+        }
+
+
+
         finaloutput.put(output);
         finaloutput.put(output1);
 
