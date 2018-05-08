@@ -56,7 +56,7 @@ public class SurveyController {
     ResponseEntity<?> closedSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
-        return surveyService.closedSurvey(survey);
+        return surveyService.closedSurvey(survey,session);
     }
 
 
