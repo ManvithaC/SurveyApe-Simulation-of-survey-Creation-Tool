@@ -11,6 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.http.HttpSession;
 
@@ -40,6 +46,43 @@ public class SurveyController {
         message.put("surveyId", surveyId);
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
+
+    @PostMapping(path = "/uploadImage",produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> UploadImages(@RequestParam(name="file", required=false) MultipartFile file, HttpSession session) throws IOException {
+        // @ResponseBody means the returned String is the response, not a view name
+        // @RequestParam means it is a parameter from the GET or POST request
+        //System.out.println(surveyrequest);
+        System.out.println(session.getAttribute("username")+"--------");
+        if (file.isEmpty()) {
+            System.out.println("Empty File");
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        else {
+            //String userInsession = (String) session.getAttribute("username");
+            //System.out.println("User Session " + userInsession);
+            System.out.println("File name in body ----" + file);
+
+            System.out.println("File name " + file.getOriginalFilename());
+            byte[] bytes = file.getBytes();
+            System.out.println("Working Directory = " +
+                    System.getProperty("user.dir"));
+
+            String UPLOADED_FOLDER = System.getProperty("user.dir")+"\\public\\";
+            long timestamp = System.currentTimeMillis() / 1000L;
+            System.out.println("Timestamp"+timestamp);
+            Path path = Paths.get(UPLOADED_FOLDER + timestamp+file.getOriginalFilename());
+            System.out.println("path to upload the file " + path);
+            String UploadedFilePath = path.toString();
+            Files.write(path, bytes);
+            JSONObject message = new JSONObject();
+            message.put("UploadedFilePath", UploadedFilePath);
+            System.out.println("Message "+message.toString());
+            return new ResponseEntity<>(message,HttpStatus.CREATED);
+        }
+        }
+
 
 
     @PostMapping(path = "/generalSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

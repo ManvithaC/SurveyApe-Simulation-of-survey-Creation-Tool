@@ -36,7 +36,11 @@ const customContentStyle = {
     width: '50%',
     maxWidth: 'none',
 };
+const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
 
+const headers = {
+    'Accept': 'application/json'
+};
 var editor;
 
 class SurveyBuilder extends Component {
@@ -53,7 +57,8 @@ class SurveyBuilder extends Component {
             formData: '',
             surveyId: '',
             surveyName:'',
-            ImageOptionType:''
+            ImageOptionType:'',
+            ImageOptionsArray:[]
         };
 
     }
@@ -173,27 +178,13 @@ class SurveyBuilder extends Component {
             credentials: 'include'
         }).then(response => {
             this.setState({
-                            surveyId: response.data.surveyId
-                        })
+                surveyId: response.data.surveyId
+            })
         })
             .catch(error => {
                 swal("got error");
                 console.log(error);
             });
-
-        // axios.create({withCredentials: true})
-        //     .post(`${ROOT_URL}/survey`, payload, axiosConfig)
-        //     .then(response => {
-        //
-        //       console.log(response);
-        //         this.setState({
-        //             surveyId: response.data.surveyId
-        //         })
-        //     })
-        //     .catch(error => {
-        //         swal("got error");
-        //         console.log(error);
-        //     });
     };
 
     addImageOption =() =>{
@@ -209,6 +200,31 @@ class SurveyBuilder extends Component {
         this.setState({ImageOptionType});
     }
 
+    uploadTheImages = (event) =>{
+        const payload = new FormData();
+        payload.append("name",event.target.files[0].name);
+        payload.append("file", event.target.files[0]);
+        payload.append('username', this.state.username);
+
+        fetch(`${api}/uploadImage`, {
+            method: 'POST',
+            body: payload,
+            headers: {
+                ...headers,
+            },
+            credentials:'include'
+        }).then((response) => {
+            //alert("uploadFile: "+res.status);
+            console.log('respon'+Object.keys(response));
+            console.log('responsee'+response.UploadedFilePath);
+            //var Images = this.state.ImageOptionsArray;
+            //this.setState({ImageOptionsArray:Images.push(res)});
+
+        }).catch(error => {
+            console.log("uploadFile - This is error");
+            return error;
+        });
+    }
     SaveImageQuestion =() =>{
         //TODO:Upload the images and get the links of images
         //Insert into div
@@ -298,14 +314,14 @@ class SurveyBuilder extends Component {
                     />
                     <RaisedButton label="Save" style={styles}
                                   onClick={this.saveTheForm}
-                    ></RaisedButton>
+                    />
                     <RaisedButton label="Publish" style={styles} onClick={() => {
                         this.props.history.push({
                             pathname: '/ShareSurvey',
                             state: this.state.surveyId
                         })
 
-                    }}></RaisedButton>
+                    }}/>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">
@@ -325,38 +341,38 @@ class SurveyBuilder extends Component {
                     autoScrollBodyContent={true}
                 ><div>
                     <div class="row">
-                            <TextField
-                                hintText="Enter Survey Question"
-                                maxLength="50"
-                                ref="surveyQuestion"
-                                fullWidth={true}
-                                style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
-                            />
-                            <div class="Questrial" style={{'font-size': '15px'}}>Select Question Type</div>
-                            <DropDownMenu
-                                value={this.state.ImageOptionType}
-                                onChange={this.handleChange}
-                                style={styles.customWidth}
-                                autoWidth={true}
-                            >
-                                <MenuItem value={1} primaryText="CheckBox"/>
-                                <MenuItem value={2} primaryText="Radio Button"/>
-                            </DropDownMenu>
+                        <TextField
+                            hintText="Enter Survey Question"
+                            maxLength="50"
+                            ref="surveyQuestion"
+                            fullWidth={true}
+                            style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                        />
+                        <div class="Questrial" style={{'font-size': '15px'}}>Select Question Type</div>
+                        <DropDownMenu
+                            value={this.state.ImageOptionType}
+                            onChange={this.handleChange}
+                            style={styles.customWidth}
+                            autoWidth={true}
+                        >
+                            <MenuItem value={1} primaryText="CheckBox"/>
+                            <MenuItem value={2} primaryText="Radio Button"/>
+                        </DropDownMenu>
                     </div>
                     <br/>
                     {
                         this.state.imageChoice.map((image,index)=>(
                             <div key={index}>
-                                {index+1}. <input type="file" style={{'margin-bottom':'10px'}}/>
+                                {index+1}. <input type="file" style={{'margin-bottom':'10px'}} onChange={this.uploadTheImages}/>
                             </div>
                         ))
                     }
                     <IconButton tooltip="Add Option" touch={true} tooltipPosition="bottom-right">
                         <ContentAdd onClick={()=>{this.addImageOption()}}/>
                     </IconButton>
+                    {console.log("ImagesArray"+this.state.ImageOptionsArray)}
 
-
-                    </div>
+                </div>
                 </Dialog>
             </div>
         );
