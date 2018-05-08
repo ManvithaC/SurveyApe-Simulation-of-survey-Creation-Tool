@@ -10,10 +10,8 @@ import java.util.List;
 @Repository
 public interface inviteRepository extends CrudRepository<Invites, String> {
     List<Invites> findBySurveyEntity(Survey survey);
-<<<<<<< HEAD
     List<Invites> findByemailId(String email);
-=======
->>>>>>> 613416ea77c3073695342c2fe55630cebf31c298
+
     Invites findByInviteid(int p);
 }
 

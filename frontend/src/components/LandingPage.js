@@ -26,7 +26,8 @@ import MenuItem from 'material-ui/MenuItem';
 
 import {slideInRight, slideInLeft, fadeInUp,fadeIn,fadeInDown} from 'react-animations';
 import Stats from "./Stats";
-
+import axios from "axios/index";
+const ROOT_URL = 'http://localhost:8080';
 const styles = {
     slideInRight: {
         animation: 'x 0.8s',
@@ -72,43 +73,35 @@ class LandingPage extends Component{
 
 
     handleSignOutSubmit() {
-        // alert("inside sigin");
 
-
-        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
-
-        const headers = {
-            'Accept': 'application/json'
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
         };
 
-        const dologout= fetch(`${api}/logout`, {
-            method: 'POST',
-            headers: {
-                ...headers,
-                'Content-Type': 'application/json'
-            },
+        axios.create({withCredentials: true})
+            .get(`${ROOT_URL}/logout`, axiosConfig)
+            .then(response => {
+                if(response.data.code==200){
+                    this.setState(
+                        {
+                            isLoggedin: false
+                        }
+                    );
+                    this.props.history.push("/");
+                }
+                else{
 
-            credentials: 'include'
-        }).then(res => res.json())
+                }
+            })
             .catch(error => {
-
+                //swal("got error");
+                console.log(error);
             });
 
-        dologout.
-        then((data)=>{
-            console.log(data);
-          if(data.code==200){
-                this.setState(
-                    {
-                        isLoggedin: false
-                    }
-                );
-                this.props.history.push("/");
-            }
-            else{
 
-            }
-        });
     }
 
 

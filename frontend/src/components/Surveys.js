@@ -12,6 +12,9 @@ import * as $ from "jquery";
 import axios from "axios/index";
 //import swal from "sweetalert/typings/sweetalert";
 import IconButton from 'material-ui/IconButton';
+//import swal from "sweetalert/typings/sweetalert";
+
+import swal1 from 'sweetalert';
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -82,6 +85,19 @@ class Surveys extends Component{
                     surveysCreated: response.data[0],
                     surveysToSubmit:response.data[1]
                 });
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+
+        axios.create({withCredentials: true})
+            .get(`${ROOT_URL}/session`, axiosConfig)
+            .then(response => {
+               if(response.data.code==400){
+                   swal1("Invalid Session", "Please Sign in", "error")
+                   this.props.history.push("/");
+               }
             })
             .catch(error => {
                 //swal("got error");

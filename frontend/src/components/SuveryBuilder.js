@@ -162,12 +162,6 @@ class SurveyBuilder extends Component {
                 "Access-Control-Allow-Origin": true
             }
         };
-        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
-
-        const headers = {
-            'Accept': 'application/json'
-        };
-
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/survey`, payload, axiosConfig)
             .then(response => {
