@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface answerRepository extends CrudRepository<Answer, String> {
 
 
-    Answer findByQuestionEntityQuestionIdAndUserEntityId(int questionid,int answerid);
+    Answer findByQuestionEntityQuestionIdAndUserEntityId(int questionid,int userid);
 
 
 }

@@ -1,8 +1,9 @@
 package com.controller;
 
 
-import com.entity.User;
+import com.entity.*;
 import com.service.surveyService;
+import com.repository.*;
 import org.hibernate.query.criteria.internal.CriteriaSubqueryImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,6 +32,14 @@ public class SurveyController {
     @Autowired
     private surveyService surveyService;
 
+    @Autowired
+    private surveyRepository surveyRepository;
+
+    @Autowired
+    private answerRepository answerRepository;
+
+    @Autowired
+    private userRepository userRepository;
 
     @PostMapping(path = "/survey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
@@ -47,19 +57,18 @@ public class SurveyController {
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/uploadImage",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/uploadImage", produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
-    ResponseEntity<?> UploadImages(@RequestParam(name="file", required=false) MultipartFile file, HttpSession session) throws IOException {
+    ResponseEntity<?> UploadImages(@RequestParam(name = "file", required = false) MultipartFile file, HttpSession session) throws IOException {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         //System.out.println(surveyrequest);
-        System.out.println(session.getAttribute("username")+"--------");
+        System.out.println(session.getAttribute("username") + "--------");
         if (file.isEmpty()) {
             System.out.println("Empty File");
             return new ResponseEntity(HttpStatus.FORBIDDEN);
-        }
-        else {
+        } else {
             //String userInsession = (String) session.getAttribute("username");
             //System.out.println("User Session " + userInsession);
             System.out.println("File name in body ----" + file);
@@ -69,27 +78,27 @@ public class SurveyController {
             System.out.println("Working Directory = " +
                     System.getProperty("user.dir"));
 
-            String UPLOADED_FOLDER = System.getProperty("user.dir")+"\\public\\";
+            String UPLOADED_FOLDER = System.getProperty("user.dir") + "\\public\\";
             long timestamp = System.currentTimeMillis() / 1000L;
-            System.out.println("Timestamp"+timestamp);
-            Path path = Paths.get(UPLOADED_FOLDER + timestamp+file.getOriginalFilename());
+            System.out.println("Timestamp" + timestamp);
+            Path path = Paths.get(UPLOADED_FOLDER + timestamp + file.getOriginalFilename());
             System.out.println("path to upload the file " + path);
             String UploadedFilePath = path.toString();
             Files.write(path, bytes);
             JSONObject message = new JSONObject();
             message.put("UploadedFilePath", UploadedFilePath);
-            System.out.println("Message "+message.toString());
-            return new ResponseEntity<>(message,HttpStatus.CREATED);
+            System.out.println("Message " + message.toString());
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
         }
-        }
-
+    }
 
 
     @PostMapping(path = "/generalSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ResponseEntity<?> generalSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        //System.out.println(survey);
+        System.out.println(survey);
+        //return null;
         return surveyService.generalSurvey(survey);
     }
 
@@ -99,7 +108,7 @@ public class SurveyController {
     ResponseEntity<?> closedSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
-        return surveyService.closedSurvey(survey,session);
+        return surveyService.closedSurvey(survey, session);
     }
 
 
@@ -107,8 +116,7 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println("Inside open unique "+survey);
-
+        System.out.println("Inside open unique " + survey);
         return surveyService.openSurvey(survey);
     }
 
@@ -118,9 +126,10 @@ public class SurveyController {
     ResponseEntity<?> openSendEmail(@RequestBody String surveyrequest) {
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println(survey);
-         return surveyService.openSendEmail(survey);
+        return surveyService.openSendEmail(survey);
         //return null;
     }
+
 
     @PostMapping(path = "/renderSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
@@ -128,9 +137,52 @@ public class SurveyController {
     ResponseEntity<?> rendersurvey(@RequestBody String surveyrequest, HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        System.out.println(surveyrequest);
-        JSONObject survey = new JSONObject(surveyrequest);
-        return surveyService.renderQuestions(survey.getInt("surveyId"));
+        JSONObject survey1 = new JSONObject(surveyrequest);
+        Survey survey = surveyRepository.findBySurveyId(survey1.getInt("surveyId"));
+        if (survey.getSurveyType().equals("General") || survey.getSurveyType().equals("general")) {
+            System.out.println("---------------------------------------------------------");
+            System.out.println("GENERAL SURVEY");
+            System.out.println("---------------------------------------------------------");
+            return surveyService.renderQuestions(survey1.getInt("surveyId"));
+        } else {
+            // check if survey is accessed or not
+            //get all invites of that survey
+            List<Invites> invites = survey.getInvitesEntities();
+            for (int i = 0; i < invites.size(); i++) {
+                if (survey.getSurveyId() == invites.get(i).getSurveyEntity().getSurveyId()
+                        && invites.get(i).getEmailId().equals(session.getAttribute("username").toString())) {
+                    if (invites.get(i).getIsAccessed() == 1) {
+                        // survey already completed.
+                        //return error to the user.
+                        System.out.println("---------------------------------------------------------");
+                        System.out.println("ISURVEY ALREADY COMPLETED");
+                        System.out.println("---------------------------------------------------------");
+                        return null;
+                    } else {
+                        List<Questions> questions = survey.getQuestionEntityList();
+                        User user = userRepository.findByEmail(session.getAttribute("username").toString());
+                        for (int j = 0; j < questions.size(); j++) {
+                            Answer answer = answerRepository.findByQuestionEntityQuestionIdAndUserEntityId(questions.get(j).getQuestionId()
+                                    , user.getId());
+                            if (answer != null) {
+                                System.out.println("---------------------------------------------------------");
+                                System.out.println("USER ALREADY SUBMITED ONCE SO RENDER FORM WITH ANSWERS");
+                                System.out.println("---------------------------------------------------------");
+                                return surveyService.renderForm(survey1.getInt("surveyId"), session);
+                                // GOT THE SURVEY
+                            }
+                        }
+                        System.out.println("---------------------------------------------------------");
+                        System.out.println("USER DIDNT SUBMIT EVEN ONCE/ SO GENERATE ONLY QUESIONTS");
+                        System.out.println("---------------------------------------------------------");
+                        System.out.println(survey1.getInt("surveyId"));
+                        System.out.println(survey1);
+                        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 
@@ -140,7 +192,11 @@ public class SurveyController {
     ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
-        //System.out.println(surveyrequest);
+
+        System.out.println("------------------------------------");
+        System.out.println("INSIDE SUBMIT SURVEY");
+        System.out.println("------------------------------------");
+        System.out.println(surveyrequest);
         JSONObject survey = new JSONObject(surveyrequest);
         JSONObject temp = new JSONObject();
         temp.put("questions", survey.getJSONArray("data"));

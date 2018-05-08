@@ -75,12 +75,13 @@ class SurveyBuilder extends Component {
         var form;
         var formData;
         if (this.props.location.state) {
+
             form = [];
             this.setState({
                 surveyId: this.props.location.state.surveyId
             });
-
             formData = JSON.stringify(this.props.location.state.data);
+       console.log(formData);
         }
         let fields = [{
             label: 'Star Rating',
@@ -167,22 +168,16 @@ class SurveyBuilder extends Component {
             'Accept': 'application/json'
         };
 
-        fetch(`${api}/survey`, {
-            method: 'POST',
-            headers: {
-                ...headers,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload),
-            credentials: 'include'
-        }).then(response => {
-            this.setState({
-                surveyId: response.data.surveyId
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/survey`, payload, axiosConfig)
+            .then(response => {
+                this.setState({
+                    surveyId:response.data.surveyId
+                });
+                swal("Save Successfull")
             })
-        })
-
             .catch(error => {
-                swal("got error");
+                //swal("got error");
                 console.log(error);
             });
     };

@@ -69,14 +69,12 @@ class Surveys extends Component{
 
 
     componentWillMount() {
-
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Access-Control-Allow-Origin": true
             }
         };
-
         axios.create({withCredentials: true})
             .get(`${ROOT_URL}/surveys`, axiosConfig)
             .then(response => {
@@ -91,10 +89,40 @@ class Surveys extends Component{
             });
     }
 
+    clickedEditToCreate=(temp,name)=>{
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        var surveyid={"surveyId":temp};
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+            .then(response => {
+               console.log(response);
+                this.props.history.push({
+                    pathname: '/renderForm',
+                    state:{
+//                        data:response.data,
+
+                        surveyId:surveyid,
+                        surveyName:name
+                    }
+                })
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+
+    };
+
 clickedEdit=(temp,name)=>{
     let axiosConfig = {
         headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
+                'Content-Type': 'application/json;charset=UTF-8',
             "Access-Control-Allow-Origin": true
         }
     };
@@ -105,7 +133,7 @@ clickedEdit=(temp,name)=>{
     axios.create({withCredentials: true})
         .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
         .then(response => {
-          //  console.log(response);
+            console.log(response);
             this.props.history.push({
                 pathname: '/SurveyBuilder',
                 state:{data:response.data,
@@ -199,6 +227,7 @@ clickedEdit=(temp,name)=>{
                                             card.status == 'Saved' || card.status=='To be Submitted'? (
                                                 <FloatingActionButton mini={true}
                                                                       style={style}
+                                                                      onClick={()=>this.clickedEditToCreate(card.id,card.name)}
                                                 >
                                                     <ContentEdit />
                                                 </FloatingActionButton>

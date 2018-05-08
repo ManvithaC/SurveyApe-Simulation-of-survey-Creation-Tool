@@ -11,6 +11,7 @@ import SurveyBuilder from "./SuveryBuilder";
 import ShareSurvey from "./ShareSurvey";
 import TakeSurvey from "./TakeOpenSurvey";
 import UniqueLinkSurvey from "./UniqueLinkSurvey";
+import RenderForm from "./RenderForm";
 import About from "./About";
 import swal from 'sweetalert';
 import EditSurvey from "./EditSurvey";
@@ -22,6 +23,7 @@ import DP from '../images/user.png';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+
 import {slideInRight, slideInLeft, fadeInUp,fadeIn,fadeInDown} from 'react-animations';
 import Stats from "./Stats";
 
@@ -235,6 +237,10 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
+
+
+
+
                     <Route exact path="/Team" render={() => (
                         <StyleRoot>
                             <div className="slideInRight" style={styles.slideInRight}>
@@ -249,6 +255,14 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
+                    <Route exact path="/renderForm" render={() => (
+                        <StyleRoot>
+                            <div className="slideInRight" style={styles.slideInRight}>
+                                <RenderForm/>
+                            </div>
+                        </StyleRoot>
+                    )}/>
+
                     <Route exact path="/About" render={() => (
                         <StyleRoot>
                             <div className="slideInRight" style={styles.slideInRight}>
@@ -256,6 +270,8 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
+
+
                     <Route exact path="/AccountVerify" render={() => (
                         <StyleRoot>
                             <div className="fadeIn" style={styles.fadeIn}>
