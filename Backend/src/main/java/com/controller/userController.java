@@ -3,6 +3,7 @@ package com.controller;
 import com.service.userService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -49,5 +50,15 @@ public class userController {
         session.setAttribute("username", user.getString("email"));
         System.out.println(session.getId());
         return userService.login(user.getString("email"), user.getString("password"), session);
+    }
+
+    @PostMapping(value = "/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        System.out.println(session.getAttribute("username"));
+        session.invalidate();
+        JSONObject message = new JSONObject();
+        message.put("code", 200);
+        message.put("msg", "Login Successful");
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 }

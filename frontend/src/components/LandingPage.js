@@ -66,6 +66,51 @@ class LandingPage extends Component{
         });
     };
 
+
+
+
+    handleSignOutSubmit() {
+        // alert("inside sigin");
+
+
+        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
+
+        const headers = {
+            'Accept': 'application/json'
+        };
+
+        const dologout= fetch(`${api}/logout`, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            },
+
+            credentials: 'include'
+        }).then(res => res.json())
+            .catch(error => {
+
+            });
+
+        dologout.
+        then((data)=>{
+            console.log(data);
+          if(data.code==200){
+                this.setState(
+                    {
+                        isLoggedin: false
+                    }
+                );
+                this.props.history.push("/");
+            }
+            else{
+
+            }
+        });
+    }
+
+
+
     handleRequestClose = () => {
         this.setState({
             open: false,
@@ -124,7 +169,8 @@ class LandingPage extends Component{
                                                 this.props.history.push("/Surveys");}}/>
                                             <MenuItem primaryText="Sign out" onClick={() => {
                                                 this.handleRequestClose();
-                                                this.props.history.push("/");}}/>
+                                                this.handleSignOutSubmit();
+                                                }}/>
                                         </Menu>
                                     </Popover>
                                 </div></a>
