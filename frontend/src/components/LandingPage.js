@@ -110,8 +110,6 @@ class LandingPage extends Component{
                             <li className="nav-item mynav ">
                                 <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
                                 }}><div>
-                                    {alert("Landing  statee"+this.state.isLoggedin)}
-                                    {alert("Landing  propss"+this.props.isLoggedin)}
                                     <Avatar src={DP} onClick={this.handleClick} />
                                     <Popover
                                         open={this.state.open}
