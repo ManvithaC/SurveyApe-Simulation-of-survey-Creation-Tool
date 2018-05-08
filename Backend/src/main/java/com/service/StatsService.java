@@ -105,7 +105,7 @@ public class StatsService {
             message.put("Startime",surveyEntity.getStartDate());
             message.put("Endtime",surveyEntity.getExpiry());
             message.put("NumberofInvitees",invs.size());
-            message.put("NumberofRespondents",answered);
+            message.put("NumberofRespondents",surveyEntity.getUserEntities().size());
             message.put("code",200);
             message.put("surveyName", surveyEntity.getSurveyName());
             return new ResponseEntity<>(message.toString(), HttpStatus.OK);
