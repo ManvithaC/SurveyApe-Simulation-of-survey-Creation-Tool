@@ -10,6 +10,8 @@ import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
 import axios from 'axios';
 import swal from 'sweetalert';
+import CircularProgress from 'material-ui/CircularProgress';
+
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -28,7 +30,9 @@ class ShareSurvey extends Component {
             SurveyType: 'open',
             SurveyeesEmail: [],
             value: 0,
-            SurveyURL: "E8R5HH"
+            SurveyURL: "E8R5HH",
+            progress:false,
+            isButtonDisabled:false,
         }
     }
 
@@ -76,11 +80,13 @@ class ShareSurvey extends Component {
         };
 
         if (this.state.value == '1') {
-
+            this.setState({'progress':true,isButtonDisabled:true});
             axios.create({withCredentials: true})
                 .post(`${ROOT_URL}/generalSurvey`, toSendJSON, axiosConfig)
                 .then(response => {
-                    swal("Invitations sent")
+                    this.setState({'progress':false});
+                    swal("Invitations sent");
+
                 })
                 .catch(error => {
                     //swal("got error");
@@ -88,10 +94,11 @@ class ShareSurvey extends Component {
                 });
         }
         else if (this.state.value == '2') {
-
+            this.setState({'progress':true,isButtonDisabled:true});
             axios.create({withCredentials: true})
                 .post(`${ROOT_URL}/closedSurvey`, toSendJSON, axiosConfig)
                 .then(response => {
+                    this.setState({'progress':false});
                     swal("Invitations sent")
                 })
                 .catch(error => {
@@ -99,10 +106,11 @@ class ShareSurvey extends Component {
                 });
         }
         else {
-
+            this.setState({'progress':true,isButtonDisabled:true});
             axios.create({withCredentials: true})
                 .post(`${ROOT_URL}/openUnique`, toSendJSON, axiosConfig)
                 .then(response => {
+                    this.setState({'progress':false});
                     swal("Invitations sent")
                 })
                 .catch(error => {
@@ -233,13 +241,17 @@ class ShareSurvey extends Component {
                                 </Paper>
                             </div>
                             <div class="col-md-2">
-                                <RaisedButton label="Send link in Email" onClick={this.addLinkSurveyees}
+                                <RaisedButton label="Send link in Email" onClick={this.addLinkSurveyees} disabled={this.state.isButtonDisabled}
                                               fullWidth={true} className={"mb-3"} primary={true}/>
-                                <RaisedButton label="Send QR Code in Email" onClick={this.addQRCodeSurveyees}
+                                <RaisedButton label="Send QR Code in Email" onClick={this.addQRCodeSurveyees} disabled={this.state.isButtonDisabled}
                                               fullWidth={true} className={"mb-3"} primary={true}/>
                             </div>
+                            {
+                                this.state.progress?<CircularProgress size={50} thickness={5} />:''
+                            }
                         </div>) : ''
                 }
+
             </div>
 
         )

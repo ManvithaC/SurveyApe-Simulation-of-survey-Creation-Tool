@@ -246,8 +246,8 @@ class SurveyBuilder extends Component {
             ))
             var ImageOptionTypeToAdd={
                 "type":"checkbox-group",
-                "label":"Checkbox Group",
-                "name":temp.name,
+                "label":temp.name,
+                "name":"Checkbox Group",
                 "values":temp.values
             }
 
@@ -256,13 +256,13 @@ class SurveyBuilder extends Component {
         else if (this.state.ImageOptionType == '2'){
             this.state.ImageOptionsArray.map((image,index) =>(
                 temp.values.push({
-                    "label":"Option "+index+1,
-                    "value":image,
+                    "value":"Option "+index+1,
+                    "label":image,
                 })
             ))
             var ImageOptionTypeToAdd={
                 "type":"radio-group",
-                "label":"Radio Group",
+                "label":temp.name,
                 "name":temp.name,
                 "values":temp.values
             }
