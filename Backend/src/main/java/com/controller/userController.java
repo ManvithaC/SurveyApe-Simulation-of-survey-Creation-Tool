@@ -52,13 +52,32 @@ public class userController {
         return userService.login(user.getString("email"), user.getString("password"), session);
     }
 
-    @PostMapping(value = "/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
+    @PostMapping(value = "/logout",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> logout(HttpSession session) {
         System.out.println(session.getAttribute("username"));
         session.invalidate();
         JSONObject message = new JSONObject();
         message.put("code", 200);
         message.put("msg", "Login Successful");
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+    }
+
+
+    @ResponseBody
+    @GetMapping(path = "/session")
+    public ResponseEntity<?> fetchSession(HttpSession session){
+        JSONObject message = new JSONObject();
+        System.out.println(session.getAttribute("username"));
+       if(session.getAttribute("username")!=null){
+           message.put("code", 200);
+           message.put("msg", "Session exists");
+       }
+       else
+       {
+           message.put("code", 400);
+           message.put("msg", "Not in session");
+       }
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 }

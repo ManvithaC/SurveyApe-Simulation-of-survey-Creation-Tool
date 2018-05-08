@@ -161,28 +161,16 @@ class SurveyBuilder extends Component {
                 "Access-Control-Allow-Origin": true
             }
         };
-        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
-
-        const headers = {
-            'Accept': 'application/json'
-        };
-
-        fetch(`${api}/survey`, {
-            method: 'POST',
-            headers: {
-                ...headers,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload),
-            credentials: 'include'
-        }).then(response => {
-            this.setState({
-                surveyId: response.data.surveyId
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/survey`, payload, axiosConfig)
+            .then(response => {
+                this.setState({
+                    surveyId:response.data.surveyId
+                });
+                swal("Save Successfull")
             })
-        })
-
             .catch(error => {
-                swal("got error");
+                //swal("got error");
                 console.log(error);
             });
     };

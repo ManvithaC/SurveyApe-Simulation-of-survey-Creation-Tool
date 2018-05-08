@@ -5,9 +5,11 @@ import com.repository.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import javax.mail.internet.MimeMessage;
 import java.util.UUID;
 
 
@@ -106,6 +108,22 @@ public class mailNotificationService {
             e.printStackTrace();
         }
     }
+
+
+    public void sendThanksEmail(User userEntity) throws MailException {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(userEntity.getEmail());
+            message.setFrom("surveycmpe275@gmail.com");
+            message.setSubject("Thanks for the response");
+            message.setText("Hello there! Thank you for taking the survey. The survey will stay anonymous.");
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     /*MimeMessage to send after a user has submitted the survey
