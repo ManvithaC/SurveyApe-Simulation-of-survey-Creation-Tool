@@ -11,6 +11,6 @@ import java.util.List;
 public interface inviteRepository extends CrudRepository<Invites, String> {
     List<Invites> findBySurveyEntity(Survey survey);
     List<Invites> findByemailId(String email);
-
+    Invites findByInviteid(int p);
 }
 

@@ -103,6 +103,25 @@ public class SurveyController {
     }
 
 
+    @PostMapping(path = "/openUnique", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println("Inside open unique "+survey);
+
+        return surveyService.openSurvey(survey);
+    }
+
+
+    @PostMapping(path = "/openSendEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> openSendEmail(@RequestBody String surveyrequest) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        System.out.println(survey);
+         return surveyService.openSendEmail(survey);
+        //return null;
+    }
+
     @PostMapping(path = "/renderSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
@@ -118,24 +137,23 @@ public class SurveyController {
     @PostMapping(path = "/submitsurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
-    ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest,@PathVariable("surveyId") Integer surveyId, HttpSession session) {
-         // @ResponseBody means the returned String is the response, not a view name
+    ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
+        // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         //System.out.println(surveyrequest);
-        JSONObject survey=new JSONObject(surveyrequest);
-        JSONObject temp=new JSONObject();
-        temp.put("questions",survey.getJSONArray("data"));
-        String output = surveyService.submitSurvey(temp, surveyId,session);
+        JSONObject survey = new JSONObject(surveyrequest);
+        JSONObject temp = new JSONObject();
+        temp.put("questions", survey.getJSONArray("data"));
+        String output = surveyService.submitSurvey(temp, surveyId, session);
         return null;
     }
-
 
 
     @ResponseBody
     @GetMapping(path = "/surveys") // Map ONLY POST Requests
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // //if(session.getAttribute("email")!=null){
-         System.out.println("inside fetch submitted"+session.getAttribute("username"));
+        System.out.println("inside fetch submitted" + session.getAttribute("username"));
         return surveyService.fetchcreatedsubmittedSurveys(session);
     }
 
