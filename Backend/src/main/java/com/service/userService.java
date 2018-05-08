@@ -26,7 +26,6 @@ public class userService {
     public ResponseEntity<?> register(String email, String password, String firstname, String lastname) {
         User userEntity = userRepository.findByEmail(email);
         JSONObject message = new JSONObject();
-       // System.out.println(session.getAttribute("username"));
         if (userEntity != null) {
             message.put("message","Username Already Registered");
             message.put("code",400);
@@ -91,9 +90,6 @@ public class userService {
                 message.put("code", 200);
                 message.put("msg", "Login Successful");
                 session.setAttribute("username",userEntity.getEmail());
-               // System.out.println(session.getAttribute("username"));
-                //System.out.println(session.getId());
-                //return new ResponseEntity<>(message.toString(), HttpStatus.OK);
             } else if (passwordEncoder.matches(password, userEntity.getPassword()) && userEntity.getEnable() == 0) {
                 message.put("code", 400);
                 message.put("msg", "Please Verify your account");

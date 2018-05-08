@@ -192,7 +192,14 @@ public class surveyService {
     public String submitSurvey(JSONObject survey, Integer surveyId,HttpSession session) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         //String userId = survey.getString("userId");
-        User userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
+        User userEntity;
+        if(surveyEntity.getSurveyType().equals("General")){
+             userEntity= userRepository.findByEmail("defaultuser@gmail.com");
+       }
+       else
+       {
+            userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
+       }
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
         List<Answer> answers = new ArrayList<>();
