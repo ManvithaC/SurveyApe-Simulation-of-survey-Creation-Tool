@@ -64,42 +64,40 @@ class UserAccount extends Component{
 
     componentWillMount(){
 
-        alert("CWM - STATS");
-
-        const headers = {
-            'Accept': 'application/json'
-        };
-
         // let axiosConfig = {
         //     headers: {
         //         'Content-Type': 'application/json;charset=UTF-8',
         //         "Access-Control-Allow-Origin": true
         //     }
         // };
+        //
         // axios.create({withCredentials: true})
         //     .get(`${ROOT_URL}/getStats/10`, axiosConfig)
         //     .then(response => {
-        //         alert("response data from stats "+response.data);
-        //         // this.setState({
-        //         //     surveyId:response.data.surveyId
-        //         // });
-        //
-        //         //swal("Save Successfull")
+        //         if(response.data.code==200){
+        //             alert("responseee "+response.data);
+        //         }
+        //         else{
+        //             alert("elsee ");
+        //         }
         //     })
         //     .catch(error => {
+        //         //swal("got error");
         //         console.log(error);
         //     });
+
+
+        const headers = {
+            'Accept': 'application/json'
+        };
         const getStats = () =>
             fetch(`${ROOT_URL}/getStats/10`, {
                 method: 'GET',
-                headers: {
-                    ...headers,
-                },
                 credentials:'include'
             }).then(res => {
-                return res.json();
-            }).catch(error => {
-                console.log("uploadFile - This is error");
+                return res.json()})
+                .catch(error => {
+                alert("get Stats - This is error");
                 return error;
             });
 
