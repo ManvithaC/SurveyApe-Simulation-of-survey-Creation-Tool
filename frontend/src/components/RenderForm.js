@@ -15,7 +15,7 @@ require('jquery-ui-sortable');
 require('formBuilder');
 require('formBuilder/dist/form-render.min');
 
-class UniqueLinkSurvey extends Component {
+class RenderForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,36 +25,45 @@ class UniqueLinkSurvey extends Component {
     }
 
     componentWillMount() {
-        console.log('surveyId in UniqueLink--' + this.props.match.params.surveyId);
-        this.setState({
-            surveyID: this.props.match.params.surveyId,
-        });
-
+        //     console.log('surveyId in UniqueLink--' + this.props.match.params.surveyId);
 
         //TODO:Call to backend to retrieve the JSON for form-building
+        this.setState({
+            surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
+        });
     }
 
     componentDidMount() {
+        this.setState({
+             surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
+         });
+
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Access-Control-Allow-Origin": true
             }
         };
+
         var temp = {
-            'surveyId': this.props.match.params.surveyId
+            'surveyId': JSON.stringify(this.props.location.state.surveyId.surveyId)
         };
+
         //var form;
         var originalFormData;
         var field;
+var t=JSON.stringify(this.props.location.state.surveyId.surveyId);
+        alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/renderSurvey`, temp, axiosConfig)
+            .post(`${ROOT_URL}/renderSurvey`, {'surveyId': JSON.stringify(this.props.location.state.surveyId.surveyId)}, axiosConfig)
             .then(response => {
+                console.log(response);
                 ;(function ($) {
                     var fbRender = document.getElementById("fb-render"),
                         //  formData = '[{"type":"checkbox-group","label":"Checkbox Group","name":"checkbox-group-1525469493377","values":[{"label":"Option 1","value":"option-1","selected":true}]},{"type":"date","label":"Date Field","className":"form-control","name":"date-1525469494997"}]';
+
                         formData = JSON.stringify(response.data);
-                    originalFormData = JSON.parse(formData);
+                    originalFormData = (response.data);
                     var formRenderOpts = {
                         formData: formData,
                         dataType: "json"
@@ -103,9 +112,8 @@ class UniqueLinkSurvey extends Component {
                         };
 
                         var payload = {data: originalFormData};
-
                         axios.create({withCredentials: true})
-                            .post(`${ROOT_URL}/submitsurvey/` + temp.surveyId, payload, axiosConfig)
+                            .post(`${ROOT_URL}/submitsurvey/` +t, payload, axiosConfig)
                             .then(response => {
                                 swal("successfully submited");
                                 console.log(response);
@@ -148,4 +156,4 @@ class UniqueLinkSurvey extends Component {
     }
 }
 
-export default withRouter(UniqueLinkSurvey);
+export default withRouter(RenderForm);

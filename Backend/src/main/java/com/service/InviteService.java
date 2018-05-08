@@ -117,8 +117,8 @@ public class InviteService {
                 inviteRepository.save(invitationAfterSaving);
                 if(sendvia.equals("link"))
                     sendEmailInvitations(e, surveylink);
-                if(sendvia.equals("QRCode"))
-                    sendEmailWithQRImage(e, imagePath);
+//                if(sendvia.equals("QRCode"))
+//                    sendEmailWithQRImage(e, imagePath);
 
             }
 

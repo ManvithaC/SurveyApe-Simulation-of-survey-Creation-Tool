@@ -75,12 +75,13 @@ class SurveyBuilder extends Component {
         var form;
         var formData;
         if (this.props.location.state) {
+
             form = [];
             this.setState({
                 surveyId: this.props.location.state.surveyId
             });
-
             formData = JSON.stringify(this.props.location.state.data);
+       console.log(formData);
         }
         let fields = [{
             label: 'Star Rating',
