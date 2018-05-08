@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import '../css/stats.css';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import axios from "axios/index";
 
+const ROOT_URL = 'http://localhost:8080';
 class UserAccount extends Component{
 
     constructor(props) {
@@ -61,8 +63,50 @@ class UserAccount extends Component{
     }
 
     componentWillMount(){
-        //TODO:Backend Call to get the stats from
-        //and set the data to the state
+
+        alert("CWM - STATS");
+
+        const headers = {
+            'Accept': 'application/json'
+        };
+
+        // let axiosConfig = {
+        //     headers: {
+        //         'Content-Type': 'application/json;charset=UTF-8',
+        //         "Access-Control-Allow-Origin": true
+        //     }
+        // };
+        // axios.create({withCredentials: true})
+        //     .get(`${ROOT_URL}/getStats/10`, axiosConfig)
+        //     .then(response => {
+        //         alert("response data from stats "+response.data);
+        //         // this.setState({
+        //         //     surveyId:response.data.surveyId
+        //         // });
+        //
+        //         //swal("Save Successfull")
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
+        const getStats = () =>
+            fetch(`${ROOT_URL}/getStats/10`, {
+                method: 'GET',
+                headers: {
+                    ...headers,
+                },
+                credentials:'include'
+            }).then(res => {
+                return res.json();
+            }).catch(error => {
+                console.log("uploadFile - This is error");
+                return error;
+            });
+
+        getStats()
+            .then((data) => {
+                alert("data from backend"+data);
+            });
     }
 
     render(){
