@@ -194,25 +194,23 @@ class SurveyBuilder extends Component {
         payload.append("name",event.target.files[0].name);
         payload.append("file", event.target.files[0]);
         payload.append('username', this.state.username);
-
-        fetch(`${api}/uploadImage`, {
-            method: 'POST',
-            body: payload,
+        let axiosConfig = {
             headers: {
-                ...headers,
-            },
-            credentials:'include'
-        }).then((response) => {
-            //alert("uploadFile: "+res.status);
-            console.log('respon'+Object.keys(response));
-            console.log('responsee'+response.UploadedFilePath);
-            //var Images = this.state.ImageOptionsArray;
-            //this.setState({ImageOptionsArray:Images.push(res)});
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
 
-        }).catch(error => {
-            console.log("uploadFile - This is error");
-            return error;
-        });
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/uploadImage`, payload, axiosConfig)
+            .then(response => {
+                console.log("File Path "+response.data.UploadedFilePath);
+                swal("Save Successfull")
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
     }
     SaveImageQuestion =() =>{
         //TODO:Upload the images and get the links of images
