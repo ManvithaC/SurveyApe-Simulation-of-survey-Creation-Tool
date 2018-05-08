@@ -135,12 +135,15 @@ public class surveyService {
             // delete that survey
             System.out.println("inside delete survey");
             JSONObject jsonObject = survey.getJSONObject("surveyId");
+
             Survey survey1 = surveyrepository.findBySurveyId(jsonObject.getInt("surveyId"));
+
             User user = survey1.getOwner();
             user.getSurveys().remove(survey1);
             survey1.setOwner(null);
             surveyrepository.delete(survey1);
         }
+        System.out.println(session.getAttribute("username"));
         Survey surveyEntity = new Survey();
         surveyEntity.setSurveyType("general");
         User user = userRepository.findByEmail(session.getAttribute("username").toString());
