@@ -101,7 +101,6 @@ class RenderForm extends Component {
                     };
                     $(fbRender).formRender(formRenderOpts);
 
-
                     document.getElementById('save-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
                         function getObj(objs, key, val) {
@@ -189,8 +188,8 @@ class RenderForm extends Component {
                                 }
                             } else {
 
-                                alert("insied the text value");
-                                alert(value);
+                            //    alert("insied the text value");
+                            //    alert(value);
                                 field.value = value;
                             }
                         }

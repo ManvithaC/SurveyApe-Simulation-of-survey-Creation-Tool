@@ -112,6 +112,7 @@ class TakeOpenUnique extends Component {
                         };
 
                         var payload = {data: originalFormData};
+                        payload.inviteId=this.state.inviteID;
 
                         axios.create({withCredentials: true})
                             .post(`${ROOT_URL}/submitsurvey/` + temp.surveyId, payload, axiosConfig)

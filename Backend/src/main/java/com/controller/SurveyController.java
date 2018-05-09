@@ -209,6 +209,11 @@ public class SurveyController {
     }
 
 
+
+
+
+
+
     @PostMapping(path = "/submitsurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
@@ -226,6 +231,10 @@ public class SurveyController {
     }
 
 
+
+
+
+
     @PostMapping(path = "/savesurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
@@ -240,6 +249,11 @@ public class SurveyController {
         String output = surveyService.saveSurvey(temp, surveyId, session);
         return null;
     }
+
+
+
+
+
 
 
     @ResponseBody

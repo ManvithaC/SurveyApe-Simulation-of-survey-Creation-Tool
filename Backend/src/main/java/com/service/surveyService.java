@@ -130,9 +130,7 @@ public class surveyService {
             // delete that survey
             System.out.println("inside delete survey");
             JSONObject jsonObject = survey.getJSONObject("surveyId");
-
             Survey survey1 = surveyrepository.findBySurveyId(jsonObject.getInt("surveyId"));
-
             User user = survey1.getOwner();
             user.getSurveys().remove(survey1);
             survey1.setOwner(null);
@@ -197,7 +195,8 @@ public class surveyService {
         User userEntity;
         if (surveyEntity.getSurveyType().equals("General")) {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
-        } else {
+        }
+        else {
             userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
             List<Invites> invites = surveyEntity.getInvitesEntities();
             for (int k = 0; k < invites.size(); k++) {
@@ -253,6 +252,15 @@ public class surveyService {
     }
 
 
+//
+//    public String saveopensurvey(JSONObject survey, Integer surveyId, HttpSession session) {
+//
+//        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+//        JSONArray questionsArray = survey.getJSONArray("questions");
+//        List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
+//        List<Answer> answers = new ArrayList<>();
+//        return "asdasd";
+//    }
 
 
     public String saveSurvey(JSONObject survey, Integer surveyId, HttpSession session) {
@@ -263,13 +271,6 @@ public class surveyService {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
         } else {
             userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
-//            List<Invites> invites = surveyEntity.getInvitesEntities();
-//            for (int k = 0; k < invites.size(); k++) {
-//                if (invites.get(k).getEmailId().equals(userEntity.getEmail())) {
-//                    inviteRepository.save(invites.get(k));
-//                    break;
-//                }
-//            }
         }
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
@@ -307,15 +308,15 @@ public class surveyService {
             answers.add(answer);
             questionrepository.save(questionEntities.get(i));
         }
-        userEntity.getSurveyEntities().add(surveyEntity);
+
+       //System.out.println(userEntity.getSurveyEntities().size());
+        //userEntity.getSurveyEntities().add(surveyEntity);
         userEntity.setAnswerEntities(answers);
-        surveyEntity.getUserEntities().add(userEntity);
+        //surveyEntity.getUserEntities().add(userEntity);
         surveyEntity.getQuestionEntityList().addAll(questionEntities);
         surveyrepository.save(surveyEntity);
         return "asdasd";
     }
-
-
 
 
     public ResponseEntity<?> generalSurvey(JSONObject survey) {
@@ -379,12 +380,12 @@ public class surveyService {
 
 
     public ResponseEntity<?> unPublishSurvey(JSONObject survey) {
-        Integer surveyId=survey.getInt("surveyId");
+        Integer surveyId = survey.getInt("surveyId");
         System.out.println(surveyId);
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
         if (surveyEntity != null) {
-            if(surveyEntity.getUserEntities().size()==0) {
+            if (surveyEntity.getUserEntities().size() == 0) {
                 surveyEntity.setIsPublished(0);
                 surveyrepository.save(surveyEntity);
                 message.put("code", 200);
@@ -398,6 +399,7 @@ public class surveyService {
         }
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
+
     public ResponseEntity<?> PublishSurvey(Integer surveyId) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
@@ -456,7 +458,7 @@ public class surveyService {
 //        }
         List<Invites> invites = inviteRepository.findByemailId(usermail);
         for (int j = 0; j < invites.size(); j++) {
-            if(invites.get(j).getSurveyEntity().getIsPublished()==1) {
+            if (invites.get(j).getSurveyEntity().getIsPublished() == 1) {
                 JSONObject message3 = new JSONObject();
                 message3.put("id", invites.get(j).getSurveyEntity().getSurveyId());
                 message3.put("name", invites.get(j).getSurveyEntity().getSurveyName());
@@ -472,9 +474,7 @@ public class surveyService {
                 System.out.println(dateString);
                 message3.put("expiryDate", dateString);
                 output1.put(message3);
-            }
-            else
-            {
+            } else {
                 //do nothing
             }
         }
@@ -513,7 +513,7 @@ public class surveyService {
         invites.setEmailId(survey.getString("email"));
         invites.setSurveyURL(invites.getSurveyURL().replaceFirst("open", "open_send"));
         inviteRepository.save(invites);
-        inviteService.sendEmailInvitations(invites.getEmailId(),invites.getSurveyURL());
+        inviteService.sendEmailInvitations(invites.getEmailId(), invites.getSurveyURL());
         System.out.println("-------------------------------");
         return null;
     }
