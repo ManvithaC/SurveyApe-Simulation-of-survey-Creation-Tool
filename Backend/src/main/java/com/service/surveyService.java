@@ -257,6 +257,8 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("General");
         surveyEntity.setIsPublished(1);
+        surveyEntity.setStartDate(new Date());
+        surveyrepository.save(surveyEntity);
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
         System.out.println("----------------------------");
         System.out.println("inside general survey");
@@ -269,6 +271,8 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("Closed");
         surveyEntity.setIsPublished(1);
+        surveyEntity.setStartDate(new Date());
+        surveyrepository.save(surveyEntity);
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
         System.out.println("inside closed survey");
         return null;
@@ -280,6 +284,8 @@ public class surveyService {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("Open");
         surveyEntity.setIsPublished(1);
+        surveyEntity.setStartDate(new Date());
+        surveyrepository.save(surveyEntity);
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);
         return null;
     }

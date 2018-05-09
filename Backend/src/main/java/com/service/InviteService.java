@@ -63,7 +63,7 @@ public class InviteService {
         if (surveyType.equals("General")) {
             System.out.println("addInvite 1");
             String surveylink = "http://localhost:3000/takeSurvey/u/" + surveyId;
-            String imagePath = "" + surveyId + ".png";
+            String imagePath = "public/" + surveyId + ".png";
             saveQRImage(surveylink, imagePath);
             for (String e : emailIds) {
                 Invites i = new Invites();
@@ -88,7 +88,7 @@ public class InviteService {
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
                 String surveylink = "http://localhost:3000/takeSurvey/closed/" + surveyId + "_" + id;
-                String imagePath = "" + surveyId + "_" + id + ".png";
+                String imagePath = "public/" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
@@ -111,7 +111,7 @@ public class InviteService {
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
                 String surveylink = "http://localhost:3000/takeSurvey/open/" + surveyId + "_" + id;
-                String imagePath = "" + surveyId + "_" + id + ".png";
+                String imagePath = "public/" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
@@ -163,10 +163,12 @@ public class InviteService {
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
             helper.addAttachment("QRImg.png", new File(imagePath));
-            String inlineImage = "<img src=\"cid:QRImg.png\"></img><br/>";
+            String inlineImage = "Hello there! Please take the survey by scanning the below QRImage. The survey will stay anonymous.<br/>"+
+                           "<img src=\"cid:QRImg.png\"></img><br/>";
+
 
             helper.setText(inlineImage + "", true);
-            helper.setSubject("Invitation to Survey");
+            helper.setSubject("SurveyApe - Invitation to Survey");
             helper.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
 

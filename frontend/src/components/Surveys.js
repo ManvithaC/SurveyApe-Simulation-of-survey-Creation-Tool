@@ -7,6 +7,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentEdit from 'material-ui/svg-icons/image/edit';
 import AddSurveyee from 'material-ui/svg-icons/social/group-add';
 import Chart from 'material-ui/svg-icons/editor/insert-chart';
+import UnPublish from 'material-ui/svg-icons/content/remove-circle';
 import ContentAdd from 'material-ui/svg-icons/image/edit';
 import * as $ from "jquery";
 import axios from "axios/index";
@@ -94,10 +95,10 @@ class Surveys extends Component{
         axios.create({withCredentials: true})
             .get(`${ROOT_URL}/session`, axiosConfig)
             .then(response => {
-               if(response.data.code==400){
-                   swal1("Invalid Session", "Please Sign in", "error")
-                   this.props.history.push("/");
-               }
+                if(response.data.code==400){
+                    swal1("Invalid Session", "Please Sign in", "error")
+                    this.props.history.push("/");
+                }
             })
             .catch(error => {
                 //swal("got error");
@@ -117,7 +118,7 @@ class Surveys extends Component{
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
             .then(response => {
-               console.log(response);
+                console.log(response);
                 this.props.history.push({
                     pathname: '/renderForm',
                     state:{
@@ -135,33 +136,65 @@ class Surveys extends Component{
 
     };
 
-clickedEdit=(temp,name)=>{
-    let axiosConfig = {
-        headers: {
+    clickedEdit=(temp,name)=>{
+        let axiosConfig = {
+            headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
-            "Access-Control-Allow-Origin": true
-        }
-    };
-    console.log(temp);
-    console.log(name);
-    var surveyid={"surveyId":temp};
+                "Access-Control-Allow-Origin": true
+            }
+        };
+        console.log(temp);
+        console.log(name);
+        var surveyid={"surveyId":temp};
 
-    axios.create({withCredentials: true})
-        .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
-        .then(response => {
-            console.log(response);
-            this.props.history.push({
-                pathname: '/SurveyBuilder',
-                state:{data:response.data,
-                surveyId:surveyid,
-                surveyName:name
-                }
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+            .then(response => {
+                console.log(response);
+                this.props.history.push({
+                    pathname: '/SurveyBuilder',
+                    state:{data:response.data,
+                        surveyId:surveyid,
+                        surveyName:name
+                    }
+                })
             })
-        })
-        .catch(error => {
-            //swal("got error");
-            console.log(error);
-        });
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    };
+
+    unPublishSurvey=(temp,name)=>{
+
+        //TODO:Call to backend
+
+        // let axiosConfig = {
+        //     headers: {
+        //         'Content-Type': 'application/json;charset=UTF-8',
+        //         "Access-Control-Allow-Origin": true
+        //     }
+        // };
+        // console.log(temp);
+        // console.log(name);
+        // var surveyid={"surveyId":temp};
+        //
+        // axios.create({withCredentials: true})
+        //     .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.props.history.push({
+        //             pathname: '/SurveyBuilder',
+        //             state:{data:response.data,
+        //                 surveyId:surveyid,
+        //                 surveyName:name
+        //             }
+        //         })
+        //     })
+        //     .catch(error => {
+        //         //swal("got error");
+        //         console.log(error);
+        //     });
     };
 
     render(){
@@ -178,23 +211,23 @@ clickedEdit=(temp,name)=>{
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
                                         <div className="icon">
-                                        {
-                                            card.status == 'Saved' ? (
-                                                <FloatingActionButton mini={true}
-                                                                      style={style}
-                                                onClick={()=>this.clickedEdit(card.id,card.name)}
-                                                >
-                                                    <ContentEdit/>
-                                                </FloatingActionButton>
-                                            ) : (
-                                                <FloatingActionButton mini={true}
-                                                                      style={style}
-                                                                      disabled={true}
-                                                >
-                                                    <ContentEdit />
-                                                </FloatingActionButton>
-                                            )
-                                        }
+                                            {
+                                                card.status == 'Saved' ? (
+                                                    <FloatingActionButton mini={true}
+                                                                          style={style}
+                                                                          onClick={()=>this.clickedEdit(card.id,card.name)}
+                                                    >
+                                                        <ContentEdit/>
+                                                    </FloatingActionButton>
+                                                ) : (
+                                                    <FloatingActionButton mini={true}
+                                                                          style={style}
+                                                                          disabled={true}
+                                                    >
+                                                        <ContentEdit />
+                                                    </FloatingActionButton>
+                                                )
+                                            }
 
                                         </div>
                                     </div>
@@ -202,27 +235,35 @@ clickedEdit=(temp,name)=>{
                                         <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
                                         <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
                                         <div className="icon pull-right">
-                                        {
-                                            card.status == 'published' ? (
-                                                <div>
-                                                    <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
-                                                    <AddSurveyee style={styleAdd}
-                                                                 className="pointer"
-                                                                 onClick={() => {
-                                                                     this.props.history.push("/AddSurveyee");
-                                                                 }}
-                                                    />
-                                                    </IconButton>
-                                                    <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
-                                                    <Chart className="icon pointer" style={ChartStyle}
-                                                    onClick={()=>{this.props.history.push({
-                                                        pathname: '/Stats'
-                                                    })}}
-                                                    />
-                                                    </IconButton>
-                                                </div>) : ''
+                                            {
+                                                card.status == 'published' ? (
+                                                    <div>
+                                                        <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
+                                                            <AddSurveyee style={styleAdd}
+                                                                         className="pointer"
+                                                                         onClick={() => {
+                                                                             this.props.history.push("/AddSurveyee");
+                                                                         }}
+                                                            />
+                                                        </IconButton>
+                                                        <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
+                                                            <Chart className="icon pointer" style={ChartStyle}
+                                                                   onClick={()=>{this.props.history.push({
+                                                                       pathname: '/Stats'
+                                                                   })}}
+                                                            />
+                                                        </IconButton>
+                                                        <IconButton tooltip="UnPublish Survey" touch={true} tooltipPosition="top-right">
+                                                            <UnPublish style={ChartStyle}
+                                                                         className="pointer"
+                                                                         onClick={() => {
+                                                                            this.unPublishSurvey;
+                                                                         }}
+                                                            />
+                                                        </IconButton>
+                                                    </div>) : ''
 
-                                        }
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -239,23 +280,23 @@ clickedEdit=(temp,name)=>{
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
                                         <div className="icon">
-                                        {
-                                            card.status == 'Saved' || card.status=='To be Submitted'? (
-                                                <FloatingActionButton mini={true}
-                                                                      style={style}
-                                                                      onClick={()=>this.clickedEditToCreate(card.id,card.name)}
-                                                >
-                                                    <ContentEdit />
-                                                </FloatingActionButton>
-                                            ) : (
-                                                <FloatingActionButton mini={true}
-                                                                      style={style}
-                                                                      disabled={true}
-                                                >
-                                                    <ContentEdit />
-                                                </FloatingActionButton>
-                                            )
-                                        }
+                                            {
+                                                card.status == 'Saved' || card.status=='To be Submitted'? (
+                                                    <FloatingActionButton mini={true}
+                                                                          style={style}
+                                                                          onClick={()=>this.clickedEditToCreate(card.id,card.name)}
+                                                    >
+                                                        <ContentEdit />
+                                                    </FloatingActionButton>
+                                                ) : (
+                                                    <FloatingActionButton mini={true}
+                                                                          style={style}
+                                                                          disabled={true}
+                                                    >
+                                                        <ContentEdit />
+                                                    </FloatingActionButton>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     <div class="row">

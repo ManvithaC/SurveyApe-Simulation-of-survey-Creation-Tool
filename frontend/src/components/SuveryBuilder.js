@@ -13,7 +13,7 @@ import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-
+import Snackbar from 'material-ui/Snackbar';
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -52,7 +52,7 @@ class SurveyBuilder extends Component {
             maxDate: null,
             value24: null,
             open: false,
-
+            snackBarOpen: false,
             imageChoice:[1],
             formData: '',
             surveyId: '',
@@ -70,7 +70,17 @@ class SurveyBuilder extends Component {
     handleClose = () => {
         this.setState({open: false});
     };
+    handleClick = () => {
+        this.setState({
+            snackBarOpen: true,
+        });
+    };
 
+    handleRequestClose = () => {
+        this.setState({
+            snackBarOpen: false,
+        });
+    };
     componentDidMount() {
         var form;
         var formData;
@@ -81,7 +91,7 @@ class SurveyBuilder extends Component {
                 surveyId: this.props.location.state.surveyId
             });
             formData = JSON.stringify(this.props.location.state.data);
-       console.log(formData);
+            console.log(formData);
         }
         let fields = [{
             label: 'Star Rating',
@@ -111,12 +121,11 @@ class SurveyBuilder extends Component {
             disableFields: ['autocomplete', 'button', 'paragraph', 'number', 'hidden', 'header', 'actionButtons'],
             showActionButtons: false
         };
-        //TODO:Below code works for star rating
+
         var editor_t = $("#editor_t").formBuilder({fields, templates});
 
         $("#editor_t").hide();
 
-        //TODO:Below code works for options
         editor = $("#editor").formBuilder(options);
         setTimeout(function () {
             editor.actions.setData(formData);
@@ -194,74 +203,76 @@ class SurveyBuilder extends Component {
         payload.append("name",event.target.files[0].name);
         payload.append("file", event.target.files[0]);
         payload.append('username', this.state.username);
-
-        fetch(`${api}/uploadImage`, {
-            method: 'POST',
-            body: payload,
+        let axiosConfig = {
             headers: {
-                ...headers,
-            },
-            credentials:'include'
-        }).then((response) => {
-            //alert("uploadFile: "+res.status);
-            console.log('respon'+Object.keys(response));
-            console.log('responsee'+response.UploadedFilePath);
-            //var Images = this.state.ImageOptionsArray;
-            //this.setState({ImageOptionsArray:Images.push(res)});
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
 
-        }).catch(error => {
-            console.log("uploadFile - This is error");
-            return error;
-        });
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/uploadImage`, payload, axiosConfig)
+            .then(response => {
+                console.log("File Path "+response.data.UploadedFilePath);
+                this.handleClick();
+                var Images = this.state.ImageOptionsArray;
+                Images.push(response.data.UploadedFilePath);
+                this.setState({
+                    ImageOptionsArray: Images
+                })
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
     }
     SaveImageQuestion =() =>{
-        //TODO:Upload the images and get the links of images
-        //Insert into div
-        //Insert the divs into radiobutton option JSON
-        //Append the form builder JSON and setState so the it adds to the Question Area
 
-        console.log('Image Question Type:'+this.state.ImageOptionType);
-        console.log('Image Question:'+this.refs.surveyQuestion.getValue());
-        var ImageOptionTypeToAdd ={}
+        this.handleClose();
+
+        var temp ={
+            "type":"",
+            "label":"",
+            "name":this.refs.surveyQuestion.getValue(),
+            "values":[]
+        }
         if(this.state.ImageOptionType == '1'){
-            ImageOptionTypeToAdd={
+
+            this.state.ImageOptionsArray.map((image,index) =>(
+                temp.values.push({
+                    "label":"Option "+index,
+                    "value":'<img src="'+image+'"/>'
+                })
+            ))
+            var ImageOptionTypeToAdd={
                 "type":"checkbox-group",
-                "label":"Checkbox Group",
-                "name":this.refs.surveyQuestion.getValue(),
-                "values":[
-                    {
-                        "label":"Option 1",
-                        "value":'<img src="..."/>',
-                        "selected":true
-                    },
-                    {
-                        "label":"Option 2",
-                        "value":'<img src="..."/>',
-                    }
-                ]
+                "label":temp.name,
+                "name":"Checkbox Group",
+                "values":temp.values
             }
+
+            //console.log('Json To add to Survey Builder'+ JSON.stringify(ImageOptionTypeToAdd));
         }
         else if (this.state.ImageOptionType == '2'){
-            ImageOptionTypeToAdd={
+            this.state.ImageOptionsArray.map((image,index) =>(
+                temp.values.push({
+                    "value":"Option "+index+1,
+                    "label":image,
+                })
+            ))
+            var ImageOptionTypeToAdd={
                 "type":"radio-group",
-                "label":"Radio Group",
-                "name":this.refs.surveyQuestion.getValue(),
-                "values":[
-                    {
-                        "label":"Option 1",
-                        "value":'<img src="..."/>'
-                    },
-                    {
-                        "label":"Option 2",
-                        "value":'<img src="..."/>'
-                    },
-                    {
-                        "label":"Option 3",
-                        "value":'<img src="..."/>'
-                    }
-                ]
+                "label":temp.name,
+                "name":temp.name,
+                "values":temp.values
             }
+
         }
+
+        var alreadyBuiltForm = JSON.parse(editor.actions.getData('json'));
+       alreadyBuiltForm.push(ImageOptionTypeToAdd);
+        editor.actions.setData(JSON.stringify(alreadyBuiltForm));
+
     }
     render() {
         const actions = [
@@ -360,6 +371,12 @@ class SurveyBuilder extends Component {
                         <ContentAdd onClick={()=>{this.addImageOption()}}/>
                     </IconButton>
                     {console.log("ImagesArray"+this.state.ImageOptionsArray)}
+                    <Snackbar
+                        open={this.state.snackBarOpen}
+                        message="Image has been Added Successfully"
+                        autoHideDuration={3000}
+                        onRequestClose={this.handleRequestClose}
+                    />
 
                 </div>
                 </Dialog>

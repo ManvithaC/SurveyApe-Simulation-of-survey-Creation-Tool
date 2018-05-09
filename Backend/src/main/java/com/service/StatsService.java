@@ -60,43 +60,44 @@ public class StatsService {
 
            for(Questions q: ques){
 
-               if(q.getType().equals("date") ||
-                       q.getType().equals("text") || q.getType().equals("textarea")){
-                   continue;
-               }
+               if(q.getType().equals("checkbox-group") ||
+                       q.getType().equals("select") || q.getType().equals("radio-group")) {
 
-               List<Options> options = q.getOptionsEntities();
-               Map<String,Integer>  map =  new HashMap<String,Integer>();
-               for(Options o : options){
-                   map.put(o.getOptionValue(),0);
-               }
 
-               List<Answer> answers =  q.getAnswerEntities();
-               for(Answer a: answers){
-                   List<ValuesEntity> vals = a.getValuesEntity();
-                   for(ValuesEntity v : vals){
-                       map.put(v.getValue(),map.get(v.getValue())+1);
+                   List<Options> options = q.getOptionsEntities();
+                   Map<String, Integer> map = new HashMap<String, Integer>();
+                   for (Options o : options) {
+                       map.put(o.getOptionValue(), 0);
                    }
 
+                   List<Answer> answers = q.getAnswerEntities();
+                   for (Answer a : answers) {
+                       List<ValuesEntity> vals = a.getValuesEntity();
+                       for (ValuesEntity v : vals) {
+                           map.put(v.getValue(), map.get(v.getValue()) + 1);
+                       }
+
+                   }
+
+                   JSONObject eachques = new JSONObject();
+                   eachques.put("QuestionDesc", q.getDescription());
+                   eachques.put("QuestionType",q.getType());
+
+                   JSONObject alloptions[] = new JSONObject[map.size()];
+                   int i = 0;
+
+                   for (String key : map.keySet()) {
+                       JSONObject eachOption = new JSONObject();
+                       eachOption.put("label", key);
+                       eachOption.put("count", map.get(key));
+                       alloptions[i] = eachOption;
+                       i++;
+
+                   }
+                   eachques.put("Answers", alloptions);
+                   allques[j] = eachques;
+                   j++;
                }
-
-               JSONObject eachques = new JSONObject();
-               eachques.put("QuestionDesc",q.getDescription());
-
-               JSONObject alloptions  [] = new JSONObject[map.size()];
-               int i=0;
-
-               for (String key : map.keySet()) {
-                 JSONObject eachOption =  new JSONObject();
-                 eachOption.put("label",key);
-                 eachOption.put("count",map.get(key));
-                 alloptions[i] = eachOption;
-                 i++;
-
-               }
-               eachques.put("Answers",alloptions);
-               allques[j] = eachques;
-               j++;
 
            }
 
@@ -104,7 +105,7 @@ public class StatsService {
             message.put("Startime",surveyEntity.getStartDate());
             message.put("Endtime",surveyEntity.getExpiry());
             message.put("NumberofInvitees",invs.size());
-            message.put("NumberofRespondents",answered);
+            message.put("NumberofRespondents",surveyEntity.getUserEntities().size());
             message.put("code",200);
             message.put("surveyName", surveyEntity.getSurveyName());
             return new ResponseEntity<>(message.toString(), HttpStatus.OK);

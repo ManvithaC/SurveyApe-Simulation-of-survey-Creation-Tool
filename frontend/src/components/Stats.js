@@ -2,67 +2,42 @@ import React, {Component} from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import '../css/stats.css';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import axios from "axios/index";
 
+const ROOT_URL = 'http://localhost:8080';
 class UserAccount extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            StatsData: {
-                surveyName: 'SJSU Library Survey',
-                Startime: '05-06-2018 12:40',
-                Endtime: '06-06-2018 22:40',
-                NumberofRespondents: 7,
-                NumberofInvitees: 20,
-                Questions: [{
-                    QuestionDesc: 'What is your Favourite color?',
-                    Answers: [{
-                        label:'Yellow',
-                        count:3
-                    },
-                        {
-                            label:'Blue',
-                            count:2
-                        },
-                        {
-                            label:'Black',
-                            count:1
-                        },
-                        {
-                            label:'White',
-                            count:1
-                        }],
-
-                },
-                    {
-                        QuestionDesc: 'What is your Favorite food?',
-                        Answers: [{
-                            label:'Biryani',
-                            count:3
-                        },
-                            {
-                                label:'Sandwich',
-                                count:0
-                            },
-                            {
-                                label:'Pizza',
-                                count:2
-                            },
-                            {
-                                label:'White',
-                                count:1
-                            }],
-
-                    }]
-
-
-            }
+            StatsData: null,
         }
     }
 
     componentWillMount(){
-        //TODO:Backend Call to get the stats from
-        //and set the data to the state
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/getStats/10`, axiosConfig)
+            .then(response => {
+                if(response.data.code==200){
+                    alert("responseee "+response.data);
+                    this.setState({'StatsData':response.data})
+                }
+                else{
+                    alert("elsee ");
+                }
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
     }
 
     render(){
@@ -81,10 +56,10 @@ class UserAccount extends Component{
                     </div>
                     <div className="col-md-2 col-xs-12 statsBox" >
                         <div className="row justify-content-center boxHeading">
-                            {this.state.StatsData.Startime}
+                           Start Time
                         </div>
                         <div className="row justify-content-center boxText">
-                            05-06-2018 12:40
+                            {this.state.StatsData.Startime}
                         </div>
 
                     </div>
