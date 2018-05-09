@@ -23,16 +23,6 @@ public class Answer {
         this.answerId = answerId;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-
-    private String value;
 
     public com.entity.Questions getQuestionEntity() {
         return questionEntity;
