@@ -184,8 +184,8 @@ class UniqueLinkSurvey extends Component {
                     <div className="col-md-8 surveyBoxUniqueSurvey">
                         <form id="fb-render"></form>
                         <div className={"row justify-content-center"}>
-                            <RaisedButton className={"Questrial"}
-                                          style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>
+                            {/*<RaisedButton className={"Questrial"}*/}
+                                          {/*style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>*/}
                             <RaisedButton className={"Questrial"} style={{'padding': '10px', 'margin': '10px'}}
                                           id="get-formdata" onClick={this.handleOpen}>Submit</RaisedButton>
 

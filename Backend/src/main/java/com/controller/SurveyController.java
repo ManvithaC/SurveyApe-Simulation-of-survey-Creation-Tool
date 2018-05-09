@@ -194,7 +194,7 @@ public class SurveyController {
     }
 
 
-    @PostMapping(path = "/Unpublish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    @PostMapping(path = "/unpublish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> unPublishSurvey(@RequestBody String surveyid) {
         JSONObject jsonObject=new JSONObject(surveyid);

@@ -72,7 +72,6 @@ class LandingPage extends Component{
 
 
 
-
     handleSignOutSubmit() {
 
         let axiosConfig = {
@@ -148,11 +147,13 @@ class LandingPage extends Component{
                                     this.props.history.push("/SurveyBuilder");
                                 }}><button class="signupnav">CREATE A SURVEY</button></a>
                             </li>
+
                             <li className="nav-item mynav ">
                                 <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
                                 }}><div>
+
                                     <Avatar src={DP} onClick={this.handleClick} />
-                                    <Popover
+                                        <Popover
                                         open={this.state.open}
                                         anchorEl={this.state.anchorEl}
                                         anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -171,6 +172,7 @@ class LandingPage extends Component{
                                     </Popover>
                                 </div></a>
                             </li>
+
                         </ul>
                     </nav>
                 </header>

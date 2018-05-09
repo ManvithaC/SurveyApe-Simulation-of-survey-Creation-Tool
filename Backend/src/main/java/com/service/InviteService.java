@@ -62,6 +62,7 @@ public class InviteService {
         String surveyType = s.getSurveyType();
 
         if (surveyType.equals("General")) {
+            System.out.println("INSIDE GENERAL INVITE SERVICE");
             System.out.println("addInvite 1");
             String surveylink = "http://localhost:3000/takeSurvey/u/" + surveyId;
             String imagePath = "public/" + surveyId + ".png";

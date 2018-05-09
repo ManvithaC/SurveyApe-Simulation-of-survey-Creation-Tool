@@ -106,7 +106,6 @@ class SurveyBuilder extends Component {
             },
             icon: '⭐'
         }
-
         ];
 
         let templates;
@@ -116,7 +115,11 @@ class SurveyBuilder extends Component {
                     field: '<span id="' + fieldData.name + '">',
                     onRender: function () {
                         $(document.getElementById(fieldData.name)).rateYo({
-                            rating: 3.5
+                            onSet: function (rating, rateYoInstance) {
+                                this.setState({
+
+                                });
+                            }
                         });
                     }
                 };

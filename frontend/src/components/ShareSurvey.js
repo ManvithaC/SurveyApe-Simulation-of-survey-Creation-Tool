@@ -41,6 +41,15 @@ class ShareSurvey extends Component {
         console.log('Routerrrr' + this.props.location.search);
     }
 
+
+    componentWillUnmount(){
+        this.setState({
+            SurveyeesEmail:[]
+        });
+        this.state.SurveyeesEmail.length=0;
+
+    }
+
     handleChange = (event, index, value) => {
         this.setState({value});
         this.setState({SurveyeesEmail: []});
