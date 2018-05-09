@@ -230,7 +230,7 @@ public class SurveyController {
         return null;
     }
 
-    @PostMapping(path = "/sendThanksMail/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/sendThanksMail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> sendThanksMail(@RequestBody String mailJson, HttpSession session) {
