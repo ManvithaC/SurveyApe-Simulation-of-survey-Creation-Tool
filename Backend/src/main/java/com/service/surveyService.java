@@ -504,7 +504,6 @@ public class surveyService {
 
 
     public ResponseEntity<?> openSendEmail(JSONObject survey) {
-
         String temp = survey.getString("surveyID");
         String[] sarray = temp.split("_");
         Survey surveyEntity = surveyrepository.findBySurveyId((Integer.valueOf(sarray[0])));
@@ -513,6 +512,7 @@ public class surveyService {
         invites.setEmailId(survey.getString("email"));
         invites.setSurveyURL(invites.getSurveyURL().replaceFirst("open", "open_send"));
         inviteRepository.save(invites);
+        inviteService.sendEmailInvitations(invites.getEmailId(),invites.getSurveyURL());
         System.out.println("-------------------------------");
         return null;
     }
