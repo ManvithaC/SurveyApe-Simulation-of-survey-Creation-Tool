@@ -156,10 +156,22 @@ class Surveys extends Component{
         console.log(name);
         var surveyid={"surveyId":temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/unpublish`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/Unpublish`,surveyid, axiosConfig)
             .then(response => {
                 if(response.data.code==200){
                     swal1("Success", "Survey Unpublished Succesfully", "success")
+                    axios.create({withCredentials: true})
+                        .get(`${ROOT_URL}/surveys`, axiosConfig)
+                        .then(response => {
+                            this.setState({
+                                surveysCreated: response.data[0],
+                                surveysToSubmit:response.data[1]
+                            });
+                        })
+                        .catch(error => {
+                            //swal("got error");
+                            console.log(error);
+                        });
                 }
                 else
                 {
@@ -250,7 +262,7 @@ class Surveys extends Component{
                                         <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
                                         <div className="icon pull-right">
                                             {
-                                                card.status == 'published' ? (
+                                                card.status == 'published' || card.status == 'closed'? (
                                                     <div>
                                                         <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
                                                             <AddSurveyee style={styleAdd}
