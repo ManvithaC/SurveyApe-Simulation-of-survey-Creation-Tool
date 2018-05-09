@@ -390,21 +390,27 @@ public class surveyService {
 //        }
         List<Invites> invites = inviteRepository.findByemailId(usermail);
         for (int j = 0; j < invites.size(); j++) {
-            JSONObject message3 = new JSONObject();
-            message3.put("id", invites.get(j).getSurveyEntity().getSurveyId());
-            message3.put("name", invites.get(j).getSurveyEntity().getSurveyName());
+            if(invites.get(j).getSurveyEntity().getIsPublished()==1) {
+                JSONObject message3 = new JSONObject();
+                message3.put("id", invites.get(j).getSurveyEntity().getSurveyId());
+                message3.put("name", invites.get(j).getSurveyEntity().getSurveyName());
 
-            if (invites.get(j).getIsAccessed() == 0) {
-                message3.put("status", "To be Submitted");
-            } else {
-                message3.put("status", "Submitted");
+                if (invites.get(j).getIsAccessed() == 0) {
+                    message3.put("status", "To be Submitted");
+                } else {
+                    message3.put("status", "Submitted");
+                }
+                Date currentTime = new Date(invites.get(j).getSurveyEntity().getExpiry() * 1000);
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                String dateString = formatter.format(currentTime);
+                System.out.println(dateString);
+                message3.put("expiryDate", dateString);
+                output1.put(message3);
             }
-            Date currentTime = new Date(invites.get(j).getSurveyEntity().getExpiry() * 1000);
-            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-            String dateString = formatter.format(currentTime);
-            System.out.println(dateString);
-            message3.put("expiryDate", dateString);
-            output1.put(message3);
+            else
+            {
+                //do nothing
+            }
         }
 
 
