@@ -27,7 +27,12 @@ class Homepage extends Component {
             .then(response => {
                 if(response.data.code==200) {
                     swal("Congratulations", "Account created Successfully.Please Verfiy your account.An Email is sent with Verification Code", "success")
-                    this.props.history.push("/AccountVerify");
+                    console.log(this.state.userdata.email);
+                    this.props.history.push({
+                        pathname: '/AccountVerify',
+                        state: this.state.userdata.email
+                    });
+
                 }
                 else
                 {

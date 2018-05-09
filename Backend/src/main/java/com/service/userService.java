@@ -45,13 +45,12 @@ public class userService {
         }
     }
 
-    public ResponseEntity<?> verifyAccount(String code) {
-        User userEntity = userRepository.findBycode(code);
+    public ResponseEntity<?> verifyAccount(String code,String username) {
+        User userEntity = userRepository.findBycodeAndAndEmail(code,username);
         JSONObject message = new JSONObject();
         if(userEntity==null){
             message.put("code", 404);
             message.put("msg", "User doesn't exists");
-
         }
         else
         {
