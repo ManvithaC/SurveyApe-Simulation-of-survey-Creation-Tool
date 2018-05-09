@@ -157,9 +157,29 @@ class UniqueLinkSurvey extends Component {
         console.log("Do you want to get a confirmation mail?"+this.state.value);//true for yes and false for no
         console.log('Email Id'+this.refs.EmailId.getValue());
 
-        swal("All done","A confirmation email has been sent.","success");
-        this.setState({open:false});
-        this.props.history.push("/Surveys");
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        var payload = {
+            email : this.refs.EmailId.getValue()
+        };
+        console.log(payload);
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/sendThanksMail`, payload, axiosConfig)
+            .then(response => {
+                swal("All done","A confirmation email has been sent.","success");
+                this.setState({open:false});
+                this.props.history.push("/Surveys");
+                console.log(response);
+            })
+            .catch(error => {
+                swal("got error");
+                console.log(error);
+            });
     }
 
     render() {
