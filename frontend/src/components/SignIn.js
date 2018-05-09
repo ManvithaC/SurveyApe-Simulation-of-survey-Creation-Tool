@@ -53,6 +53,7 @@ class Homepage extends Component {
                                     {
                                         isLoggedin: true
                                     }
+
                                 );
                                 this.props.history.push("/SurveyBuilder");
                             }

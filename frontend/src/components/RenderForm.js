@@ -35,8 +35,8 @@ class RenderForm extends Component {
 
     componentDidMount() {
         this.setState({
-             surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
-         });
+            surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
+        });
 
         let axiosConfig = {
             headers: {
@@ -52,7 +52,7 @@ class RenderForm extends Component {
         //var form;
         var originalFormData;
         var field;
-var t=JSON.stringify(this.props.location.state.surveyId.surveyId);
+        var t = JSON.stringify(this.props.location.state.surveyId.surveyId);
         alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`, {'surveyId': JSON.stringify(this.props.location.state.surveyId.surveyId)}, axiosConfig)
@@ -71,7 +71,6 @@ var t=JSON.stringify(this.props.location.state.surveyId.surveyId);
                     $(fbRender).formRender(formRenderOpts);
                     document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
-
                         function getObj(objs, key, val) {
                             val = val.replace('[]', '');
                             return objs.filter(function (obj) {
@@ -97,6 +96,9 @@ var t=JSON.stringify(this.props.location.state.surveyId.surveyId);
                                     }
                                 }
                             } else {
+
+                                alert("insied the text value");
+                                alert(value);
                                 field.value = value;
                             }
                         }
@@ -110,10 +112,10 @@ var t=JSON.stringify(this.props.location.state.surveyId.surveyId);
                                 "Access-Control-Allow-Origin": true
                             }
                         };
-
                         var payload = {data: originalFormData};
+                        console.log(payload);
                         axios.create({withCredentials: true})
-                            .post(`${ROOT_URL}/submitsurvey/` +t, payload, axiosConfig)
+                            .post(`${ROOT_URL}/submitsurvey/` + t, payload, axiosConfig)
                             .then(response => {
                                 swal("successfully submited");
                                 console.log(response);
