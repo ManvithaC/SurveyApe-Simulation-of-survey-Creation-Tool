@@ -296,7 +296,7 @@ class SurveyBuilder extends Component {
                 <div class="row justify-content-end">
                     <TextField
                         hintText="Enter Survey Name"
-                        maxLength="20"
+                        maxLength="40"
                         ref="surveyName"
 
                         style={{'margin-top': '24px', 'margin-right': '5px'}}

@@ -60,10 +60,10 @@ class UserAccount extends Component{
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/getStats/`+SurveyID, axiosConfig)
             .then(response => {
-                alert(response.data.code);
+                //alert(response.data.code);
 
                 if(response.data.code==200){
-                    alert("responseee "+response.data);
+                    //alert("responseee "+response.data);
                     this.setState({'StatsData':response.data})
                 }
                 else if(response.data.code==404){

@@ -414,19 +414,19 @@ public class surveyService {
                     break;
                 }
             }
-//            if (p == 1) {
-//                //remove all answers
-//                for (int j = 0; j < questions.size(); j++) {
-//                    Answer answer = answerRepository.findByQuestionEntityQuestionIdAndUserEntityId(questions.get(j).getQuestionId(), userEntity.getId());
-//                    userEntity.getAnswerEntities().remove(answer);
-//                    answer.setUserEntity(null);
-//                    questions.get(j).getAnswerEntities().remove(answer);
-//                    questionrepository.save(questions.get(j));
-//                    answerRepository.save(answer);
-//                    userRepository.save(userEntity);
-//                    answerRepository.delete(answer);
-//                }
-//            }
+            if (p == 1) {
+                //remove all answers
+                for (int j = 0; j < questions.size(); j++) {
+                    Answer answer = answerRepository.findByQuestionEntityQuestionIdAndUserEntityId(questions.get(j).getQuestionId(), userEntity.getId());
+                    userEntity.getAnswerEntities().remove(answer);
+                    answer.setUserEntity(null);
+                    questions.get(j).getAnswerEntities().remove(answer);
+                    questionrepository.save(questions.get(j));
+                    answerRepository.save(answer);
+                    userRepository.save(userEntity);
+                    answerRepository.delete(answer);
+                }
+            }
         }
 
         JSONArray questionsArray = survey.getJSONArray("questions");
