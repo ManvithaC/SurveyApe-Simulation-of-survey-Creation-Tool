@@ -16,6 +16,7 @@ import IconButton from 'material-ui/IconButton';
 //import swal from "sweetalert/typings/sweetalert";
 
 import swal1 from 'sweetalert';
+import swal from "sweetalert/typings/sweetalert";
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -154,10 +155,15 @@ class Surveys extends Component{
         console.log(name);
         var surveyid={"surveyId":temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Unpublish/`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/unpublish`,surveyid, axiosConfig)
             .then(response => {
-                console.log(response);
-                alert("unpublished")
+                if(response.data.code==200){
+                    swal("Success", "Survey Unpublished Succesfully", "success")
+                }
+                else
+                {
+                    swal("Invalid Attempt", "Cannot Unpublish this survey", "warning")
+                }
             })
             .catch(error => {
                 //swal("got error");
