@@ -113,7 +113,7 @@ public class mailNotificationService {
     }
 
 
-    public void sendThanksEmail(User userEntity) throws MailException {
+    public void sendThanksEmail(String email) throws MailException {
         try {
            /* SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(userEntity.getEmail());
@@ -135,7 +135,7 @@ public class mailNotificationService {
                     "Thank you for using SurveyApe<br/><br/>"+
                     "This is an automated Message from SurveyApe. Please Do not reply to this mail.</p>";
             mimeMessage.setContent(htmlMsg, "text/html");
-            helper.setTo(userEntity.getEmail());
+            helper.setTo(email);
             helper.setSubject("Thanks for registering with SurveyApe");
             helper.setFrom("SurveyApe@no-reply.com");
             javaMailSender.send(mimeMessage);

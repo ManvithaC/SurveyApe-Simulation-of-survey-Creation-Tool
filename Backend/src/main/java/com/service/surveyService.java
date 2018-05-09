@@ -44,6 +44,9 @@ public class surveyService {
     @Autowired
     public inviteRepository inviteRepository;
 
+    @Autowired
+    public mailNotificationService mailNotificationService;
+
 
 
     public ResponseEntity<?> renderopenQuestions(int surveyID,int inviteID) {
@@ -123,9 +126,6 @@ public class surveyService {
             Random rand = new Random();
             int n = rand.nextInt(500) + 1;
             temp.put("name", "temporary" + String.valueOf(n));
-            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
-            System.out.println(temp.get("name"));
-            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
             List<Options> options = questions1.getOptionsEntities();
             JSONArray values = new JSONArray();
             if (!questions1.getType().equals("text") && !questions1.getType().equals("textarea") && !questions1.getType().equals("date")) {
@@ -140,11 +140,10 @@ public class surveyService {
             }
             questions.put(temp);
         }
-
-        System.out.println(questions);
-//        JSONObject surveyName =new JSONObject();
-//        surveyName.put("surveyName",survey.getSurveyName());
-//        questions.put(surveyName);
+//        JSONObject expiray=new JSONObject();
+//        expiray.put("expiray",survey.getExpiry());
+//        questions.put(expiray);
+//
         return new ResponseEntity<>(questions.toString(), HttpStatus.OK);
     }
 
@@ -213,7 +212,10 @@ public class surveyService {
         surveyEntity.setSurveyName(survey.getString("surveyName"));
         surveyEntity.setIsOpen(survey.getInt("isOpen"));
         surveyEntity.setIsPublished(survey.getInt("isPublished"));
+
         surveyEntity.setExpiry(survey.getLong("expiry"));
+
+
         List<Questions> questionEntityList = new ArrayList<>();
         JSONArray questionArray = survey.getJSONArray("questions");
         for (int i = 0; i < questionArray.length(); i++) {
@@ -400,6 +402,8 @@ public class surveyService {
         User userEntity;
         if (surveyEntity.getSurveyType().equals("General")) {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
+
+
         }
         else {
             userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
@@ -475,7 +479,6 @@ public class surveyService {
         return "asdasd";
     }
 
-
     public ResponseEntity<?> generalSurvey(JSONObject survey) {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("General");
@@ -547,12 +550,10 @@ public class surveyService {
                 surveyrepository.save(surveyEntity);
                 message.put("code", 200);
                 message.put("msg", "Survey UnPublished");
-
             }
         } else {
             message.put("code", 404);
             message.put("msg", "Survey does not exist");
-
         }
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
@@ -593,11 +594,19 @@ public class surveyService {
             } else {
                 message.put("status", "Saved");
             }
-            Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
-            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-            String dateString = formatter.format(currentTime);
-            message.put("expiryDate", dateString);
-            System.out.println(dateString);
+
+            if(user.getSurveys().get(i).getExpiry()!=999999999  ) {
+                Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
+                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                String dateString = formatter.format(currentTime);
+                message.put("expiryDate", dateString);
+            }
+            else
+            {
+                message.put("expiryDate", "");
+
+            }
+            //System.out.println(dateString);
             output.put(message);
         }
         //System.out.println(user.getSurveyEntities());
@@ -672,6 +681,11 @@ public class surveyService {
         inviteRepository.save(invites);
         inviteService.sendEmailInvitations(invites.getEmailId(), invites.getSurveyURL());
         System.out.println("-------------------------------");
+        return null;
+    }
+
+    public ResponseEntity<?> sendThankYoumail(String email) {
+        mailNotificationService.sendThanksEmail(email);
         return null;
     }
 }

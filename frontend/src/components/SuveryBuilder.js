@@ -10,10 +10,12 @@ import Dialog from 'material-ui/Dialog';
 import swal from 'sweetalert';
 import axios from 'axios';
 import IconButton from 'material-ui/IconButton';
+import Moment from 'react-moment';
 import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
+
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -89,10 +91,10 @@ class SurveyBuilder extends Component {
         var form;
         var formData;
         if (this.props.location.state) {
-
             form = [];
             this.setState({
-                surveyId: this.props.location.state.surveyId
+                surveyId: this.props.location.state.surveyId,
+                surveyName:this.props.location.state.surveyName
             });
             formData = JSON.stringify(this.props.location.state.data);
             console.log(formData);
@@ -154,7 +156,6 @@ class SurveyBuilder extends Component {
 
     saveTheForm = () => {
         let surveydata = editor.actions.getData('json');
-        alert(surveydata);
         console.log(surveydata);
         let payload = {};
         let data = JSON.parse(surveydata);
@@ -162,10 +163,24 @@ class SurveyBuilder extends Component {
         payload.surveyName = this.refs.surveyName.getValue();
         payload.surveyType = "";
         payload.isOpen = 1;
-        var ts = Date.parse(this.state.minDate);
-        //time stamp in milli seconds.
-        payload.expiry = ts / 1000;
+
+        if(this.state.minDate!=null && this.state.value24!=null) {
+            var dayunix = Date.parse(this.state.minDate) / 1000;
+            var timunix = Date.parse(this.state.value24) / 1000;
+            //time stamp in milli seconds
+            var now = new Date();
+            var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            var timestamp = startOfDay / 1000;
+            var finaltime = dayunix + timunix - timestamp;
+            payload.expiry = finaltime;
+        }
+        else {
+            payload.expiry=999999999;
+       alert(payload.expiry);
+        }
+
         payload.isPublished = 0;
+        alert(JSON.stringify(payload));
         if (this.state.surveyId != '') {
             payload.surveyId = this.state.surveyId
         }
@@ -298,7 +313,12 @@ class SurveyBuilder extends Component {
                         hintText="Enter Survey Name"
                         maxLength="40"
                         ref="surveyName"
-
+                        value={this.state.surveyName}
+                        onChange={(event) => {
+                            this.setState({
+                                    surveyName: event.target.value
+                            });
+                        }}
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                     />
                     <DatePicker
@@ -307,6 +327,7 @@ class SurveyBuilder extends Component {
                         floatingLabelText="Pick Expiry Date"
                         minDate={today}
                     />
+
                     <TimePicker
                         autoOk={true}
                         format="24hr"

@@ -164,8 +164,7 @@ class RenderForm extends Component {
                         dataType: "json"
                     };
                     $(fbRender).formRender(formRenderOpts);
-
-                    document.getElementById('get-formdata').onclick = function () {
+             document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
                         function getObj(objs, key, val) {
                             val = val.replace('[]', '');
