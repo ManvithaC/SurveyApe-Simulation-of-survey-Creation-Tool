@@ -589,10 +589,14 @@ public class surveyService {
             JSONObject message = new JSONObject();
             message.put("name", user.getSurveys().get(i).getSurveyName());
             message.put("id", user.getSurveys().get(i).getSurveyId());
-            if (user.getSurveys().get(i).getIsPublished() == 1) {
-                message.put("status", "published");
-            } else {
-                message.put("status", "Saved");
+            if(user.getSurveys().get(i).getIsOpen() == 0){
+                message.put("status","closed");
+            }else {
+                if (user.getSurveys().get(i).getIsPublished() == 1) {
+                    message.put("status", "published");
+                } else {
+                    message.put("status", "Saved");
+                }
             }
 
             if(user.getSurveys().get(i).getExpiry()!=null) {
@@ -605,7 +609,10 @@ public class surveyService {
                     message.put("enableclose",false);
                 } else {
                     message.put("expiryDate", "");
-                    message.put("enableclose",true);
+                    if(user.getSurveys().get(i).getIsOpen() == 0)
+                        message.put("enableclose",false);
+                    else
+                        message.put("enableclose",true);
 
                 }
             }else{

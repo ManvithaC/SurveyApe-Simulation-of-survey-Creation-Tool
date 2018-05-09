@@ -187,6 +187,18 @@ class Surveys extends Component{
             .then(response => {
                 if(response.data.code==200){
                     swal1("Success", "Survey closed Succesfully", "success")
+                    axios.create({withCredentials: true})
+                        .get(`${ROOT_URL}/surveys`, axiosConfig)
+                        .then(response => {
+                            this.setState({
+                                surveysCreated: response.data[0],
+                                surveysToSubmit:response.data[1]
+                            });
+                        })
+                        .catch(error => {
+                            //swal("got error");
+                            console.log(error);
+                        });
                 }
                 else
                 {
