@@ -57,14 +57,18 @@ class SurveyBuilder extends Component {
             formData: '',
             surveyId: '',
             surveyName:'',
-            ImageOptionType:'',
+            ImageOptionType:1,
             ImageOptionsArray:[]
         };
 
     }
 
     handleOpen = () => {
-        this.setState({open: true});
+        this.setState({
+            open: true,
+            ImageOptionsArray:[],
+        });
+
     };
 
     handleClose = () => {
@@ -118,7 +122,7 @@ class SurveyBuilder extends Component {
         };
 
         var options = {
-            disableFields: ['autocomplete', 'button', 'paragraph', 'number', 'hidden', 'header', 'actionButtons'],
+            disableFields: ['autocomplete', 'button', 'paragraph', 'number', 'hidden', 'header', 'actionButtons','file'],
             showActionButtons: false
         };
 
@@ -240,8 +244,8 @@ class SurveyBuilder extends Component {
 
             this.state.ImageOptionsArray.map((image,index) =>(
                 temp.values.push({
-                    "label":"Option "+index,
-                    "value":'<img src="'+image+'"/>'
+                    "value":"Option "+(index+1),
+                    "label":'<img height=70 width=70 src="'+image+'"/>'
                 })
             ))
             var ImageOptionTypeToAdd={
@@ -256,8 +260,8 @@ class SurveyBuilder extends Component {
         else if (this.state.ImageOptionType == '2'){
             this.state.ImageOptionsArray.map((image,index) =>(
                 temp.values.push({
-                    "value":"Option "+index+1,
-                    "label":image,
+                    "value":"Option "+(index+1),
+                    "label":'<img height=70 width=70 src="'+image+'"/>'
                 })
             ))
             var ImageOptionTypeToAdd={
