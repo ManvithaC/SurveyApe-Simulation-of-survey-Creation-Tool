@@ -86,6 +86,7 @@ class ShareSurvey extends Component {
                 .then(response => {
                     this.setState({'progress':false});
                     swal("Invitations sent");
+                    this.props.history.push("/Surveys");
 
                 })
                 .catch(error => {
@@ -99,7 +100,8 @@ class ShareSurvey extends Component {
                 .post(`${ROOT_URL}/closedSurvey`, toSendJSON, axiosConfig)
                 .then(response => {
                     this.setState({'progress':false});
-                    swal("Invitations sent")
+                    swal("Invitations sent");
+                    this.props.history.push("/Surveys");
                 })
                 .catch(error => {
                     console.log(error);
@@ -111,7 +113,8 @@ class ShareSurvey extends Component {
                 .post(`${ROOT_URL}/openUnique`, toSendJSON, axiosConfig)
                 .then(response => {
                     this.setState({'progress':false});
-                    swal("Invitations sent")
+                    swal("Invitations sent");
+                    this.props.history.push("/Surveys");
                 })
                 .catch(error => {
                     console.log(error);
