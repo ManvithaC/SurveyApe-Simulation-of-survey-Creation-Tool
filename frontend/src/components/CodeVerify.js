@@ -14,32 +14,32 @@ class CodeVerify extends Component {
         this.state = {
             userdata: {
                 "code": "",
+                "username": this.props.location.state
             }
         }
     }
-    handleAccountSubmit(){
-        const temp = this.state.userdata;
 
+    handleAccountSubmit() {
+      const temp = this.state.userdata;
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
                 "Access-Control-Allow-Origin": true
             }
         };
-
+        console.log(temp);
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/verifyaccount`, temp,axiosConfig)
+            .post(`${ROOT_URL}/verifyaccount`, temp, axiosConfig)
             .then(response => {
-                if(response.data.code==200) {
+                if (response.data.code == 200) {
                     swal("Congratulations", "Account Verified Successfully.Please Sign in.", "success")
                     this.props.history.push("/SignIn");
                 }
-                else if(response.data.code==400){
+                else if (response.data.code == 400) {
                     swal("Already Verified", "Account Verified already.Please Sign in.", "warning")
                     this.props.history.push("/SignIn");
                 }
-                else
-                {
+                else {
                     swal("Invalid User", "Please Sign up.", "error")
                     this.props.history.push("/SignUp");
                 }
@@ -49,6 +49,7 @@ class CodeVerify extends Component {
                 console.log('hk')
             });
     }
+
     render() {
         return (
             <div>
@@ -58,9 +59,11 @@ class CodeVerify extends Component {
                     </div>
 
                     <div className="col-md-5 cardbox">
-                        <h1 className='Questrial' style={{'margin-bottom': '15px', 'text-align': 'center'}}>Verify Your Account</h1>
-                        <h6 className='Questrial' style={{'margin-bottom': '20px', 'text-align': 'center'}}>We have sent a code to your Email. Please enter it to verify your account </h6>
-                    <br/>
+                        <h1 className='Questrial' style={{'margin-bottom': '15px', 'text-align': 'center'}}>Verify Your
+                            Account</h1>
+                        <h6 className='Questrial' style={{'margin-bottom': '20px', 'text-align': 'center'}}>We have sent
+                            a code to your Email. Please enter it to verify your account </h6>
+                        <br/>
                         <input type="text" className="inputfieldCode Questrial" placeholder="Enter Verification Code"
                                style={{'margin-bottom': '30px', 'text-align': 'center'}}
                                value={this.state.userdata.code}
