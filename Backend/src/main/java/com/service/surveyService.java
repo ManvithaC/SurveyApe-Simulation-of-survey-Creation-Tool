@@ -44,6 +44,9 @@ public class surveyService {
     @Autowired
     public inviteRepository inviteRepository;
 
+    @Autowired
+    public mailNotificationService mailNotificationService;
+
 
 
     public ResponseEntity<?> renderopenQuestions(int surveyID,int inviteID) {
@@ -678,6 +681,11 @@ public class surveyService {
         inviteRepository.save(invites);
         inviteService.sendEmailInvitations(invites.getEmailId(), invites.getSurveyURL());
         System.out.println("-------------------------------");
+        return null;
+    }
+
+    public ResponseEntity<?> sendThankYoumail(String email) {
+        mailNotificationService.sendThanksEmail(email);
         return null;
     }
 }
