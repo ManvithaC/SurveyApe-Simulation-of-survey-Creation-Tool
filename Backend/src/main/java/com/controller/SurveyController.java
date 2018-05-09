@@ -86,7 +86,7 @@ public class SurveyController {
             String UploadedFilePath = path.toString();
             Files.write(path, bytes);
             JSONObject message = new JSONObject();
-            message.put("UploadedFilePath", UploadedFilePath);
+            message.put("UploadedFilePath","http://localhost:8080/" + timestamp + file.getOriginalFilename());
             System.out.println("Message " + message.toString());
             return new ResponseEntity<>(message.toString(), HttpStatus.CREATED);
         }
