@@ -6,9 +6,21 @@ import axios from "axios/index";
 import '../css/surveys.css';
 import swal from "sweetalert";
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import {FlatButton, TextField} from "material-ui";
 
 const ROOT_URL = 'http://localhost:8080';
-
+const customContentStyle = {
+    width: '50%',
+    maxWidth: 'none',
+};
+const styles = {
+    customWidth: {
+        width: 150,
+    },
+};
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
@@ -20,8 +32,25 @@ class UniqueLinkSurvey extends Component {
         super(props);
         this.state = {
             surveyID: 0,
-            formData: ''
+            formData: '',
+            open: false,
+            value: 1,
+            isEmail:false,
         }
+    }
+    handleOpen = () => {
+        this.setState({open: true});
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
+    handleChange = (event, index, value) => {
+        this.setState({value});
+        if(value){
+            this.setState({isEmail:true})
+        }
+
     }
 
     componentWillMount() {
@@ -124,7 +153,28 @@ class UniqueLinkSurvey extends Component {
 
     }
 
+    submitForm =() => {
+        console.log("Do you want to get a confirmation mail?"+this.state.value);//true for yes and false for no
+        console.log('Email Id'+this.refs.EmailId.getValue());
+
+        swal("All done","A confirmation email has been sent.","success");
+        this.setState({open:false});
+        this.props.history.push("/Surveys");
+    }
+
     render() {
+        const actions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onClick={this.submitForm}
+            />,
+        ];
         return (
             <div>
                 <div className="row  justify-content-center Questrial">
@@ -137,10 +187,39 @@ class UniqueLinkSurvey extends Component {
                             <RaisedButton className={"Questrial"}
                                           style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>
                             <RaisedButton className={"Questrial"} style={{'padding': '10px', 'margin': '10px'}}
-                                          id="get-formdata">Submit</RaisedButton>
+                                          id="get-formdata" onClick={this.handleOpen}>Submit</RaisedButton>
 
                         </div>
                     </div>
+                    <Dialog
+                        title="Yay! Thanks for Submitting the survey"
+                        actions={actions}
+                        modal={true}
+                        contentStyle={customContentStyle}
+                        open={this.state.open}
+                    >
+                        <label>Do you want to get a confirmation mail?</label>
+                        <div>
+                            <SelectField
+                                floatingLabelText="Select"
+                                value={this.state.value}
+                                onChange={this.handleChange}
+                            >
+                                <MenuItem value={null} primaryText="" />
+                                <MenuItem value={false} primaryText="No" />
+                                <MenuItem value={true} primaryText="Yes" />
+                            </SelectField>
+                        </div>
+                        {
+                            this.state.isEmail?(
+                                <TextField
+                                    hintText="Enter Email ID"
+                                    fullWidth={true}
+                                    ref="EmailId"
+                                />
+                            ):''
+                        }
+                    </Dialog>
                 </div>
             </div>
 
