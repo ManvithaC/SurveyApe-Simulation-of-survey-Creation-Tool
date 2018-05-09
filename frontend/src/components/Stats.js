@@ -71,7 +71,7 @@ class UserAccount extends Component{
                     this.props.history.push("/Surveys");
                 }
                 else{
-                    alert("There seems to be some error.");
+                    swal("There seems to be some error.");
                 }
             })
             .catch(error => {

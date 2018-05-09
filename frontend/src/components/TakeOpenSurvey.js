@@ -21,7 +21,7 @@ class TakeSurvey extends Component {
         console.log(this.state.email);
         // backend call for third type of survey
 
-        alert("clicked button");
+        //alert("clicked button");
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',

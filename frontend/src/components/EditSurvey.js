@@ -72,7 +72,7 @@ class EditSurvey extends Component{
     };
     EditTheForm = () =>{
         console.log('surveyName: '+this.refs.surveyName.getValue());
-        alert(editor.actions.getData('json'));
+        //alert(editor.actions.getData('json'));
     };
     render() {
         return (
