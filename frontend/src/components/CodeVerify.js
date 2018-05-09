@@ -5,7 +5,6 @@ import '../css/signup.css';
 import signupimage from '../images/chilling.gif';
 import axios from 'axios';
 import swal from 'sweetalert';
-import CircularProgress from 'material-ui/CircularProgress';
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -16,18 +15,12 @@ class CodeVerify extends Component {
             userdata: {
                 "code": "",
                 "username": this.props.location.state
-            },
-            isButtonDisabled:'',
-            progress:false,
+            }
         }
     }
 
     handleAccountSubmit() {
-      const temp = this.state.userdata;
-        this.setState({
-            isButtonDisabled:'disabled',
-            progress:true,
-        });
+        const temp = this.state.userdata;
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -87,13 +80,7 @@ class CodeVerify extends Component {
                         <div className="row justify-content-center">
                             <button className="ybutton" onClick={() => {
                                 this.handleAccountSubmit();
-                            }}>{
-                                this.state.progress?<CircularProgress
-                                    size={50}
-                                    thickness={5}
-                                    color={'#ffffff'}
-                                />:'Verify My Account'
-                            }
+                            }}>Verify My Account
                             </button>
                         </div>
                         <div className="row justify-content-center">
