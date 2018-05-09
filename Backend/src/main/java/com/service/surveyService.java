@@ -595,16 +595,21 @@ public class surveyService {
                 message.put("status", "Saved");
             }
 
-            if(user.getSurveys().get(i).getExpiry()!=999999999  ) {
-                Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
-                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                String dateString = formatter.format(currentTime);
-                message.put("expiryDate", dateString);
-            }
-            else
-            {
-                message.put("expiryDate", "");
+            if(user.getSurveys().get(i).getExpiry()!=null) {
 
+                if (user.getSurveys().get(i).getExpiry() != 999999999) {
+                    Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
+                    SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                    String dateString = formatter.format(currentTime);
+                    message.put("expiryDate", dateString);
+                } else {
+                    message.put("expiryDate", "");
+
+                }
+                message.put("enableclose",false);
+            }else{
+                message.put("enableclose",true);
+                message.put("expiryDate", "");
             }
             //System.out.println(dateString);
             output.put(message);
