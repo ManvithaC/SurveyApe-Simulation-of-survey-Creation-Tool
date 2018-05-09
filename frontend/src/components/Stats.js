@@ -10,11 +10,43 @@ class UserAccount extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            StatsData: null,
+            StatsData: {
+                surveyName: 'SJSU Library Survey',
+                Startime: '05-06-2018 12:40',
+                Endtime: '06-06-2018 22:40',
+                NumberofRespondents: 7,
+                NumberofInvitees: 20,
+                Questions: [{
+                    QuestionDesc: 'What is your Favourite color?',
+                    Answers: [{
+                        label:'Yellow',
+                        count:3
+                    },
+                        {
+                            label:'Blue',
+                            count:2
+                        },
+                        {
+                            label:'Black',
+                            count:1
+                        },
+                        {
+                            label:'White',
+                            count:1
+                        }],
+
+                }]
+
+
+            }
         }
     }
 
     componentWillMount(){
+
+        if (this.props.location.state) {
+            var SurveyID =this.props.location.state.surveyId;
+        }
 
         let axiosConfig = {
             headers: {
@@ -24,10 +56,10 @@ class UserAccount extends Component{
         };
 
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/getStats/10`, axiosConfig)
+            .post(`${ROOT_URL}/getStats/`+SurveyID, axiosConfig)
             .then(response => {
                 if(response.data.code==200){
-                    alert("responseee "+response.data);
+                    //alert("responseee "+response.data);
                     this.setState({'StatsData':response.data})
                 }
                 else{
@@ -38,6 +70,25 @@ class UserAccount extends Component{
                 //swal("got error");
                 console.log(error);
             });
+
+
+        // const headers = {
+        //     'Accept': 'application/json'
+        // };
+        // const getStats = () =>
+        //     fetch(`${ROOT_URL}/getStats/10`, {
+        //         method: 'GET',
+        //         credentials:'include'
+        //     }).then(res => { res.json()})
+        //         .catch(error => {
+        //         alert("get Stats - This is error");
+        //         return error;
+        //     });
+        //
+        // getStats()
+        //     .then((data) => {
+        //         alert("data from backend"+data);
+        //     });
     }
 
     render(){
@@ -56,10 +107,10 @@ class UserAccount extends Component{
                     </div>
                     <div className="col-md-2 col-xs-12 statsBox" >
                         <div className="row justify-content-center boxHeading">
-                           Start Time
+                            {this.state.StatsData.Startime}
                         </div>
                         <div className="row justify-content-center boxText">
-                            {this.state.StatsData.Startime}
+                            05-06-2018 12:40
                         </div>
 
                     </div>

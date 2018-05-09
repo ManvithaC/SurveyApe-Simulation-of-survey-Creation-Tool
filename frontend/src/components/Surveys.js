@@ -43,30 +43,8 @@ class Surveys extends Component{
     constructor(props){
         super(props);
         this.state={
-            surveysCreated:[
-                {
-                    name : 'Customer Feedback',
-                    expiryDate:'06-06-2018',
-                    status:'published'
-                },
-                {
-                    name : 'Interview Feedback',
-                    expiryDate:'06-06-2018',
-                    status:'Saved'
-                }
-            ],
-            surveysToSubmit:[
-                {
-                    name : 'SJSU Library Feedback',
-                    expiryDate:'06-07-2018',
-                    status:'Saved'
-                },
-                {
-                    name : 'Event Feedback',
-                    expiryDate:'06-05-2018',
-                    status:'Submitted'
-                }
-            ],
+            surveysCreated:[],
+            surveysToSubmit:[]
         }
     }
 
@@ -206,7 +184,7 @@ class Surveys extends Component{
                         <hr style=
                                 {{'width':'50%','textAlign':'center'}}/>
                         {
-                            this.state.surveysCreated.map((card, index) => (
+                            this.state.surveysCreated.reverse().map((card, index) => (
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
@@ -249,7 +227,10 @@ class Surveys extends Component{
                                                         <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
                                                             <Chart className="icon pointer" style={ChartStyle}
                                                                    onClick={()=>{this.props.history.push({
-                                                                       pathname: '/Stats'
+                                                                       pathname: '/Stats',
+                                                                       state:{
+                                                                           surveyId:card.id
+                                                                       }
                                                                    })}}
                                                             />
                                                         </IconButton>
@@ -275,7 +256,7 @@ class Surveys extends Component{
                         <hr style=
                                 {{'width':'50%','textAlign':'center'}}/>
                         {
-                            this.state.surveysToSubmit.map((card, index) => (
+                            this.state.surveysToSubmit.reverse().map((card, index) => (
                                 <div className="EachSurveyBox">
                                     <div class="row">
                                         <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
