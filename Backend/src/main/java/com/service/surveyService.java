@@ -602,11 +602,12 @@ public class surveyService {
                     SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
                     String dateString = formatter.format(currentTime);
                     message.put("expiryDate", dateString);
+                    message.put("enableclose",false);
                 } else {
                     message.put("expiryDate", "");
+                    message.put("enableclose",true);
 
                 }
-                message.put("enableclose",false);
             }else{
                 message.put("enableclose",true);
                 message.put("expiryDate", "");

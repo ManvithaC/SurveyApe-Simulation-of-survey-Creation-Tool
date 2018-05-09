@@ -327,6 +327,9 @@ public class SurveyController {
     public ResponseEntity<?> closeSurvey(@PathVariable("surveyId") Integer surveyId) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
+        System.out.println("------------------------------------");
+        System.out.println("Close Survey"+surveyId);
+        System.out.println("------------------------------------");
 
         return surveyService.closeSurvey(surveyId);
 
