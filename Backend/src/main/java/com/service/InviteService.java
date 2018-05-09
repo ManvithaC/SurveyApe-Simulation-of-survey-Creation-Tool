@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.entity.Invites;
 
 
@@ -49,10 +50,10 @@ public class InviteService {
     public userRepository userRepository;
 
     public String addInvite(Integer surveyId, JSONObject inviteDetails) {
-     //   System.out.println("addInvite 1");
+        //   System.out.println("addInvite 1");
 
         JSONArray emails = inviteDetails.getJSONArray("SurveyeesEmail");
-        String  sendvia  =  inviteDetails.getString("SendVia");
+        String sendvia = inviteDetails.getString("SendVia");
         List<String> emailIds = new ArrayList<String>();
         for (int i = 0; i < emails.length(); i++) {
             emailIds.add((String) emails.get(i));
@@ -63,7 +64,7 @@ public class InviteService {
         if (surveyType.equals("General")) {
             System.out.println("addInvite 1");
             String surveylink = "http://localhost:3000/takeSurvey/u/" + surveyId;
-            String imagePath = "" + surveyId + ".png";
+            String imagePath = "public/" + surveyId + ".png";
             saveQRImage(surveylink, imagePath);
             for (String e : emailIds) {
                 Invites i = new Invites();
@@ -73,10 +74,10 @@ public class InviteService {
                 i.setSurveyURL(surveylink);
                 i.setQRImagePath(imagePath);
                 inviteRepository.save(i);
-                if(sendvia.equals("link"))
-                   sendEmailInvitations(e, surveylink);
-                if(sendvia.equals("QRCode"))
-                   sendEmailWithQRImage(e, imagePath);
+                if (sendvia.equals("link"))
+                    sendEmailInvitations(e, surveylink);
+                if (sendvia.equals("QRCode"))
+                    sendEmailWithQRImage(e, imagePath);
             }
 
         } else if (surveyType.equals("Closed")) {
@@ -88,18 +89,16 @@ public class InviteService {
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
                 String surveylink = "http://localhost:3000/takeSurvey/closed/" + surveyId + "_" + id;
-                String imagePath = "" + surveyId + "_" + id + ".png";
+                String imagePath = "public/" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
-                if(sendvia.equals("link")) {
+                if (sendvia.equals("link")) {
                     User userEntity = userRepository.findByEmail(e);
-                    if(userEntity!=null) {
+                    if (userEntity != null) {
                         sendEmailInvitations(e, surveylink);
                     }
                 }
-//                if(sendvia.equals("QRCode"))
-//                    sendEmailWithQRImage(e, imagePath);
             }
 
         } else if (surveyType.equals("Open")) {
@@ -111,11 +110,11 @@ public class InviteService {
                 Invites invitationAfterSaving = inviteRepository.save(i);
                 int id = invitationAfterSaving.getInviteid();
                 String surveylink = "http://localhost:3000/takeSurvey/open/" + surveyId + "_" + id;
-                String imagePath = "" + surveyId + "_" + id + ".png";
+                String imagePath = "public/" + surveyId + "_" + id + ".png";
                 invitationAfterSaving.setSurveyURL(surveylink);
                 invitationAfterSaving.setQRImagePath(imagePath);
                 inviteRepository.save(invitationAfterSaving);
-                if(sendvia.equals("link"))
+                if (sendvia.equals("link"))
                     sendEmailInvitations(e, surveylink);
 //                if(sendvia.equals("QRCode"))
 //                    sendEmailWithQRImage(e, imagePath);
@@ -126,14 +125,14 @@ public class InviteService {
         return "Invitations sent";
     }
 
-    public void sendEmailInvitations(String emailID, String surveyLink){
+    public void sendEmailInvitations(String emailID, String surveyLink) {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
             message.setSubject("Invitation to Survey");
-            message.setText("Please take the survey using the link "+surveyLink);
+            message.setText("Please take the survey using the link " + surveyLink);
             javaMailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,7 +140,7 @@ public class InviteService {
 
     }
 
-    public void saveQRImage(String surveyLink, String imagePath){
+    public void saveQRImage(String surveyLink, String imagePath) {
 
         try {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -149,46 +148,48 @@ public class InviteService {
 
             Path path = FileSystems.getDefault().getPath(imagePath);
             MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-        }catch (WriterException e) {
+        } catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
         }
     }
 
-    public void sendEmailWithQRImage(String emailID, String imagePath){
+    public void sendEmailWithQRImage(String emailID, String imagePath) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
             helper.addAttachment("QRImg.png", new File(imagePath));
-            String inlineImage = "<img src=\"cid:QRImg.png\"></img><br/>";
+            String inlineImage = "Hello there! Please take the survey by scanning the below QRImage. The survey will stay anonymous.<br/>" +
+                    "<img src=\"cid:QRImg.png\"></img><br/>";
+
 
             helper.setText(inlineImage + "", true);
-            helper.setSubject("Invitation to Survey");
+            helper.setSubject("SurveyApe - Invitation to Survey");
             helper.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
 
 
             javaMailSender.send(message);
-        }catch(Exception e){
-            System.out.println("Unable to send QRImage in mail "+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Unable to send QRImage in mail " + e.getMessage());
         }
 
 
     }
 
 
-    public String getSurveyURL(Integer surveyID){
+    public String getSurveyURL(Integer surveyID) {
         System.out.println("getSurveyURL");
-        Survey s =  surveyrepository.findBySurveyId(surveyID);
-        String surveyType =  s.getSurveyType();
-        if(surveyType.equals("General")) {
-            return "http://localhost:3000/takeSurvey/general/"+surveyID;
-        }else if (surveyType.equals("Open")) {
+        Survey s = surveyrepository.findBySurveyId(surveyID);
+        String surveyType = s.getSurveyType();
+        if (surveyType.equals("General")) {
+            return "http://localhost:3000/takeSurvey/general/" + surveyID;
+        } else if (surveyType.equals("Open")) {
             return "http://localhost:3000/takeSurvey/open/" + surveyID;
-        }else {
+        } else {
             return "no unique survey link";
         }
     }

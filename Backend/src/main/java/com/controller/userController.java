@@ -38,7 +38,8 @@ public class userController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         JSONObject verifycode = new JSONObject(code);
-        return userService.verifyAccount(verifycode.getString("code"));
+        System.out.println(verifycode);
+        return userService.verifyAccount(verifycode.getString("code"),verifycode.getString("username"));
     }
 
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

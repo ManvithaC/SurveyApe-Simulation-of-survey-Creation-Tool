@@ -5,6 +5,7 @@ import '../css/signup.css';
 import signupimage from '../images/signup.jpg';
 import axios from 'axios';
 import swal from 'sweetalert';
+import CircularProgress from 'material-ui/CircularProgress';
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -16,18 +17,29 @@ class Homepage extends Component {
                 "email": "",
                 "firstname": "",
                 "lastname": "",
-                "password": ""
-            }
+                "password": "",
+
+            },
+            isButtonDisabled:'',
+            progress:false,
         }
     }
     handleSignUpSubmit(){
         const temp = this.state.userdata;
+        this.setState({
+            isButtonDisabled:'disabled',
+            progress:true,
+        });
         axios
             .post(`${ROOT_URL}/register`, temp)
             .then(response => {
                 if(response.data.code==200) {
                     swal("Congratulations", "Account created Successfully.Please Verfiy your account.An Email is sent with Verification Code", "success")
-                    this.props.history.push("/AccountVerify");
+                    console.log(this.state.userdata.email);
+                    this.props.history.push({
+                        pathname: '/AccountVerify',
+                        state: this.state.userdata.email
+                    });
                 }
                 else
                 {
@@ -94,9 +106,17 @@ class Homepage extends Component {
                                }}
                         /><br/>
                         <div className="row justify-content-center">
-                            <button className="ybutton" onClick={() => {
+                            <button className="ybutton"
+                                    disabled={this.state.isButtonDisabled}
+                                    onClick={() => {
                                 this.handleSignUpSubmit();
-                            }}>SIGN UP
+                            }}>{
+                                this.state.progress?<CircularProgress
+                                    size={50}
+                                    thickness={5}
+                                    color={'#ffffff'}
+                                />:'SIGN UP'
+                            }
                             </button>
                         </div>
                         <div className="row justify-content-center">

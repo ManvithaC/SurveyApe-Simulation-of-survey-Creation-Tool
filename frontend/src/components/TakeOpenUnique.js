@@ -6,57 +6,36 @@ import axios from "axios/index";
 import '../css/surveys.css';
 import swal from "sweetalert";
 import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import {FlatButton, TextField} from "material-ui";
 
 const ROOT_URL = 'http://localhost:8080';
-const customContentStyle = {
-    width: '50%',
-    maxWidth: 'none',
-};
-const styles = {
-    customWidth: {
-        width: 150,
-    },
-};
+
 window.jQuery = $;
 window.$ = $;
 require('jquery-ui-sortable');
 require('formBuilder');
 require('formBuilder/dist/form-render.min');
 
-class UniqueLinkSurvey extends Component {
+class TakeOpenUnique extends Component {
     constructor(props) {
         super(props);
         this.state = {
             surveyID: 0,
             formData: '',
-            open: false,
-            value: 1,
-            isEmail:false,
+            inviteID:0
         }
-    }
-    handleOpen = () => {
-        this.setState({open: true});
-    };
-
-    handleClose = () => {
-        this.setState({open: false});
-    };
-    handleChange = (event, index, value) => {
-        this.setState({value});
-        if(value){
-            this.setState({isEmail:true})
-        }
-
     }
 
     componentWillMount() {
-        console.log('surveyId in UniqueLink--' + this.props.match.params.surveyId);
+        alert(this.props.match.params.surveyId);
+        var tempSurvey = this.props.match.params.surveyId.split('_');
+        alert(tempSurvey[0]);
+        alert(tempSurvey[1]);
+        let p=Number.parseInt(tempSurvey[0]);
+        let q=Number.parseInt(tempSurvey[1]);
+        console.log('surveyId in UniqueLink--' + parseInt(tempSurvey[0]));
         this.setState({
-            surveyID: this.props.match.params.surveyId,
+            surveyID: p,
+            inviteID: q
         });
 
 
@@ -71,13 +50,14 @@ class UniqueLinkSurvey extends Component {
             }
         };
         var temp = {
-            'surveyId': this.props.match.params.surveyId
+            'surveyId': Number.parseInt(this.state.surveyID),
+            'inviteId':Number.parseInt(this.state.inviteID)
         };
         //var form;
         var originalFormData;
         var field;
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/renderSurvey`, temp, axiosConfig)
+            .post(`${ROOT_URL}/renderopensurvey`, temp, axiosConfig)
             .then(response => {
                 ;(function ($) {
                     var fbRender = document.getElementById("fb-render"),
@@ -91,7 +71,6 @@ class UniqueLinkSurvey extends Component {
                     $(fbRender).formRender(formRenderOpts);
                     document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
-
                         function getObj(objs, key, val) {
                             val = val.replace('[]', '');
                             return objs.filter(function (obj) {
@@ -131,10 +110,12 @@ class UniqueLinkSurvey extends Component {
                             }
                         };
 
+                        alert(temp.inviteId);
                         var payload = {data: originalFormData};
+                        payload.inviteId=temp.inviteId;
 
                         axios.create({withCredentials: true})
-                            .post(`${ROOT_URL}/submitsurvey/` + temp.surveyId, payload, axiosConfig)
+                            .post(`${ROOT_URL}/submitopensurvey/` + temp.surveyId, payload, axiosConfig)
                             .then(response => {
                                 swal("successfully submited");
                                 console.log(response);
@@ -148,33 +129,13 @@ class UniqueLinkSurvey extends Component {
                 })($);
             })
             .catch(error => {
+                swal("already submitted");
                 console.log(error);
             });
 
     }
 
-    submitForm =() => {
-        console.log("Do you want to get a confirmation mail?"+this.state.value);//true for yes and false for no
-        console.log('Email Id'+this.refs.EmailId.getValue());
-
-        swal("All done","A confirmation email has been sent.","success");
-        this.setState({open:false});
-        this.props.history.push("/Surveys");
-    }
-
     render() {
-        const actions = [
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onClick={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                onClick={this.submitForm}
-            />,
-        ];
         return (
             <div>
                 <div className="row  justify-content-center Questrial">
@@ -187,39 +148,10 @@ class UniqueLinkSurvey extends Component {
                             <RaisedButton className={"Questrial"}
                                           style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>
                             <RaisedButton className={"Questrial"} style={{'padding': '10px', 'margin': '10px'}}
-                                          id="get-formdata" onClick={this.handleOpen}>Submit</RaisedButton>
+                                          id="get-formdata">Submit</RaisedButton>
 
                         </div>
                     </div>
-                    <Dialog
-                        title="Yay! Thanks for Submitting the survey"
-                        actions={actions}
-                        modal={true}
-                        contentStyle={customContentStyle}
-                        open={this.state.open}
-                    >
-                        <label>Do you want to get a confirmation mail?</label>
-                        <div>
-                            <SelectField
-                                floatingLabelText="Select"
-                                value={this.state.value}
-                                onChange={this.handleChange}
-                            >
-                                <MenuItem value={null} primaryText="" />
-                                <MenuItem value={false} primaryText="No" />
-                                <MenuItem value={true} primaryText="Yes" />
-                            </SelectField>
-                        </div>
-                        {
-                            this.state.isEmail?(
-                                <TextField
-                                    hintText="Enter Email ID"
-                                    fullWidth={true}
-                                    ref="EmailId"
-                                />
-                            ):''
-                        }
-                    </Dialog>
                 </div>
             </div>
 
@@ -227,4 +159,4 @@ class UniqueLinkSurvey extends Component {
     }
 }
 
-export default withRouter(UniqueLinkSurvey);
+export default withRouter(TakeOpenUnique);

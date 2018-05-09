@@ -30,41 +30,44 @@ class Homepage extends Component {
             'Accept': 'application/json'
         };
 
-            const dologin= fetch(`${api}/login`, {
-                method: 'POST',
-                headers: {
-                    ...headers,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(temp),
-                credentials: 'include'
-            }).then(res => res.json())
-                .catch(error => {
-                    swal("Wrong Password", "Please enter a valid password", "warning")
-                });
-
-            dologin.
-                then((data)=>{
-                if (data.code == 401) {
-                                swal("Wrong Password", "Please enter a valid password", "warning")
-                            }
-                            else if(data.code==200){
-                                this.setState(
-                                    {
-                                        isLoggedin: true
-                                    }
-                                );
-                                this.props.history.push("/SurveyBuilder");
-                            }
-                            else if(data.code==400){
-                                swal("Account UnVerified", "Please verify your Account", "warning")
-                                this.props.history.push("/AccountVerify");
-                            }
-                            else{
-                                swal("Invalid User", "User does not exist.Please Sign up", "error")
-                                this.props.history.push("/signUp");
-                            }
+        const dologin = fetch(`${api}/login`, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(temp),
+            credentials: 'include'
+        }).then(res => res.json())
+            .catch(error => {
+                swal("Wrong Password", "Please enter a valid password", "warning")
             });
+
+        dologin.then((data) => {
+            if (data.code == 401) {
+                swal("Wrong Password", "Please enter a valid password", "warning")
+            }
+            else if (data.code == 200) {
+                this.setState(
+                    {
+                        isLoggedin: true
+                    }
+                );
+                this.props.history.push("/SurveyBuilder");
+            }
+            else if (data.code == 400) {
+                //swal("Account UnVerified", "Please verify your Account", "warning")
+                // this.props.history.push("/AccountVerify");
+                this.props.history.push({
+                    pathname: '/AccountVerify',
+                    state: this.state.userdata.email
+                });
+            }
+            else {
+                swal("Invalid User", "User does not exist.Please Sign up", "error")
+                this.props.history.push("/signUp");
+            }
+        });
     }
 
     render() {

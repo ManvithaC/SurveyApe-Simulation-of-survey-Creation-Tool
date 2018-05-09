@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import '../css/landingpage.css';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
+import TakeOpenUnique from './TakeOpenUnique';
 import HomePage from './HomePage';
 import Team from './Team';
 import Surveys from "./Surveys";
@@ -230,6 +231,15 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
+                    <Route exact path='/takeSurvey/open_send/:surveyId' render={(props) => (
+                        <StyleRoot>
+                            <div className="fadeIn" style={styles.fadeIn}>
+                         <TakeOpenUnique  {...props}/>
+                            </div>
+                        </StyleRoot>
+                    )}/>
+
+
 
 
 

@@ -86,9 +86,9 @@ public class SurveyController {
             String UploadedFilePath = path.toString();
             Files.write(path, bytes);
             JSONObject message = new JSONObject();
-            message.put("UploadedFilePath", UploadedFilePath);
+            message.put("UploadedFilePath", "http://localhost:8080/" + timestamp + file.getOriginalFilename());
             System.out.println("Message " + message.toString());
-            return new ResponseEntity<>(message, HttpStatus.CREATED);
+            return new ResponseEntity<>(message.toString(), HttpStatus.CREATED);
         }
     }
 
@@ -112,8 +112,6 @@ public class SurveyController {
     }
 
 
-
-
     @PostMapping(path = "/openSendEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ResponseEntity<?> openSendEmail(@RequestBody String surveyrequest) {
@@ -128,21 +126,19 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println("Inside open unique "+survey);
-
+        System.out.println("Inside open unique " + survey);
         return surveyService.openSurvey(survey);
     }
 
 
-
     @PostMapping(path = "/renderSurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> rendersurvey(@RequestBody String surveyrequest, HttpSession session) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         JSONObject survey1 = new JSONObject(surveyrequest);
-        Survey survey = surveyRepository.findBySurveyId(survey1.getInt("surveyId"));
+        int temp = Integer.valueOf(survey1.getInt("surveyId"));
+        Survey survey = surveyRepository.findBySurveyId(temp);
         if (survey.getSurveyType().equals("General") || survey.getSurveyType().equals("general")) {
             System.out.println("---------------------------------------------------------");
             System.out.println("GENERAL SURVEY");
@@ -190,13 +186,38 @@ public class SurveyController {
     }
 
 
+    @PostMapping(path = "/renderquestions", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> renderquestions(@RequestBody String surveyid) {
+        JSONObject survey1 = new JSONObject(surveyid);
+        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+    }
+
+
+    @PostMapping(path = "/Unpublish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> unPublishSurvey(@RequestBody String surveyid) {
+        JSONObject jsonObject=new JSONObject(surveyid);
+        return surveyService.unPublishSurvey(jsonObject);
+    }
+
+
+    @PostMapping(path = "/renderopensurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> renderopensurvey(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey1 = new JSONObject(surveyrequest);
+        int surveyId = survey1.getInt("surveyId");
+        int inviteId = survey1.getInt("inviteId");
+        System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
+        System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
+        return surveyService.renderopenQuestions(survey1.getInt("surveyId"),survey1.getInt("inviteId"));
+    }
+
+
     @PostMapping(path = "/submitsurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
         System.out.println("------------------------------------");
         System.out.println("INSIDE SUBMIT SURVEY");
         System.out.println("------------------------------------");
@@ -208,6 +229,53 @@ public class SurveyController {
         String output = surveyService.submitSurvey(temp, surveyId, session);
         return null;
     }
+
+
+
+
+
+    @PostMapping(path = "/submitopensurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> submitopensurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
+        System.out.println("------------------------------------");
+        System.out.println("INSIDE SUBMIT open SURVEY");
+        System.out.println("------------------------------------");
+        System.out.println(surveyrequest);
+        //System.out.println(surveyrequest);
+        JSONObject survey = new JSONObject(surveyrequest);
+        JSONObject temp = new JSONObject();
+        temp.put("questions", survey.getJSONArray("data"));
+        temp.put("inviteId",survey.getInt("inviteId"));
+        String output = surveyService.submitopenSurvey(temp, surveyId, session);
+        return null;
+    }
+
+
+
+
+
+
+
+    @PostMapping(path = "/savesurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> savesurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
+        System.out.println("------------------------------------");
+        System.out.println("INSIDE savesurvey SURVEY");
+        System.out.println("------------------------------------");
+        System.out.println(surveyrequest);
+        JSONObject survey = new JSONObject(surveyrequest);
+        JSONObject temp = new JSONObject();
+        temp.put("questions", survey.getJSONArray("data"));
+        String output = surveyService.saveSurvey(temp, surveyId, session);
+        return null;
+    }
+
+
+
+
+
 
 
     @ResponseBody
@@ -229,15 +297,6 @@ public class SurveyController {
     }
 
 
-    @ResponseBody
-    @PostMapping(path = "/Unpublish/{surveyId}") // Map ONLY POST Requests
-    public ResponseEntity<?> unPublishSurvey(@PathVariable("surveyId") Integer surveyId) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        return surveyService.unPublishSurvey(surveyId);
-
-    }
 
     @ResponseBody
     @PostMapping(path = "/publish/{surveyId}") // Map ONLY POST Requests

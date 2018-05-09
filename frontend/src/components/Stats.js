@@ -2,58 +2,41 @@ import React, {Component} from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import '../css/stats.css';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import axios from "axios/index";
+import swal from 'sweetalert';
 
+const ROOT_URL = 'http://localhost:8080';
 class UserAccount extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
             StatsData: {
-                surveyName: 'SJSU Library Survey',
-                Startime: '05-06-2018 12:40',
-                Endtime: '06-06-2018 22:40',
-                NumberofRespondents: 7,
-                NumberofInvitees: 20,
+                surveyName: 'S',
+                Startime: '',
+                Endtime: '',
+                NumberofRespondents: null,
+                NumberofInvitees: null,
                 Questions: [{
-                    QuestionDesc: 'What is your Favourite color?',
+                    QuestionDesc: '',
                     Answers: [{
-                        label:'Yellow',
-                        count:3
+                        label:'',
+                        count:0
                     },
                         {
-                            label:'Blue',
-                            count:2
+                            label:'',
+                            count:0
                         },
                         {
-                            label:'Black',
-                            count:1
+                            label:'',
+                            count:0
                         },
                         {
-                            label:'White',
-                            count:1
+                            label:'',
+                            count:0
                         }],
 
-                },
-                    {
-                        QuestionDesc: 'What is your Favorite food?',
-                        Answers: [{
-                            label:'Biryani',
-                            count:3
-                        },
-                            {
-                                label:'Sandwich',
-                                count:0
-                            },
-                            {
-                                label:'Pizza',
-                                count:2
-                            },
-                            {
-                                label:'White',
-                                count:1
-                            }],
-
-                    }]
+                }]
 
 
             }
@@ -61,8 +44,40 @@ class UserAccount extends Component{
     }
 
     componentWillMount(){
-        //TODO:Backend Call to get the stats from
-        //and set the data to the state
+
+        if (this.props.location.state) {
+            var SurveyID =this.props.location.state.surveyId;
+            //alert(SurveyID);
+        }
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/getStats/`+SurveyID, axiosConfig)
+            .then(response => {
+                //alert(response.data.code);
+
+                if(response.data.code==200){
+                    //alert("responseee "+response.data);
+                    this.setState({'StatsData':response.data})
+                }
+                else if(response.data.code==404){
+                    swal("Not Available","Sorry, Statistics cannot be viewed fot the survey that has fewer than 2 respondents.","warning");
+                    this.props.history.push("/Surveys");
+                }
+                else{
+                    alert("There seems to be some error.");
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
     }
 
     render(){
