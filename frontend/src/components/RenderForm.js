@@ -128,7 +128,6 @@ class RenderForm extends Component {
                                     }
                                 }
                             } else {
-
                                 alert("insied the text value");
                                 alert(value);
                                 field.value = value;

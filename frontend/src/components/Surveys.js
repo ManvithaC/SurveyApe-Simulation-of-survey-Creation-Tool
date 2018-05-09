@@ -38,7 +38,7 @@ const ChartStyle ={
     color:'#424242',
     marginLeft:10,
 
-}
+};
 
 class Surveys extends Component{
     constructor(props){
