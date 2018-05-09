@@ -28,7 +28,7 @@ const styleAdd ={
     height: 30,
     width:30,
     color:'#424242',
-    marginLeft:100,
+    marginLeft:50,
 
 }
 const ChartStyle ={

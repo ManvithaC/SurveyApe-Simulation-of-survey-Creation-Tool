@@ -26,6 +26,20 @@
   color:#ffffff;
 }
 
+.ybuttonSignUp{
+
+  margin-bottom:10px;
+  margin-top:10px;
+
+  width:50%;
+  border-radius: 5px;
+  background-color:#ba68c8;
+  border:#ba68c8 1px solid;
+  transition:0.3s;
+  height:auto;
+  color:#ffffff;
+}
+
 .ybuttonEmail{
   padding-top:10px;
   padding-bottom:10px;
