@@ -194,9 +194,6 @@ public class SurveyController {
     // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> submitsurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
         System.out.println("------------------------------------");
         System.out.println("INSIDE SUBMIT SURVEY");
         System.out.println("------------------------------------");
@@ -206,6 +203,23 @@ public class SurveyController {
         JSONObject temp = new JSONObject();
         temp.put("questions", survey.getJSONArray("data"));
         String output = surveyService.submitSurvey(temp, surveyId, session);
+        return null;
+    }
+
+
+
+    @PostMapping(path = "/savesurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> savesurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
+        System.out.println("------------------------------------");
+        System.out.println("INSIDE savesurvey SURVEY");
+        System.out.println("------------------------------------");
+        System.out.println(surveyrequest);
+        JSONObject survey = new JSONObject(surveyrequest);
+        JSONObject temp = new JSONObject();
+        temp.put("questions", survey.getJSONArray("data"));
+        String output = surveyService.saveSurvey(temp, surveyId, session);
         return null;
     }
 

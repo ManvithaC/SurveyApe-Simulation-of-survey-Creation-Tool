@@ -62,7 +62,6 @@ class Homepage extends Component {
                     pathname: '/AccountVerify',
                     state: this.state.userdata.email
                 });
-
             }
             else {
                 swal("Invalid User", "User does not exist.Please Sign up", "error")
