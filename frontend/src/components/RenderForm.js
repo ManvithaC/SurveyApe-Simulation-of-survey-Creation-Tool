@@ -43,9 +43,12 @@ class RenderForm extends Component {
         //     console.log('surveyId in UniqueLink--' + this.props.match.params.surveyId);
 
         //TODO:Call to backend to retrieve the JSON for form-building
+
+
         this.setState({
             surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
         });
+
     }
     handleOpen = () => {
         this.setState({open: true});
@@ -81,7 +84,7 @@ class RenderForm extends Component {
         var originalFormData;
         var field;
         var t = JSON.stringify(this.props.location.state.surveyId.surveyId);
-        alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
+    //    alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`, {'surveyId': JSON.stringify(this.props.location.state.surveyId.surveyId)}, axiosConfig)
             .then(response => {
@@ -97,6 +100,67 @@ class RenderForm extends Component {
                         dataType: "json"
                     };
                     $(fbRender).formRender(formRenderOpts);
+
+
+                    document.getElementById('save-formdata').onclick = function () {
+                        var formData = new FormData(fbRender);
+                        function getObj(objs, key, val) {
+                            val = val.replace('[]', '');
+                            return objs.filter(function (obj) {
+                                var filter = false;
+                                if (val) {
+                                    filter = (obj[key] === val);
+                                } else if (obj[key]) {
+                                    filter = true;
+                                }
+                                return filter;
+                            });
+                        }
+
+                        function setValue(name, value) {
+                            field = getObj(originalFormData, 'name', name)[0];
+                            if (!field) {
+                                return;
+                            }
+                            if (['select', 'checkbox-group', 'radio-group'].indexOf(field.type) !== -1) {
+                                for (var fieldOption of field.values) {
+                                    if (value.indexOf(fieldOption.value) !== -1) {
+                                        fieldOption.selected = true;
+                                    }
+                                }
+                            } else {
+
+                                alert("insied the text value");
+                                alert(value);
+                                field.value = value;
+                            }
+                        }
+
+                        for (var key of formData.keys()) {
+                            setValue(key, formData.getAll(key));
+                        }
+                        let axiosConfig = {
+                            headers: {
+                                'Content-Type': 'application/json;charset=UTF-8',
+                                "Access-Control-Allow-Origin": true
+                            }
+                        };
+                        var payload = {data: originalFormData};
+                        console.log(payload);
+                        axios.create({withCredentials: true})
+                            .post(`${ROOT_URL}/savesurvey/` + t, payload, axiosConfig)
+                            .then(response => {
+                                swal("successfully submited");
+                                console.log(response);
+                            })
+                            .catch(error => {
+                                swal("got error");
+                                console.log(error);
+                            });
+                        console.log('Updated formData: ', originalFormData);
+                    };
+
+
                     document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
                         function getObj(objs, key, val) {
@@ -154,6 +218,10 @@ class RenderForm extends Component {
                             });
                         console.log('Updated formData: ', originalFormData);
                     };
+
+
+
+
                 })($);
             })
             .catch(error => {
@@ -194,7 +262,7 @@ class RenderForm extends Component {
                         <form id="fb-render"></form>
                         <div className={"row justify-content-center"}>
                             <RaisedButton className={"Questrial"}
-                                          style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>
+                                          id="save-formdata"  style={{'padding': '10px', 'margin': '10px'}}>Save</RaisedButton>
                             <RaisedButton className={"Questrial"} style={{'padding': '10px', 'margin': '10px'}}
                                           id="get-formdata" onClick={this.handleOpen}>Submit</RaisedButton>
 

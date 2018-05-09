@@ -142,37 +142,27 @@ class Surveys extends Component{
                 console.log(error);
             });
     };
-
     unPublishSurvey=(temp,name)=>{
 
-        //TODO:Call to backend
-
-        // let axiosConfig = {
-        //     headers: {
-        //         'Content-Type': 'application/json;charset=UTF-8',
-        //         "Access-Control-Allow-Origin": true
-        //     }
-        // };
-        // console.log(temp);
-        // console.log(name);
-        // var surveyid={"surveyId":temp};
-        //
-        // axios.create({withCredentials: true})
-        //     .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
-        //     .then(response => {
-        //         console.log(response);
-        //         this.props.history.push({
-        //             pathname: '/SurveyBuilder',
-        //             state:{data:response.data,
-        //                 surveyId:surveyid,
-        //                 surveyName:name
-        //             }
-        //         })
-        //     })
-        //     .catch(error => {
-        //         //swal("got error");
-        //         console.log(error);
-        //     });
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+        console.log(temp);
+        console.log(name);
+        var surveyid={"surveyId":temp};
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/Unpublish/`,surveyid, axiosConfig)
+            .then(response => {
+                console.log(response);
+                alert("unpublished")
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
     };
 
     render(){
@@ -238,7 +228,7 @@ class Surveys extends Component{
                                                             <UnPublish style={ChartStyle}
                                                                          className="pointer"
                                                                          onClick={() => {
-                                                                            this.unPublishSurvey;
+                                                                             this.unPublishSurvey(card.id,card.name);
                                                                          }}
                                                             />
                                                         </IconButton>

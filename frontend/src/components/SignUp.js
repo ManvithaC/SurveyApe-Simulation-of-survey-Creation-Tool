@@ -40,7 +40,6 @@ class Homepage extends Component {
                         pathname: '/AccountVerify',
                         state: this.state.userdata.email
                     });
-
                 }
                 else
                 {

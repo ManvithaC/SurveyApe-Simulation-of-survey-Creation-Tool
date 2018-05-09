@@ -118,5 +118,5 @@ public class User {
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "userEntities")
-    private List<Survey> surveyEntities;
+    private List<Survey> surveyEntities=new ArrayList<>();
 }

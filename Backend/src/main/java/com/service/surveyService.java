@@ -253,6 +253,71 @@ public class surveyService {
     }
 
 
+
+
+    public String saveSurvey(JSONObject survey, Integer surveyId, HttpSession session) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+        //String userId = survey.getString("userId");
+        User userEntity;
+        if (surveyEntity.getSurveyType().equals("General")) {
+            userEntity = userRepository.findByEmail("defaultuser@gmail.com");
+        } else {
+            userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
+//            List<Invites> invites = surveyEntity.getInvitesEntities();
+//            for (int k = 0; k < invites.size(); k++) {
+//                if (invites.get(k).getEmailId().equals(userEntity.getEmail())) {
+//                    inviteRepository.save(invites.get(k));
+//                    break;
+//                }
+//            }
+        }
+        JSONArray questionsArray = survey.getJSONArray("questions");
+        List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
+        List<Answer> answers = new ArrayList<>();
+        for (int i = 0; i < questionsArray.length(); i++) {
+            Answer answer = new Answer();
+            answer.setUserEntity(userEntity);
+            answer.setQuestionEntity(questionEntities.get(i));
+            questionEntities.get(i).getAnswerEntities().add(answer);
+            JSONObject temp = (JSONObject) questionsArray.get(i);
+            if (questionEntities.get(i).getType().equals("date") ||
+                    questionEntities.get(i).getType().equals("text") || questionEntities.get(i).getType().equals("textarea")) {
+                ValuesEntity valuesEntity = new ValuesEntity();
+                valuesEntity.setAnswerEntity(answer);
+                JSONArray p = temp.getJSONArray("value");
+                valuesEntity.setValue((String) p.get(0));
+                answer.getValuesEntity().add(valuesEntity);
+                valueRepository.save(valuesEntity);
+            } else {
+                JSONArray optionsArray = temp.getJSONArray("values");
+                for (int j = 0; j < optionsArray.length(); j++) {
+                    JSONObject temp1 = (JSONObject) optionsArray.get(j);
+                    //   System.out.println(temp1);
+                    if (temp1.has("selected")) {
+                        //     System.out.println(temp1);
+                        ValuesEntity valuesEntity = new ValuesEntity();
+                        valuesEntity.setAnswerEntity(answer);
+                        valuesEntity.setValue(temp1.getString("label"));
+                        answer.getValuesEntity().add(valuesEntity);
+                        valueRepository.save(valuesEntity);
+                    }
+                }
+            }
+            answerRepository.save(answer);
+            answers.add(answer);
+            questionrepository.save(questionEntities.get(i));
+        }
+        userEntity.getSurveyEntities().add(surveyEntity);
+        userEntity.setAnswerEntities(answers);
+        surveyEntity.getUserEntities().add(userEntity);
+        surveyEntity.getQuestionEntityList().addAll(questionEntities);
+        surveyrepository.save(surveyEntity);
+        return "asdasd";
+    }
+
+
+
+
     public ResponseEntity<?> generalSurvey(JSONObject survey) {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("General");
@@ -313,25 +378,26 @@ public class surveyService {
     }
 
 
-    public ResponseEntity<?> unPublishSurvey(Integer surveyId) {
+    public ResponseEntity<?> unPublishSurvey(JSONObject survey) {
+        Integer surveyId=survey.getInt("surveyId");
+        System.out.println(surveyId);
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
         if (surveyEntity != null) {
-            //check here if survey has anyy responses yet and unpublish
-            surveyEntity.setIsPublished(0);
-            surveyrepository.save(surveyEntity);
-            message.put("code", 200);
-            message.put("msg", "Survey UnPublished");
-            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+            if(surveyEntity.getUserEntities().size()==0) {
+                surveyEntity.setIsPublished(0);
+                surveyrepository.save(surveyEntity);
+                message.put("code", 200);
+                message.put("msg", "Survey UnPublished");
+
+            }
         } else {
             message.put("code", 404);
             message.put("msg", "Survey does not exist");
-            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+
         }
-
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
-
-
     public ResponseEntity<?> PublishSurvey(Integer surveyId) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
@@ -439,7 +505,6 @@ public class surveyService {
 
 
     public ResponseEntity<?> openSendEmail(JSONObject survey) {
-
         String temp = survey.getString("surveyID");
         String[] sarray = temp.split("_");
         Survey surveyEntity = surveyrepository.findBySurveyId((Integer.valueOf(sarray[0])));
@@ -448,6 +513,7 @@ public class surveyService {
         invites.setEmailId(survey.getString("email"));
         invites.setSurveyURL(invites.getSurveyURL().replaceFirst("open", "open_send"));
         inviteRepository.save(invites);
+        inviteService.sendEmailInvitations(invites.getEmailId(),invites.getSurveyURL());
         System.out.println("-------------------------------");
         return null;
     }
