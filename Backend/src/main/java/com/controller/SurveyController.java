@@ -187,6 +187,14 @@ public class SurveyController {
     }
 
 
+    @PostMapping(path = "/Unpublish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> unPublishSurvey(@RequestBody String surveyid) {
+        JSONObject jsonObject=new JSONObject(surveyid);
+        return surveyService.unPublishSurvey(jsonObject);
+    }
+
+
     @PostMapping(path = "/renderopensurvey", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ResponseEntity<?> renderopensurvey(@RequestBody String surveyrequest, HttpSession session) {
@@ -194,7 +202,7 @@ public class SurveyController {
         int surveyId = survey1.getInt("surveyId");
         int inviteId = survey1.getInt("inviteId");
         System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
-        
+
 
         System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
         return surveyService.renderQuestions(survey1.getInt("surveyId"));
@@ -253,15 +261,6 @@ public class SurveyController {
     }
 
 
-    @ResponseBody
-    @PostMapping(path = "/Unpublish/{surveyId}") // Map ONLY POST Requests
-    public ResponseEntity<?> unPublishSurvey(@PathVariable("surveyId") Integer surveyId) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        return surveyService.unPublishSurvey(surveyId);
-
-    }
 
     @ResponseBody
     @PostMapping(path = "/publish/{surveyId}") // Map ONLY POST Requests

@@ -378,25 +378,26 @@ public class surveyService {
     }
 
 
-    public ResponseEntity<?> unPublishSurvey(Integer surveyId) {
+    public ResponseEntity<?> unPublishSurvey(JSONObject survey) {
+        Integer surveyId=survey.getInt("surveyId");
+        System.out.println(surveyId);
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
         if (surveyEntity != null) {
-            //check here if survey has anyy responses yet and unpublish
-            surveyEntity.setIsPublished(0);
-            surveyrepository.save(surveyEntity);
-            message.put("code", 200);
-            message.put("msg", "Survey UnPublished");
-            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+            if(surveyEntity.getUserEntities().size()==0) {
+                surveyEntity.setIsPublished(0);
+                surveyrepository.save(surveyEntity);
+                message.put("code", 200);
+                message.put("msg", "Survey UnPublished");
+
+            }
         } else {
             message.put("code", 404);
             message.put("msg", "Survey does not exist");
-            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+
         }
-
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
-
-
     public ResponseEntity<?> PublishSurvey(Integer surveyId) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
