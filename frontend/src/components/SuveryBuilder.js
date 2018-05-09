@@ -20,7 +20,7 @@ require('jquery-ui-sortable');
 require('formBuilder');
 require('rateyo/min/jquery.rateyo.min');
 require('rateyo/min/jquery.rateyo.min.css');
-
+const today = new Date();
 
 const ROOT_URL = 'http://localhost:8080';
 
@@ -305,6 +305,7 @@ class SurveyBuilder extends Component {
                         onChange={this.handleChangeMinDate}
                         autoOk={true}
                         floatingLabelText="Pick Expiry Date"
+                        minDate={today}
                     />
                     <TimePicker
                         autoOk={true}
