@@ -44,6 +44,70 @@ public class surveyService {
     @Autowired
     public inviteRepository inviteRepository;
 
+
+
+    public ResponseEntity<?> renderopenQuestions(int surveyID,int inviteID) {
+
+    Invites invites=inviteRepository.findByInviteid(inviteID);
+    if(invites.getIsAccessed()==1){
+        JSONObject messagee=new JSONObject();
+        messagee.put("message","alreadycompleted");
+        return new ResponseEntity<>(messagee.toString(), HttpStatus.NOT_FOUND);
+    }
+        Survey survey = surveyrepository.findBySurveyId(surveyID);
+        JSONArray questions = new JSONArray();
+        JSONObject output = new JSONObject();
+        List<Questions> questionsList = survey.getQuestionEntityList();
+        for (int i = 0; i < questionsList.size(); i++) {
+            Questions questions1 = questionsList.get(i);
+            JSONObject temp = new JSONObject();
+            temp.put("type", questions1.getType());
+            temp.put("label", questions1.getDescription());
+            Random rand = new Random();
+            int n = rand.nextInt(500) + 1;
+            temp.put("name", "temporary" + String.valueOf(n));
+            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
+            System.out.println(temp.get("name"));
+            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
+            List<Options> options = questions1.getOptionsEntities();
+            JSONArray values = new JSONArray();
+            if (!questions1.getType().equals("text") && !questions1.getType().equals("textarea") && !questions1.getType().equals("date")) {
+                for (int j = 0; j < options.size(); j++) {
+                    Options options1 = options.get(j);
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("label", options1.getOptionValue());
+                    jsonObject.put("value", options1.getOptionValue() + "asd");
+                    values.put(jsonObject);
+                }
+                temp.put("values", values);
+            }
+            questions.put(temp);
+        }
+        System.out.println(questions);
+        return new ResponseEntity<>(questions.toString(), HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // questions rendering
     public ResponseEntity<?> renderQuestions(int surveyID) {
         System.out.println("inside Questions rendering");
@@ -56,10 +120,12 @@ public class surveyService {
             JSONObject temp = new JSONObject();
             temp.put("type", questions1.getType());
             temp.put("label", questions1.getDescription());
-
             Random rand = new Random();
-            int n = rand.nextInt(50) + 1;
+            int n = rand.nextInt(500) + 1;
             temp.put("name", "temporary" + String.valueOf(n));
+            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
+            System.out.println(temp.get("name"));
+            System.out.println("--------------------------------inisde surveaaaaaaaaaaa");
             List<Options> options = questions1.getOptionsEntities();
             JSONArray values = new JSONArray();
             if (!questions1.getType().equals("text") && !questions1.getType().equals("textarea") && !questions1.getType().equals("date")) {
@@ -95,7 +161,9 @@ public class surveyService {
             JSONObject temp = new JSONObject();
             temp.put("type", questions1.getType());
             temp.put("label", questions1.getDescription());
-            temp.put("name", "temporary");
+            Random rand = new Random();
+            int n = rand.nextInt(500) + 1;
+            temp.put("name", "temporary" + String.valueOf(n));
             List<Options> options = questions1.getOptionsEntities();
             JSONArray values = new JSONArray();
             // System.out.println(questions1.getQuestionId());
@@ -195,8 +263,7 @@ public class surveyService {
         User userEntity;
         if (surveyEntity.getSurveyType().equals("General")) {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
-        }
-        else {
+        } else {
             userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
             List<Invites> invites = surveyEntity.getInvitesEntities();
             for (int k = 0; k < invites.size(); k++) {
@@ -263,15 +330,105 @@ public class surveyService {
 //    }
 
 
+
+
+    public String submitopenSurvey(JSONObject survey, Integer surveyId, HttpSession session) {
+        Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
+        //String userId = survey.getString("userId");
+        User userEntity=userRepository.findByEmail("defaultuser@gmail.com");;
+              Invites invites = inviteRepository.findByInviteid(survey.getInt("inviteId"));
+              invites.setIsAccessed(1);
+              inviteRepository.save(invites);
+        JSONArray questionsArray = survey.getJSONArray("questions");
+        List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
+        List<Answer> answers = new ArrayList<>();
+        for (int i = 0; i < questionsArray.length(); i++) {
+            Answer answer = new Answer();
+            answer.setUserEntity(userEntity);
+            answer.setQuestionEntity(questionEntities.get(i));
+            questionEntities.get(i).getAnswerEntities().add(answer);
+            JSONObject temp = (JSONObject) questionsArray.get(i);
+            if (questionEntities.get(i).getType().equals("date") ||
+                    questionEntities.get(i).getType().equals("text") || questionEntities.get(i).getType().equals("textarea")) {
+                ValuesEntity valuesEntity = new ValuesEntity();
+                valuesEntity.setAnswerEntity(answer);
+                JSONArray p = temp.getJSONArray("value");
+                valuesEntity.setValue((String) p.get(0));
+                answer.getValuesEntity().add(valuesEntity);
+                valueRepository.save(valuesEntity);
+            } else {
+                JSONArray optionsArray = temp.getJSONArray("values");
+                for (int j = 0; j < optionsArray.length(); j++) {
+                    JSONObject temp1 = (JSONObject) optionsArray.get(j);
+                    //   System.out.println(temp1);
+                    if (temp1.has("selected")) {
+                        //     System.out.println(temp1);
+                        ValuesEntity valuesEntity = new ValuesEntity();
+                        valuesEntity.setAnswerEntity(answer);
+                        valuesEntity.setValue(temp1.getString("label"));
+                        answer.getValuesEntity().add(valuesEntity);
+                        valueRepository.save(valuesEntity);
+                    }
+                }
+            }
+            answerRepository.save(answer);
+            answers.add(answer);
+            questionrepository.save(questionEntities.get(i));
+        }
+        userEntity.getSurveyEntities().add(surveyEntity);
+        userEntity.setAnswerEntities(answers);
+        surveyEntity.getUserEntities().add(userEntity);
+        surveyEntity.getQuestionEntityList().addAll(questionEntities);
+        surveyrepository.save(surveyEntity);
+        return "asdasd";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public String saveSurvey(JSONObject survey, Integer surveyId, HttpSession session) {
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         //String userId = survey.getString("userId");
         User userEntity;
         if (surveyEntity.getSurveyType().equals("General")) {
             userEntity = userRepository.findByEmail("defaultuser@gmail.com");
-        } else {
-            userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
         }
+        else {
+            userEntity = userRepository.findByEmail(session.getAttribute("username").toString());
+
+            int p = 0;
+            //if already exist remove the asnwers add new one.
+            List<Questions> questions = surveyEntity.getQuestionEntityList();
+            for (int i = 0; i < questions.size(); i++) {
+                Answer answer = answerRepository.findByQuestionEntityQuestionIdAndUserEntityId(questions.get(i).getQuestionId(), userEntity.getId());
+                if (answer != null) {
+                    p = 1;
+                    break;
+                }
+            }
+//            if (p == 1) {
+//                //remove all answers
+//                for (int j = 0; j < questions.size(); j++) {
+//                    Answer answer = answerRepository.findByQuestionEntityQuestionIdAndUserEntityId(questions.get(j).getQuestionId(), userEntity.getId());
+//                    userEntity.getAnswerEntities().remove(answer);
+//                    answer.setUserEntity(null);
+//                    questions.get(j).getAnswerEntities().remove(answer);
+//                    questionrepository.save(questions.get(j));
+//                    answerRepository.save(answer);
+//                    userRepository.save(userEntity);
+//                    answerRepository.delete(answer);
+//                }
+//            }
+        }
+
         JSONArray questionsArray = survey.getJSONArray("questions");
         List<Questions> questionEntities = surveyEntity.getQuestionEntityList();
         List<Answer> answers = new ArrayList<>();
@@ -309,7 +466,7 @@ public class surveyService {
             questionrepository.save(questionEntities.get(i));
         }
 
-       //System.out.println(userEntity.getSurveyEntities().size());
+        //System.out.println(userEntity.getSurveyEntities().size());
         //userEntity.getSurveyEntities().add(surveyEntity);
         userEntity.setAnswerEntities(answers);
         //surveyEntity.getUserEntities().add(userEntity);

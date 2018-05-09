@@ -127,7 +127,6 @@ public class SurveyController {
     ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
         System.out.println("Inside open unique " + survey);
-
         return surveyService.openSurvey(survey);
     }
 
@@ -187,6 +186,14 @@ public class SurveyController {
     }
 
 
+    @PostMapping(path = "/renderquestions", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> renderquestions(@RequestBody String surveyid) {
+        JSONObject survey1 = new JSONObject(surveyid);
+        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+    }
+
+
     @PostMapping(path = "/Unpublish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
     public @ResponseBody
     ResponseEntity<?> unPublishSurvey(@RequestBody String surveyid) {
@@ -202,16 +209,9 @@ public class SurveyController {
         int surveyId = survey1.getInt("surveyId");
         int inviteId = survey1.getInt("inviteId");
         System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
-
-
         System.out.println("-------------INSIDE -RENDER---OPEN SURVEY---------------------------");
-        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+        return surveyService.renderopenQuestions(survey1.getInt("surveyId"),survey1.getInt("inviteId"));
     }
-
-
-
-
-
 
 
     @PostMapping(path = "/submitsurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -229,6 +229,28 @@ public class SurveyController {
         String output = surveyService.submitSurvey(temp, surveyId, session);
         return null;
     }
+
+
+
+
+
+    @PostMapping(path = "/submitopensurvey/{surveyId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> submitopensurvey(@RequestBody String surveyrequest, @PathVariable("surveyId") Integer surveyId, HttpSession session) {
+        System.out.println("------------------------------------");
+        System.out.println("INSIDE SUBMIT open SURVEY");
+        System.out.println("------------------------------------");
+        System.out.println(surveyrequest);
+        //System.out.println(surveyrequest);
+        JSONObject survey = new JSONObject(surveyrequest);
+        JSONObject temp = new JSONObject();
+        temp.put("questions", survey.getJSONArray("data"));
+        temp.put("inviteId",survey.getInt("inviteId"));
+        String output = surveyService.submitopenSurvey(temp, surveyId, session);
+        return null;
+    }
+
 
 
 

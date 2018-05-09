@@ -71,7 +71,6 @@ class TakeOpenUnique extends Component {
                     $(fbRender).formRender(formRenderOpts);
                     document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
-
                         function getObj(objs, key, val) {
                             val = val.replace('[]', '');
                             return objs.filter(function (obj) {
@@ -111,11 +110,12 @@ class TakeOpenUnique extends Component {
                             }
                         };
 
+                        alert(temp.inviteId);
                         var payload = {data: originalFormData};
-                        payload.inviteId=this.state.inviteID;
+                        payload.inviteId=temp.inviteId;
 
                         axios.create({withCredentials: true})
-                            .post(`${ROOT_URL}/submitsurvey/` + temp.surveyId, payload, axiosConfig)
+                            .post(`${ROOT_URL}/submitopensurvey/` + temp.surveyId, payload, axiosConfig)
                             .then(response => {
                                 swal("successfully submited");
                                 console.log(response);
@@ -129,6 +129,7 @@ class TakeOpenUnique extends Component {
                 })($);
             })
             .catch(error => {
+                swal("already submitted");
                 console.log(error);
             });
 

@@ -84,7 +84,7 @@ class RenderForm extends Component {
         var originalFormData;
         var field;
         var t = JSON.stringify(this.props.location.state.surveyId.surveyId);
-    //    alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
+        //    alert(JSON.stringify(this.props.location.state.surveyId.surveyId));
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/renderSurvey`, {'surveyId': JSON.stringify(this.props.location.state.surveyId.surveyId)}, axiosConfig)
             .then(response => {
@@ -188,8 +188,8 @@ class RenderForm extends Component {
                                 }
                             } else {
 
-                            //    alert("insied the text value");
-                            //    alert(value);
+                                //    alert("insied the text value");
+                                //    alert(value);
                                 field.value = value;
                             }
                         }
