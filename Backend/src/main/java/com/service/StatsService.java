@@ -113,14 +113,14 @@ public class StatsService {
             }else{
                 message.put("code",404);
                 message.put("msg", "Respondents Count is less than 2");
-                return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(message.toString(), HttpStatus.OK);
             }
         }
         else
         {
             message.put("code",404);
             message.put("msg", "Survey does not exist");
-            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
         }
     }
 }
