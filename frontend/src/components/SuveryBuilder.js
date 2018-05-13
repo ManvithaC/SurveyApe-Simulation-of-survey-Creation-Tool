@@ -60,7 +60,9 @@ class SurveyBuilder extends Component {
             surveyId: '',
             surveyName:'',
             ImageOptionType:1,
-            ImageOptionsArray:[]
+            ImageOptionsArray:[],
+            StarOpen:false,
+            StarOption:1
         };
 
     }
@@ -177,11 +179,11 @@ class SurveyBuilder extends Component {
         }
         else {
             payload.expiry=999999999;
-       //alert(payload.expiry);
+            //alert(payload.expiry);
         }
 
         payload.isPublished = 0;
-       // alert(JSON.stringify(payload));
+        // alert(JSON.stringify(payload));
         if (this.state.surveyId != '') {
             payload.surveyId = this.state.surveyId
         }
@@ -218,6 +220,10 @@ class SurveyBuilder extends Component {
         this.setState({ImageOptionType});
     }
 
+    handleStarChange = (event, index, StarOption) => {
+        this.setState({StarOption});
+    }
+
     uploadTheImages = (event) =>{
         const payload = new FormData();
         payload.append("name",event.target.files[0].name);
@@ -245,6 +251,48 @@ class SurveyBuilder extends Component {
                 //swal("got error");
                 console.log(error);
             });
+    }
+
+    handleStarClose= () => {
+        this.setState({StarOpen : false});
+    }
+
+    handleStarOpen= () => {
+        this.setState({StarOpen : true});
+    }
+    SaveStarRatingQuestion= ()=>{
+        this.handleStarClose();
+
+        var temp = {
+            "type":"select",
+            "label":this.refs.RatingQuestion.getValue(),
+            "name":"select",
+            "values":[
+                {
+                    "value":"Option 1",
+                    "label":"1 Star"
+                },
+                {
+                    "value":"Option 2",
+                    "label":"2 Stars"
+                },
+                {
+                    "value":"Option 3",
+                    "label":"3 Stars"
+                },
+                {
+                    "value":"Option 4",
+                    "label":"4 Stars"
+                },
+                {
+                    "value":"Option 5",
+                    "label":"5 Stars"
+                }]
+        }
+
+        var alreadyBuiltForm = JSON.parse(editor.actions.getData('json'));
+        alreadyBuiltForm.push(temp);
+        editor.actions.setData(JSON.stringify(alreadyBuiltForm));
     }
     SaveImageQuestion =() =>{
 
@@ -290,7 +338,7 @@ class SurveyBuilder extends Component {
         }
 
         var alreadyBuiltForm = JSON.parse(editor.actions.getData('json'));
-       alreadyBuiltForm.push(ImageOptionTypeToAdd);
+        alreadyBuiltForm.push(ImageOptionTypeToAdd);
         editor.actions.setData(JSON.stringify(alreadyBuiltForm));
 
     }
@@ -307,6 +355,20 @@ class SurveyBuilder extends Component {
                 onClick={this.SaveImageQuestion}
             />,
         ];
+
+        const Staractions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onClick={this.handleStarClose}
+            />,
+            <FlatButton
+                label="Submit"
+                primary={true}
+                onClick={this.SaveStarRatingQuestion}
+            />,
+        ];
+
         return (
             <div>
                 <div class="row justify-content-end">
@@ -317,7 +379,7 @@ class SurveyBuilder extends Component {
                         value={this.state.surveyName}
                         onChange={(event) => {
                             this.setState({
-                                    surveyName: event.target.value
+                                surveyName: event.target.value
                             });
                         }}
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
@@ -352,12 +414,13 @@ class SurveyBuilder extends Component {
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">
+                        <div class="row justify-content-end">
+                            <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
+                            <br/><RaisedButton label="Add Star Rating Question" style={styles} onClick={this.handleStarOpen}></RaisedButton>
+                        </div>
                         <div id="editor"></div>
                         <div id="editor_t"></div>
                     </div>
-                </div>
-                <div class="row col-md-11 justify-content-end">
-                    <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
                 </div>
                 <Dialog
                     title="Image Choice Question"
@@ -404,6 +467,42 @@ class SurveyBuilder extends Component {
                         autoHideDuration={3000}
                         onRequestClose={this.handleRequestClose}
                     />
+
+                </div>
+                </Dialog>
+
+                <Dialog
+                    title="Star Rating Question"
+                    actions={Staractions}
+                    modal={true}
+                    contentStyle={customContentStyle}
+                    open={this.state.StarOpen}
+                    autoScrollBodyContent={true}
+                ><div>
+                    <div class="row">
+                        <TextField
+                            hintText="Enter Survey Question"
+                            maxLength="50"
+                            ref="RatingQuestion"
+                            fullWidth={true}
+                            style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                        />
+
+                        <DropDownMenu
+                            value={this.state.StarOption}
+                            onChange={this.handleStarChange}
+                            style={styles.customWidth}
+                            autoWidth={true}
+                        >
+                            <MenuItem value={1} primaryText="1 Star"/>
+                            <MenuItem value={2} primaryText="2 Stars"/>
+                            <MenuItem value={3} primaryText="3 Stars"/>
+                            <MenuItem value={4} primaryText="4 Stars"/>
+                            <MenuItem value={5} primaryText="5 Stars"/>
+
+                        </DropDownMenu>
+                    </div>
+                    <br/>
 
                 </div>
                 </Dialog>
