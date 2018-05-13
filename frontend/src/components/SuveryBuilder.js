@@ -27,7 +27,11 @@ const today = new Date();
 const ROOT_URL = 'http://localhost:8080';
 
 const styles = {
-    margin: 12,
+    marginBottom: 5,
+    marginRight: 15,
+    button:{
+        marginRight: 15,
+    }
 };
 
 const optionsStyle = {
@@ -62,7 +66,8 @@ class SurveyBuilder extends Component {
             ImageOptionType:1,
             ImageOptionsArray:[],
             StarOpen:false,
-            StarOption:1
+            StarOption:1,
+            JSONDIalog:false,
         };
 
     }
@@ -342,6 +347,24 @@ class SurveyBuilder extends Component {
         editor.actions.setData(JSON.stringify(alreadyBuiltForm));
 
     }
+
+    handleJSONFileClose= () => {
+        this.setState({JSONDIalog : false});
+    }
+
+    handleJSONFileOpen= () => {
+        this.setState({JSONDIalog : true});
+    }
+
+    ExportAsJSON = () =>{
+        var FormJSONData = editor.actions.getData('json');
+
+        var element = document.createElement("a");
+        var file = new Blob([FormJSONData], {type: 'text/plain'});
+        element.href = URL.createObjectURL(file);
+        element.download = this.refs.FIleName.getValue()+".txt";
+        element.click();
+    }
     render() {
         const actions = [
             <FlatButton
@@ -366,6 +389,19 @@ class SurveyBuilder extends Component {
                 label="Submit"
                 primary={true}
                 onClick={this.SaveStarRatingQuestion}
+            />,
+        ];
+
+        const JSONFileActions = [
+            <FlatButton
+                label="Cancel"
+                primary={true}
+                onClick={this.handleJSONFileClose}
+            />,
+            <FlatButton
+                label="Download"
+                primary={true}
+                onClick={this.ExportAsJSON}
             />,
         ];
 
@@ -401,10 +437,13 @@ class SurveyBuilder extends Component {
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                         textFieldStyle={{'width': '150px'}}
                     />
-                    <RaisedButton label="Save" style={styles}
+                    <RaisedButton label="Export As JSON" style={styles.button}
+                                  onClick={this.handleJSONFileOpen}
+                    />
+                    <RaisedButton label="Save" style={styles.button}
                                   onClick={this.saveTheForm}
                     />
-                    <RaisedButton label="Publish" style={styles} onClick={() => {
+                    <RaisedButton label="Publish" style={styles.button} onClick={() => {
                         this.props.history.push({
                             pathname: '/ShareSurvey',
                             state: this.state.surveyId
@@ -416,7 +455,9 @@ class SurveyBuilder extends Component {
                     <div class="col-md-10 mt-2">
                         <div class="row justify-content-end">
                             <RaisedButton label="Add Image Question" style={styles} onClick={this.handleOpen}></RaisedButton>
-                            <br/><RaisedButton label="Add Star Rating Question" style={styles} onClick={this.handleStarOpen}></RaisedButton>
+                        </div>
+                        <div class="row justify-content-end">
+                            <RaisedButton label="Add Star Rating Question" style={styles} onClick={this.handleStarOpen}></RaisedButton>
                         </div>
                         <div id="editor"></div>
                         <div id="editor_t"></div>
@@ -506,6 +547,30 @@ class SurveyBuilder extends Component {
 
                 </div>
                 </Dialog>
+
+                <Dialog
+                    title="Download Form Data As JSON Text File"
+                    actions={JSONFileActions}
+                    modal={true}
+                    contentStyle={customContentStyle}
+                    open={this.state.JSONDIalog}
+                    autoScrollBodyContent={true}
+                ><div>
+                    <div class="row">
+                        <TextField
+                            hintText="What name should the file be saved as?"
+                            maxLength="20"
+                            ref="FIleName"
+                            fullWidth={true}
+                            style={{'margin-top':'14px','margin-right':'5px','margin-bottom':'10px'}}
+                        />
+
+                    </div>
+                    <br/>
+
+                </div>
+                </Dialog>
+
             </div>
         );
     }
