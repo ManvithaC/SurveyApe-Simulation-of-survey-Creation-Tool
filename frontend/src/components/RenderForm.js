@@ -223,9 +223,6 @@ class RenderForm extends Component {
                         console.log('Updated formData: ', originalFormData);
                     };
 
-
-
-
                 })($);
             })
             .catch(error => {
@@ -236,8 +233,7 @@ class RenderForm extends Component {
 
     submitForm =() => {
         console.log("Do you want to get a confirmation mail?"+this.state.value);//true for yes and false for no
-        console.log('Email Id'+this.refs.EmailId.getValue());
-
+    //    console.log('Email Id'+this.refs.EmailId.getValue());
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -245,24 +241,28 @@ class RenderForm extends Component {
             }
         };
 
-        var payload = {
-            email : this.refs.EmailId.getValue()
-        };
-        console.log(payload);
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/sendThanksMail`, payload, axiosConfig)
-            .then(response => {
-                swal("All done","A confirmation email has been sent.","success");
-                this.setState({open:false});
-                this.props.history.push("/Surveys");
-                console.log(response);
-            })
-            .catch(error => {
-                swal("got error");
-                console.log(error);
-            });
-
-    }
+        if(this.state.value) {
+            var payload = {
+                email: this.refs.EmailId.getValue()
+            };
+            console.log(payload);
+            axios.create({withCredentials: true})
+                .post(`${ROOT_URL}/sendThanksMail`, payload, axiosConfig)
+                .then(response => {
+                    swal("All done", "A confirmation email has been sent.", "success");
+                    this.setState({open: false});
+                    this.props.history.push("/Surveys");
+                    console.log(response);
+                })
+                .catch(error => {
+                    swal("got error");
+                    console.log(error);
+                });
+        }
+        else {
+            this.setState({open: false});
+        }
+    };
 
     render() {
         const actions = [
