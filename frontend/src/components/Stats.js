@@ -63,7 +63,7 @@ class UserAccount extends Component{
                 //alert(response.data.code);
 
                 if(response.data.code==200){
-                  //  alert("responseee "+response.data);
+                    //alert("responseee "+response.data);
                     this.setState({'StatsData':response.data})
                 }
                 else if(response.data.code==404){
@@ -71,7 +71,7 @@ class UserAccount extends Component{
                     this.props.history.push("/Surveys");
                 }
                 else{
-                 //   alert("There seems to be some error.");
+                    swal("There seems to be some error.");
                 }
             })
             .catch(error => {

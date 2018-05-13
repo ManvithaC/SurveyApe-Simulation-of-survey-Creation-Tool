@@ -120,7 +120,7 @@ class LandingPage extends Component{
                         <a className="navbar-brand d-flex align-items-center pointer " onClick={() => {
                             this.props.history.push("/");
                         }}>
-                            <span className="righteous purple pt-3 pl-5 " style={{'font-size':'2em'}}>Survey Ape</span>
+                            <span className="righteous purple pl-5 " style={{'font-size':'2em'}}>Survey Ape</span>
                         </a>
                         <ul className="navbar-nav text-uppercase ml-auto">
                             <li className="nav-item mynav">

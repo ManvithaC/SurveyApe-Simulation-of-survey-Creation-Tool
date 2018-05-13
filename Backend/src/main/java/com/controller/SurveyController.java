@@ -230,6 +230,20 @@ public class SurveyController {
         return null;
     }
 
+    @PostMapping(path = "/sendThanksMail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> sendThanksMail(@RequestBody String mailJson, HttpSession session) {
+        System.out.println("------------------------------------");
+        System.out.println("Send thank you mail");
+        System.out.println("------------------------------------");
+
+        //System.out.println(surveyrequest);
+        JSONObject survey = new JSONObject(mailJson);
+        String email =  survey.getString("email");
+        surveyService.sendThankYoumail(email);
+        return null;
+    }
 
 
 
@@ -313,6 +327,9 @@ public class SurveyController {
     public ResponseEntity<?> closeSurvey(@PathVariable("surveyId") Integer surveyId) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
+        System.out.println("------------------------------------");
+        System.out.println("Close Survey"+surveyId);
+        System.out.println("------------------------------------");
 
         return surveyService.closeSurvey(surveyId);
 

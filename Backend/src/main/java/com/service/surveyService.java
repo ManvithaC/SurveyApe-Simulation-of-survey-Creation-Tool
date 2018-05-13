@@ -44,6 +44,9 @@ public class surveyService {
     @Autowired
     public inviteRepository inviteRepository;
 
+    @Autowired
+    public mailNotificationService mailNotificationService;
+
 
 
     public ResponseEntity<?> renderopenQuestions(int surveyID,int inviteID) {
@@ -606,22 +609,35 @@ public class surveyService {
             JSONObject message = new JSONObject();
             message.put("name", user.getSurveys().get(i).getSurveyName());
             message.put("id", user.getSurveys().get(i).getSurveyId());
-            if (user.getSurveys().get(i).getIsPublished() == 1) {
-                message.put("status", "published");
-            } else {
-                message.put("status", "Saved");
+            if(user.getSurveys().get(i).getIsOpen() == 0){
+                message.put("status","closed");
+            }else {
+                if (user.getSurveys().get(i).getIsPublished() == 1) {
+                    message.put("status", "published");
+                } else {
+                    message.put("status", "Saved");
+                }
             }
 
-            if(user.getSurveys().get(i).getExpiry()!=999999999  ) {
-                Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
-                SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-                String dateString = formatter.format(currentTime);
-                message.put("expiryDate", dateString);
-            }
-            else
-            {
+            if(user.getSurveys().get(i).getExpiry()!=null) {
+
+                if (user.getSurveys().get(i).getExpiry() != 999999999) {
+                    Date currentTime = new Date(user.getSurveys().get(i).getExpiry() * 1000);
+                    SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                    String dateString = formatter.format(currentTime);
+                    message.put("expiryDate", dateString);
+                    message.put("enableclose",false);
+                } else {
+                    message.put("expiryDate", "");
+                    if(user.getSurveys().get(i).getIsOpen() == 0)
+                        message.put("enableclose",false);
+                    else
+                        message.put("enableclose",true);
+
+                }
+            }else{
+                message.put("enableclose",true);
                 message.put("expiryDate", "");
-
             }
             //System.out.println(dateString);
             output.put(message);
@@ -698,6 +714,11 @@ public class surveyService {
         inviteRepository.save(invites);
         inviteService.sendEmailInvitations(invites.getEmailId(), invites.getSurveyURL());
         System.out.println("-------------------------------");
+        return null;
+    }
+
+    public ResponseEntity<?> sendThankYoumail(String email) {
+        mailNotificationService.sendThanksEmail(email);
         return null;
     }
 }

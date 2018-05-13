@@ -8,6 +8,7 @@ import ContentEdit from 'material-ui/svg-icons/image/edit';
 import AddSurveyee from 'material-ui/svg-icons/social/group-add';
 import Chart from 'material-ui/svg-icons/editor/insert-chart';
 import UnPublish from 'material-ui/svg-icons/content/remove-circle';
+import CloseSurvey from 'material-ui/svg-icons/action/visibility-off';
 import ContentAdd from 'material-ui/svg-icons/image/edit';
 import * as $ from "jquery";
 import axios from "axios/index";
@@ -155,14 +156,93 @@ class Surveys extends Component{
         console.log(name);
         var surveyid={"surveyId":temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/unpublish`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/Unpublish`,surveyid, axiosConfig)
             .then(response => {
                 if(response.data.code==200){
                     swal1("Success", "Survey Unpublished Succesfully", "success")
+                    axios.create({withCredentials: true})
+                        .get(`${ROOT_URL}/surveys`, axiosConfig)
+                        .then(response => {
+                            this.setState({
+                                surveysCreated: response.data[0],
+                                surveysToSubmit:response.data[1]
+                            });
+                        })
+                        .catch(error => {
+                            //swal("got error");
+                            console.log(error);
+                        });
                 }
                 else
                 {
                     swal1("Invalid Attempt", "Cannot Unpublish this survey", "warning")
+                }
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    };
+    CloseSurvey = (temp,name)=>{
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+        console.log(temp);
+        console.log(name);
+        var surveyid={"surveyId":temp};
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/Close/`+temp, axiosConfig)
+            .then(response => {
+                if(response.data.code==200){
+                    swal1("Success", "Survey closed Succesfully", "success")
+                    axios.create({withCredentials: true})
+                        .get(`${ROOT_URL}/surveys`, axiosConfig)
+                        .then(response => {
+                            this.setState({
+                                surveysCreated: response.data[0],
+                                surveysToSubmit:response.data[1]
+                            });
+                        })
+                        .catch(error => {
+                            //swal("got error");
+                            console.log(error);
+                        });
+                }
+                else
+                {
+                    swal1("Expiry Date Set", "Sorry, Cannot close this survey", "warning")
+                }
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    };
+
+    CloseSurvey = (temp,name)=>{
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+        console.log(temp);
+        console.log(name);
+        var surveyid={"surveyId":temp};
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/Close/`+surveyid,surveyid, axiosConfig)
+            .then(response => {
+                if(response.data.code==200){
+                    swal1("Success", "Survey closed Succesfully", "success")
+                }
+                else
+                {
+                    swal1("Expiry Date Set", "Sorry, Cannot close this survey", "warning")
                 }
             })
             .catch(error => {
@@ -210,7 +290,7 @@ class Surveys extends Component{
                                         <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
                                         <div className="icon pull-right">
                                             {
-                                                card.status == 'published' ? (
+                                                card.status == 'published' || card.status == 'closed'? (
                                                     <div>
                                                         <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
                                                             <AddSurveyee style={styleAdd}
@@ -238,6 +318,19 @@ class Surveys extends Component{
                                                                          }}
                                                             />
                                                         </IconButton>
+                                                        {
+                                                            card.enableclose  ? (
+                                                                <IconButton tooltip="Close Survey" touch={true} tooltipPosition="top-right">
+                                                                    <CloseSurvey style={ChartStyle}
+                                                                                 className="pointer"
+                                                                                 onClick={() => {
+                                                                                     this.CloseSurvey(card.id,card.name);
+                                                                                 }}
+
+                                                                    />
+                                                                </IconButton>
+                                                            ):''
+                                                        }
                                                     </div>) : ''
 
                                             }
