@@ -29,9 +29,20 @@ const ROOT_URL = 'http://localhost:8080';
 const styles = {
     marginBottom: 5,
     marginRight: 15,
+    width:300,
     button:{
         marginRight: 15,
-    }
+    },
+    exampleImageInput: {
+        cursor: 'pointer',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+        width: '100%',
+        opacity: 0,
+    },
 };
 
 const optionsStyle = {
@@ -68,6 +79,7 @@ class SurveyBuilder extends Component {
             StarOpen:false,
             StarOption:1,
             JSONDIalog:false,
+            FileCOntents:null,
         };
 
     }
@@ -365,6 +377,22 @@ class SurveyBuilder extends Component {
         element.download = this.refs.FIleName.getValue()+".txt";
         element.click();
     }
+
+    handleImportJsonData = (event) =>{
+        var contents;
+        var f = event.target.files[0];
+        var JSONToBuildTheForm;
+        if (f) {
+            var r = new FileReader();
+            r.onload = function(e) {
+                contents = e.target.result;
+                editor.actions.setData(contents);
+            }
+            r.readAsText(f);
+        } else {
+            alert("Failed to load file. Try Again");
+        }
+    }
     render() {
         const actions = [
             <FlatButton
@@ -437,6 +465,14 @@ class SurveyBuilder extends Component {
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                         textFieldStyle={{'width': '150px'}}
                     />
+                    <RaisedButton
+                        label="Import A JSON File"
+                        labelPosition="before"
+                        style={styles.button}
+                        containerElement="label"
+                    >
+                        <input type="file" style={styles.exampleImageInput} onChange={this.handleImportJsonData}/>
+                    </RaisedButton>
                     <RaisedButton label="Export As JSON" style={styles.button}
                                   onClick={this.handleJSONFileOpen}
                     />
