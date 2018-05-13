@@ -7,6 +7,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
 import swal from 'sweetalert';
+import axios from 'axios';
+const ROOT_URL = 'http://localhost:8080';
+
+
 
 const styles = {
     customWidth: {
@@ -44,8 +48,31 @@ class AddSurveyee extends Component{
             closeModal: true,
         });
 
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        var toSendJSON = {
+            surveyId: this.props.location.state.surveyId,
+            SurveyeesEmail:this.state.SurveyeesEmail,
+            SendVia:"link"
+        };
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/addInvites`, toSendJSON, axiosConfig)
+            .then(response => {
+                this.setState({'progress': false});
+                swal("Invitations sent");
+                this.props.history.push("/Surveys");
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
         this.props.history.push("/Surveys");
-    }
+    };
 
     render(){
         return (

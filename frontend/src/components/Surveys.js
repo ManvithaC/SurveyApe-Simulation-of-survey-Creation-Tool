@@ -26,30 +26,29 @@ const style = {
     textAlign: 'right',
 };
 
-const styleAdd ={
+const styleAdd = {
     height: 30,
-    width:30,
-    color:'#424242',
-    marginLeft:50,
+    width: 30,
+    color: '#424242',
+    marginLeft: 50,
 
 }
-const ChartStyle ={
+const ChartStyle = {
     height: 30,
-    width:30,
-    color:'#424242',
-    marginLeft:10,
+    width: 30,
+    color: '#424242',
+    marginLeft: 10,
 
 };
 
-class Surveys extends Component{
-    constructor(props){
+class Surveys extends Component {
+    constructor(props) {
         super(props);
-        this.state={
-            surveysCreated:[],
-            surveysToSubmit:[]
+        this.state = {
+            surveysCreated: [],
+            surveysToSubmit: []
         }
     }
-
 
 
     componentWillMount() {
@@ -64,7 +63,7 @@ class Surveys extends Component{
             .then(response => {
                 this.setState({
                     surveysCreated: response.data[0],
-                    surveysToSubmit:response.data[1]
+                    surveysToSubmit: response.data[1]
                 });
             })
             .catch(error => {
@@ -75,7 +74,7 @@ class Surveys extends Component{
         axios.create({withCredentials: true})
             .get(`${ROOT_URL}/session`, axiosConfig)
             .then(response => {
-                if(response.data.code==400){
+                if (response.data.code == 400) {
                     swal1("Invalid Session", "Please Sign in", "error")
                     this.props.history.push("/");
                 }
@@ -86,7 +85,7 @@ class Surveys extends Component{
             });
     }
 
-    clickedEditToCreate=(temp,name)=>{
+    clickedEditToCreate = (temp, name) => {
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -94,18 +93,18 @@ class Surveys extends Component{
             }
         };
 
-        var surveyid={"surveyId":temp};
+        var surveyid = {"surveyId": temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/renderSurvey`, surveyid, axiosConfig)
             .then(response => {
                 console.log(response);
                 this.props.history.push({
                     pathname: '/renderForm',
-                    state:{
+                    state: {
 //                        data:response.data,
 
-                        surveyId:surveyid,
-                        surveyName:name
+                        surveyId: surveyid,
+                        surveyName: name
                     }
                 })
             })
@@ -116,7 +115,7 @@ class Surveys extends Component{
 
     };
 
-    clickedEdit=(temp,name)=>{
+    clickedEdit = (temp, name) => {
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -125,17 +124,18 @@ class Surveys extends Component{
         };
         console.log(temp);
         console.log(name);
-        var surveyid={"surveyId":temp};
+        var surveyid = {"surveyId": temp};
 
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/renderSurvey`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/renderSurvey`, surveyid, axiosConfig)
             .then(response => {
                 console.log(response);
                 this.props.history.push({
                     pathname: '/SurveyBuilder',
-                    state:{data:response.data,
-                        surveyId:surveyid,
-                        surveyName:name
+                    state: {
+                        data: response.data,
+                        surveyId: surveyid,
+                        surveyName: name
                     }
                 })
             })
@@ -144,7 +144,7 @@ class Surveys extends Component{
                 console.log(error);
             });
     };
-    unPublishSurvey=(temp,name)=>{
+    unPublishSurvey = (temp, name) => {
 
         let axiosConfig = {
             headers: {
@@ -154,18 +154,18 @@ class Surveys extends Component{
         };
         console.log(temp);
         console.log(name);
-        var surveyid={"surveyId":temp};
+        var surveyid = {"surveyId": temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Unpublish`,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/Unpublish`, surveyid, axiosConfig)
             .then(response => {
-                if(response.data.code==200){
+                if (response.data.code == 200) {
                     swal1("Success", "Survey Unpublished Succesfully", "success")
                     axios.create({withCredentials: true})
                         .get(`${ROOT_URL}/surveys`, axiosConfig)
                         .then(response => {
                             this.setState({
                                 surveysCreated: response.data[0],
-                                surveysToSubmit:response.data[1]
+                                surveysToSubmit: response.data[1]
                             });
                         })
                         .catch(error => {
@@ -173,8 +173,7 @@ class Surveys extends Component{
                             console.log(error);
                         });
                 }
-                else
-                {
+                else {
                     swal1("Invalid Attempt", "Cannot Unpublish this survey", "warning")
                 }
             })
@@ -183,7 +182,7 @@ class Surveys extends Component{
                 console.log(error);
             });
     };
-    CloseSurvey = (temp,name)=>{
+    CloseSurvey = (temp, name) => {
 
         let axiosConfig = {
             headers: {
@@ -193,18 +192,18 @@ class Surveys extends Component{
         };
         console.log(temp);
         console.log(name);
-        var surveyid={"surveyId":temp};
+        var surveyid = {"surveyId": temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Close/`+temp, axiosConfig)
+            .post(`${ROOT_URL}/Close/` + temp, axiosConfig)
             .then(response => {
-                if(response.data.code==200){
+                if (response.data.code == 200) {
                     swal1("Success", "Survey closed Succesfully", "success")
                     axios.create({withCredentials: true})
                         .get(`${ROOT_URL}/surveys`, axiosConfig)
                         .then(response => {
                             this.setState({
                                 surveysCreated: response.data[0],
-                                surveysToSubmit:response.data[1]
+                                surveysToSubmit: response.data[1]
                             });
                         })
                         .catch(error => {
@@ -212,8 +211,7 @@ class Surveys extends Component{
                             console.log(error);
                         });
                 }
-                else
-                {
+                else {
                     swal1("Expiry Date Set", "Sorry, Cannot close this survey", "warning")
                 }
             })
@@ -223,7 +221,7 @@ class Surveys extends Component{
             });
     };
 
-    CloseSurvey = (temp,name)=>{
+    CloseSurvey = (temp, name) => {
 
         let axiosConfig = {
             headers: {
@@ -233,15 +231,14 @@ class Surveys extends Component{
         };
         console.log(temp);
         console.log(name);
-        var surveyid={"surveyId":temp};
+        var surveyid = {"surveyId": temp};
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Close/`+surveyid,surveyid, axiosConfig)
+            .post(`${ROOT_URL}/Close/` + surveyid, surveyid, axiosConfig)
             .then(response => {
-                if(response.data.code==200){
+                if (response.data.code == 200) {
                     swal1("Success", "Survey closed Succesfully", "success")
                 }
-                else
-                {
+                else {
                     swal1("Expiry Date Set", "Sorry, Cannot close this survey", "warning")
                 }
             })
@@ -251,25 +248,27 @@ class Surveys extends Component{
             });
     };
 
-    render(){
+    render() {
         return (
             <div>
                 <div class="row">
                     <div class="col-md-5 surveyBox">
                         <h4 class="Questrial">Created Surveys</h4>
                         <hr style=
-                                {{'width':'50%','textAlign':'center'}}/>
+                                {{'width': '50%', 'textAlign': 'center'}}/>
                         {
                             this.state.surveysCreated.reverse().map((card, index) => (
                                 <div className="EachSurveyBox">
                                     <div class="row">
-                                        <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <b>
+                                            <div className="Questrial" style={{'font-size': '20px'}}>{card.name}</div>
+                                        </b>
                                         <div className="icon">
                                             {
                                                 card.status == 'Saved' ? (
                                                     <FloatingActionButton mini={true}
                                                                           style={style}
-                                                                          onClick={()=>this.clickedEdit(card.id,card.name)}
+                                                                          onClick={() => this.clickedEdit(card.id, card.name)}
                                                     >
                                                         <ContentEdit/>
                                                     </FloatingActionButton>
@@ -278,7 +277,7 @@ class Surveys extends Component{
                                                                           style={style}
                                                                           disabled={true}
                                                     >
-                                                        <ContentEdit />
+                                                        <ContentEdit/>
                                                     </FloatingActionButton>
                                                 )
                                             }
@@ -286,50 +285,63 @@ class Surveys extends Component{
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
-                                        <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
+                                        <p className="Questrial" style={{'font-size': '15px'}}>
+                                            Expiry: {card.expiryDate}</p>
+                                        <div className="Questrial ml-5" style={{'font-size': '15px'}}>Status:
+                                            <b>{card.status}</b></div>
                                         <div className="icon pull-right">
                                             {
-                                                card.status == 'published' || card.status == 'closed'? (
+                                                card.status == 'published' || card.status == 'closed' ? (
                                                     <div>
-                                                        <IconButton tooltip="Add Surveyees" touch={true} tooltipPosition="top-right">
+                                                        <IconButton tooltip="Add Surveyees" touch={true}
+                                                                    tooltipPosition="top-right">
                                                             <AddSurveyee style={styleAdd}
                                                                          className="pointer"
                                                                          onClick={() => {
-                                                                             this.props.history.push("/AddSurveyee");
+                                                                             this.props.history.push({
+                                                                                 pathname: "/AddSurveyee",
+                                                                                 state: {
+                                                                                     surveyId: card.id
+                                                                                 }
+                                                                             });
                                                                          }}
                                                             />
                                                         </IconButton>
-                                                        <IconButton tooltip="See Statistics" touch={true} tooltipPosition="top-right">
+                                                        <IconButton tooltip="See Statistics" touch={true}
+                                                                    tooltipPosition="top-right">
                                                             <Chart className="icon pointer" style={ChartStyle}
-                                                                   onClick={()=>{this.props.history.push({
-                                                                       pathname: '/Stats',
-                                                                       state:{
-                                                                           surveyId:card.id
-                                                                       }
-                                                                   })}}
+                                                                   onClick={() => {
+                                                                       this.props.history.push({
+                                                                           pathname: '/Stats',
+                                                                           state: {
+                                                                               surveyId: card.id
+                                                                           }
+                                                                       })
+                                                                   }}
                                                             />
                                                         </IconButton>
-                                                        <IconButton tooltip="UnPublish Survey" touch={true} tooltipPosition="top-right">
+                                                        <IconButton tooltip="UnPublish Survey" touch={true}
+                                                                    tooltipPosition="top-right">
                                                             <UnPublish style={ChartStyle}
-                                                                         className="pointer"
-                                                                         onClick={() => {
-                                                                             this.unPublishSurvey(card.id,card.name);
-                                                                         }}
+                                                                       className="pointer"
+                                                                       onClick={() => {
+                                                                           this.unPublishSurvey(card.id, card.name);
+                                                                       }}
                                                             />
                                                         </IconButton>
                                                         {
-                                                            card.enableclose  ? (
-                                                                <IconButton tooltip="Close Survey" touch={true} tooltipPosition="top-right">
+                                                            card.enableclose ? (
+                                                                <IconButton tooltip="Close Survey" touch={true}
+                                                                            tooltipPosition="top-right">
                                                                     <CloseSurvey style={ChartStyle}
                                                                                  className="pointer"
                                                                                  onClick={() => {
-                                                                                     this.CloseSurvey(card.id,card.name);
+                                                                                     this.CloseSurvey(card.id, card.name);
                                                                                  }}
 
                                                                     />
                                                                 </IconButton>
-                                                            ):''
+                                                            ) : ''
                                                         }
                                                     </div>) : ''
 
@@ -343,35 +355,39 @@ class Surveys extends Component{
                     <div class="col-md-5 surveyBox">
                         <h4 class="Questrial">Submitted Surveys</h4>
                         <hr style=
-                                {{'width':'50%','textAlign':'center'}}/>
+                                {{'width': '50%', 'textAlign': 'center'}}/>
                         {
                             this.state.surveysToSubmit.reverse().map((card, index) => (
                                 <div className="EachSurveyBox">
                                     <div class="row">
-                                        <b><div className="Questrial" style={{'font-size':'20px'}}>{card.name}</div></b>
+                                        <b>
+                                            <div className="Questrial" style={{'font-size': '20px'}}>{card.name}</div>
+                                        </b>
                                         <div className="icon">
                                             {
-                                                card.status == 'Saved' || card.status=='To be Submitted'? (
+                                                card.status == 'Saved' || card.status == 'To be Submitted' ? (
                                                     <FloatingActionButton mini={true}
                                                                           style={style}
-                                                                          onClick={()=>this.clickedEditToCreate(card.id,card.name)}
+                                                                          onClick={() => this.clickedEditToCreate(card.id, card.name)}
                                                     >
-                                                        <ContentEdit />
+                                                        <ContentEdit/>
                                                     </FloatingActionButton>
                                                 ) : (
                                                     <FloatingActionButton mini={true}
                                                                           style={style}
                                                                           disabled={true}
                                                     >
-                                                        <ContentEdit />
+                                                        <ContentEdit/>
                                                     </FloatingActionButton>
                                                 )
                                             }
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <p className="Questrial" style={{'font-size':'15px'}}>Expiry: {card.expiryDate}</p>
-                                        <div className="Questrial ml-5" style={{'font-size':'15px'}}>Status: <b>{card.status}</b></div>
+                                        <p className="Questrial" style={{'font-size': '15px'}}>
+                                            Expiry: {card.expiryDate}</p>
+                                        <div className="Questrial ml-5" style={{'font-size': '15px'}}>Status:
+                                            <b>{card.status}</b></div>
                                     </div>
                                 </div>
                             ))
