@@ -588,6 +588,14 @@ public class surveyService {
 
         for (int i = 0; i < user.getSurveys().size(); i++) {
             JSONObject message = new JSONObject();
+            Survey survey=user.getSurveys().get(i);
+            long surveyexpiray=survey.getExpiry();
+            long millis = System.currentTimeMillis()/1000;
+            if(surveyexpiray<=millis)
+            {
+                survey.setIsOpen(0);
+                surveyrepository.save(survey);
+            }
             message.put("name", user.getSurveys().get(i).getSurveyName());
             message.put("id", user.getSurveys().get(i).getSurveyId());
             if(user.getSurveys().get(i).getIsOpen() == 0){
