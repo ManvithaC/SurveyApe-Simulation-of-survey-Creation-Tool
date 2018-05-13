@@ -287,11 +287,6 @@ public class SurveyController {
     }
 
 
-
-
-
-
-
     @ResponseBody
     @GetMapping(path = "/surveys") // Map ONLY POST Requests
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {

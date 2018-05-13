@@ -4,6 +4,7 @@ import '../css/stats.css';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import axios from "axios/index";
 import swal from 'sweetalert';
+//import swal1 from "sweetalert/typings/sweetalert";
 
 const ROOT_URL = 'http://localhost:8080';
 class UserAccount extends Component{
@@ -57,6 +58,7 @@ class UserAccount extends Component{
             }
         };
 
+
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/getStats/`+SurveyID, axiosConfig)
             .then(response => {
@@ -77,6 +79,7 @@ class UserAccount extends Component{
             .catch(error => {
                 console.log(error);
             });
+
 
     }
 

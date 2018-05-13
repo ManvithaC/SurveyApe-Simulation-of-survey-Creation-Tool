@@ -15,6 +15,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
+//import swal from "sweetalert/typings/sweetalert";
 
 window.jQuery = $;
 window.$ = $;
@@ -107,6 +108,31 @@ class SurveyBuilder extends Component {
             snackBarOpen: false,
         });
     };
+
+
+    componentWillMount() {
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .get(`${ROOT_URL}/session`, axiosConfig)
+            .then(response => {
+                if(response.data.code==400){
+                    swal("Invalid Session", "Please Sign in", "error")
+                    this.props.history.push("/");
+                }
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    }
+
+
     componentDidMount() {
         var form;
         var formData;
