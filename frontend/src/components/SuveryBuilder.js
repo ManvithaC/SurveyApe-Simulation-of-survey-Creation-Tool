@@ -333,7 +333,7 @@ class SurveyBuilder extends Component {
         alreadyBuiltForm.push(ImageOptionTypeToAdd);
         editor.actions.setData(JSON.stringify(alreadyBuiltForm));
 
-    }
+    };
 
     handleJSONFileClose= () => {
         this.setState({JSONDIalog : false});

@@ -159,7 +159,7 @@ class Surveys extends Component{
             .post(`${ROOT_URL}/Unpublish`,surveyid, axiosConfig)
             .then(response => {
                 if(response.data.code==200){
-                    swal1("Success", "Survey Unpublished Succesfully", "success")
+                    swal1("Success", "Survey Unpublished Succesfully", "success");
                     axios.create({withCredentials: true})
                         .get(`${ROOT_URL}/surveys`, axiosConfig)
                         .then(response => {
@@ -296,7 +296,12 @@ class Surveys extends Component{
                                                             <AddSurveyee style={styleAdd}
                                                                          className="pointer"
                                                                          onClick={() => {
-                                                                             this.props.history.push("/AddSurveyee");
+                                                                             this.props.history.push({
+                                                                                 pathname:"/AddSurveyee",
+                                                                                 state:{
+                                                                                     surveyId:card.id
+                                                                                 }
+                                                                             });
                                                                          }}
                                                             />
                                                         </IconButton>

@@ -10,6 +10,7 @@ import Dialog from 'material-ui/Dialog';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {FlatButton, TextField} from "material-ui";
+
 var fbRender;
 var originalFormData;
 var field;
@@ -29,6 +30,7 @@ require('jquery-ui-sortable');
 require('formBuilder');
 require('formBuilder/dist/form-render.min');
 var surveyIDHere;
+
 class RenderForm extends Component {
     constructor(props) {
         super(props);
@@ -37,7 +39,7 @@ class RenderForm extends Component {
             formData: '',
             open: false,
             value: 1,
-            isEmail:false,
+            isEmail: false,
         }
     }
 
@@ -63,14 +65,15 @@ class RenderForm extends Component {
     };
     handleChange = (event, index, value) => {
         this.setState({value});
-        if(value){
-            this.setState({isEmail:true})
+        if (value) {
+            this.setState({isEmail: true})
         }
 
     }
 
-    savetheUpdatedForm(){
+    savetheUpdatedForm() {
         var formData = new FormData(fbRender);
+
         function getObj(objs, key, val) {
             val = val.replace('[]', '');
             return objs.filter(function (obj) {
@@ -96,7 +99,8 @@ class RenderForm extends Component {
                     }
                     else {
                         delete fieldOption.selected;
-                    };
+                    }
+                    ;
                 }
             } else {
 
@@ -116,7 +120,7 @@ class RenderForm extends Component {
             }
         };
         var payload_SaveData = {data: originalFormData};
-        console.log("payload after changing"+JSON.stringify(payload_SaveData));
+        console.log("payload after changing" + JSON.stringify(payload_SaveData));
         axios.create({withCredentials: true})
             .post(`${ROOT_URL}/savesurvey/` + surveyIDHere, payload_SaveData, axiosConfig)
             .then(response => {
@@ -129,6 +133,7 @@ class RenderForm extends Component {
             });
         //console.log('Updated formData: ', originalFormData);
     }
+
     componentDidMount() {
         this.setState({
             surveyID: JSON.stringify(this.props.location.state.surveyId.surveyId),
@@ -166,6 +171,7 @@ class RenderForm extends Component {
                     $(fbRender).formRender(formRenderOpts);
                     document.getElementById('get-formdata').onclick = function () {
                         var formData = new FormData(fbRender);
+
                         function getObj(objs, key, val) {
                             val = val.replace('[]', '');
                             return objs.filter(function (obj) {
@@ -224,8 +230,6 @@ class RenderForm extends Component {
                     };
 
 
-
-
                 })($);
             })
             .catch(error => {
@@ -234,9 +238,8 @@ class RenderForm extends Component {
 
     }
 
-    submitForm =() => {
-        console.log("Do you want to get a confirmation mail?"+this.state.value);//true for yes and false for no
-        console.log('Email Id'+this.refs.EmailId.getValue());
+    submitForm = () => {
+        console.log("Do you want to get a confirmation mail?" + this.state.value);//true for yes and false for no
 
         let axiosConfig = {
             headers: {
@@ -245,24 +248,29 @@ class RenderForm extends Component {
             }
         };
 
-        var payload = {
-            email : this.refs.EmailId.getValue()
-        };
-        console.log(payload);
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/sendThanksMail`, payload, axiosConfig)
-            .then(response => {
-                swal("All done","A confirmation email has been sent.","success");
-                this.setState({open:false});
-                this.props.history.push("/Surveys");
-                console.log(response);
-            })
-            .catch(error => {
-                swal("got error");
-                console.log(error);
-            });
+        if (this.state.value) {
+            var payload = {
+                email: this.refs.EmailId.getValue()
+            };
+            console.log(payload);
+            axios.create({withCredentials: true})
+                .post(`${ROOT_URL}/sendThanksMail`, payload, axiosConfig)
+                .then(response => {
+                    swal("All done", "A confirmation email has been sent.", "success");
+                    this.setState({open: false});
+                    this.props.history.push("/");
+                    console.log(response);
+                })
+                .catch(error => {
+                    swal("got error");
+                    console.log(error);
+                });
+        }
+        else {
+            this.props.history.push("/");
+        }
 
-    }
+    };
 
     render() {
         const actions = [
@@ -308,19 +316,19 @@ class RenderForm extends Component {
                             value={this.state.value}
                             onChange={this.handleChange}
                         >
-                            <MenuItem value={null} primaryText="" />
-                            <MenuItem value={false} primaryText="No" />
-                            <MenuItem value={true} primaryText="Yes" />
+                            <MenuItem value={null} primaryText=""/>
+                            <MenuItem value={false} primaryText="No"/>
+                            <MenuItem value={true} primaryText="Yes"/>
                         </SelectField>
                     </div>
                     {
-                        this.state.isEmail?(
+                        this.state.isEmail ? (
                             <TextField
                                 hintText="Enter Email ID"
                                 fullWidth={true}
                                 ref="EmailId"
                             />
-                        ):''
+                        ) : ''
                     }
                 </Dialog>
             </div>

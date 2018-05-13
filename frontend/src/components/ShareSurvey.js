@@ -88,6 +88,7 @@ class ShareSurvey extends Component {
             'surveyId': this.props.location.state
         };
 
+
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',

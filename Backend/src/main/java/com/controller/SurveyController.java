@@ -77,7 +77,6 @@ public class SurveyController {
             byte[] bytes = file.getBytes();
             System.out.println("Working Directory = " +
                     System.getProperty("user.dir"));
-
             String UPLOADED_FOLDER = System.getProperty("user.dir") + "\\public\\";
             long timestamp = System.currentTimeMillis() / 1000L;
             System.out.println("Timestamp" + timestamp);
@@ -97,7 +96,7 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> generalSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println(survey);
+        //System.out.println(survey);
         //return null;
         return surveyService.generalSurvey(survey);
     }
@@ -107,16 +106,35 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> closedSurvey(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println(survey);
+        //System.out.println(survey);
         return surveyService.closedSurvey(survey, session);
     }
+
+
+    @PostMapping(path = "/addInvites", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<?> addInvites(@RequestBody String surveyrequest, HttpSession session) {
+        JSONObject survey = new JSONObject(surveyrequest);
+        Survey survey1=  surveyRepository.findBySurveyId(survey.getInt("surveyId"));
+        System.out.println("INSIDE ADD INVITES");
+        System.out.println(survey);
+        System.out.println("INSIDE ADD INVITES");
+        if(survey1.getSurveyType().equals("Closed"))
+        return surveyService.closedSurvey(survey, session);
+        else if(survey1.getSurveyType().equals("General"))
+            return surveyService.generalSurvey(survey);
+        else
+            return surveyService.openSurvey(survey);
+    }
+
+
 
 
     @PostMapping(path = "/openSendEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ResponseEntity<?> openSendEmail(@RequestBody String surveyrequest) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println(survey);
+        //System.out.println(survey);
         return surveyService.openSendEmail(survey);
         //return null;
     }
@@ -126,7 +144,7 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> openUnique(@RequestBody String surveyrequest, HttpSession session) {
         JSONObject survey = new JSONObject(surveyrequest);
-        System.out.println("Inside open unique " + survey);
+        //System.out.println("Inside open unique " + survey);
         return surveyService.openSurvey(survey);
     }
 
@@ -198,6 +216,9 @@ public class SurveyController {
     public @ResponseBody
     ResponseEntity<?> unPublishSurvey(@RequestBody String surveyid) {
         JSONObject jsonObject=new JSONObject(surveyid);
+        System.out.println("------------------------");
+        System.out.println("insude unpublish");
+        System.out.println("------------------------");
         return surveyService.unPublishSurvey(jsonObject);
     }
 

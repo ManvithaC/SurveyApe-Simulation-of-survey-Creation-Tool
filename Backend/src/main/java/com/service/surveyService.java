@@ -187,9 +187,9 @@ public class surveyService {
                 }
                 temp.put("values", values);
             } else {
-                if(questions1.getDescription().contains("firstname") && session.getAttribute("username")!=null)
+                if(questions1.getDescription().contains("first name") && session.getAttribute("username")!=null)
                     temp.put("value",user.getFirstname());
-                else if(questions1.getDescription().contains("lastname") && session.getAttribute("username")!=null)
+                else if(questions1.getDescription().contains("last name") && session.getAttribute("username")!=null)
                     temp.put("value",user.getLastname());
                 else if(questions1.getDescription().contains("email") && session.getAttribute("username")!=null)
                     temp.put("value",user.getEmail());
