@@ -15,7 +15,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Snackbar from 'material-ui/Snackbar';
-//import swal from "sweetalert/typings/sweetalert";
+
 
 window.jQuery = $;
 window.$ = $;
@@ -271,6 +271,36 @@ class SurveyBuilder extends Component {
             });
     }
 
+
+    publishclick= (surveyId) => {
+        var surveyid={"surveyId":surveyId};
+
+        let axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Access-Control-Allow-Origin": true
+            }
+        };
+
+        axios.create({withCredentials: true})
+            .post(`${ROOT_URL}/publish`,surveyid, axiosConfig)
+            .then(response => {
+                if(response.data.code==200){
+
+                    this.props.history.push({
+                        pathname: '/ShareSurvey',
+                        state: this.state.surveyId
+                    })
+                }
+
+            })
+            .catch(error => {
+                //swal("got error");
+                console.log(error);
+            });
+    }
+
+
     handleStarClose= () => {
         this.setState({StarOpen : false});
     }
@@ -497,12 +527,8 @@ class SurveyBuilder extends Component {
                                   disabled={this.state.isPublishDisabled}
                                   labelColor={'#fff'}
                                   onClick={() => {
-                        this.props.history.push({
-                            pathname: '/ShareSurvey',
-                            state: this.state.surveyId
-                        })
-
-                    }}/>
+                                      this.publishclick(this.state.surveyId);
+                                  }}/>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-10 mt-2">

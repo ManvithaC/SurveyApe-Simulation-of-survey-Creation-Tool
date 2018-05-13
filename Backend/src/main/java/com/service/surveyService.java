@@ -558,23 +558,24 @@ public class surveyService {
         return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> PublishSurvey(Integer surveyId) {
+
+    public ResponseEntity<?> PublishSurvey(JSONObject survey) {
+        Integer surveyId = survey.getInt("surveyId");
+        System.out.println(surveyId);
         Survey surveyEntity = surveyrepository.findBySurveyId(surveyId);
         JSONObject message = new JSONObject();
         if (surveyEntity != null) {
-            surveyEntity.setIsPublished(1);
-            surveyEntity.setStartDate(new Date());
-            surveyrepository.save(surveyEntity);
-            message.put("code", 200);
-            message.put("msg", "Survey Published");
-            return new ResponseEntity<>(message.toString(), HttpStatus.OK);
+                surveyEntity.setIsPublished(1);
+                surveyrepository.save(surveyEntity);
+                message.put("code", 200);
+                message.put("msg", "Survey UnPublished");
+
         } else {
             message.put("code", 404);
             message.put("msg", "Survey does not exist");
-            return new ResponseEntity<>(message.toString(), HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(message.toString(), HttpStatus.OK);
     }
-
 
     public ResponseEntity<?> fetchcreatedsubmittedSurveys(HttpSession session) {
         // String usermail = session.getAttribute("email").toString();

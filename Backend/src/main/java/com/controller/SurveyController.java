@@ -306,15 +306,11 @@ public class SurveyController {
     }
 
 
-
-    @ResponseBody
-    @PostMapping(path = "/publish/{surveyId}") // Map ONLY POST Requests
-    public ResponseEntity<?> PublishSurvey(@PathVariable("surveyId") Integer surveyId) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-
-        return surveyService.PublishSurvey(surveyId);
-
+    @PostMapping(path = "/publish", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public @ResponseBody
+    ResponseEntity<?> PublishSurvey(@RequestBody String surveyid) {
+        JSONObject jsonObject=new JSONObject(surveyid);
+        return surveyService.PublishSurvey(jsonObject);
     }
 
     @ResponseBody
