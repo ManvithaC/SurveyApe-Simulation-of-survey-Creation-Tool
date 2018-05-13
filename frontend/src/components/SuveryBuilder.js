@@ -29,7 +29,7 @@ const ROOT_URL = 'http://localhost:8080';
 const styles = {
     marginBottom: 5,
     marginRight: 15,
-    width:300,
+    width:270,
     button:{
         marginRight: 15,
     },
@@ -80,6 +80,7 @@ class SurveyBuilder extends Component {
             StarOption:1,
             JSONDIalog:false,
             FileCOntents:null,
+            isPublishDisabled:true
         };
 
     }
@@ -118,39 +119,12 @@ class SurveyBuilder extends Component {
             formData = JSON.stringify(this.props.location.state.data);
             console.log(formData);
         }
-        let fields = [{
-            label: 'Star Rating',
-            attrs: {
-                type: 'starRating'
-            },
-            value:2,
-            icon: '⭐'
-        }
-
-        ];
-
-        let templates;
-        templates = {
-            starRating: function (fieldData) {
-                return {
-                    field: '<span id="' + fieldData.name + '">',
-                    onRender: function () {
-                        $(document.getElementById(fieldData.name)).rateYo({
-                            rating: 3.5
-                        });
-                    }
-                };
-            }
-        };
 
         var options = {
             disableFields: ['autocomplete', 'button', 'paragraph', 'number', 'hidden', 'header', 'actionButtons','file'],
             showActionButtons: false
         };
 
-        var editor_t = $("#editor_t").formBuilder({fields, templates});
-
-        $("#editor_t").hide();
 
         editor = $("#editor").formBuilder(options);
         setTimeout(function () {
@@ -216,7 +190,8 @@ class SurveyBuilder extends Component {
                 this.setState({
                     surveyId:response.data.surveyId
                 });
-                swal("Save Successfull")
+                swal("Save Successfull");
+                this.setState({isPublishDisabled:false});
             })
             .catch(error => {
                 //swal("got error");
@@ -386,7 +361,15 @@ class SurveyBuilder extends Component {
             var r = new FileReader();
             r.onload = function(e) {
                 contents = e.target.result;
-                editor.actions.setData(contents);
+
+                var Questions = JSON.parse(contents);
+                var alreadyBuiltForm = JSON.parse(editor.actions.getData('json'));
+                Questions.map((elem) => (
+                    alreadyBuiltForm.push(elem)
+                ))
+
+                console.log("---"+JSON.stringify(alreadyBuiltForm))
+               editor.actions.setData(JSON.stringify(alreadyBuiltForm));
             }
             r.readAsText(f);
         } else {
@@ -465,6 +448,8 @@ class SurveyBuilder extends Component {
                         style={{'margin-top': '24px', 'margin-right': '5px'}}
                         textFieldStyle={{'width': '150px'}}
                     />
+                </div>
+                <div class="row ml-5 justify-content-start">
                     <RaisedButton
                         label="Import A JSON File"
                         labelPosition="before"
@@ -478,8 +463,14 @@ class SurveyBuilder extends Component {
                     />
                     <RaisedButton label="Save" style={styles.button}
                                   onClick={this.saveTheForm}
+                                  backgroundColor={'#ba68c8'}
+                                  labelColor={'#fff'}
                     />
-                    <RaisedButton label="Publish" style={styles.button} onClick={() => {
+                    <RaisedButton label="Publish" style={styles.button}
+                                  backgroundColor={'#ba68c8'}
+                                  disabled={this.state.isPublishDisabled}
+                                  labelColor={'#fff'}
+                                  onClick={() => {
                         this.props.history.push({
                             pathname: '/ShareSurvey',
                             state: this.state.surveyId
@@ -496,7 +487,6 @@ class SurveyBuilder extends Component {
                             <RaisedButton label="Add Star Rating Question" style={styles} onClick={this.handleStarOpen}></RaisedButton>
                         </div>
                         <div id="editor"></div>
-                        <div id="editor_t"></div>
                     </div>
                 </div>
                 <Dialog
