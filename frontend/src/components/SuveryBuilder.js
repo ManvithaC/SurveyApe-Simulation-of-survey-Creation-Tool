@@ -361,7 +361,15 @@ class SurveyBuilder extends Component {
             var r = new FileReader();
             r.onload = function(e) {
                 contents = e.target.result;
-                editor.actions.setData(contents);
+
+                var Questions = JSON.parse(contents);
+                var alreadyBuiltForm = JSON.parse(editor.actions.getData('json'));
+                Questions.map((elem) => (
+                    alreadyBuiltForm.push(elem)
+                ))
+
+                console.log("---"+JSON.stringify(alreadyBuiltForm))
+               editor.actions.setData(JSON.stringify(alreadyBuiltForm));
             }
             r.readAsText(f);
         } else {
