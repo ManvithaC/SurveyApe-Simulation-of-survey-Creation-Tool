@@ -179,11 +179,11 @@ class SurveyBuilder extends Component {
         }
         else {
             payload.expiry=999999999;
-       alert(payload.expiry);
+     //  alert(payload.expiry);
         }
 
         payload.isPublished = 0;
-        alert(JSON.stringify(payload));
+      //  alert(JSON.stringify(payload));
         if (this.state.surveyId != '') {
             payload.surveyId = this.state.surveyId
         }

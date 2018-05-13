@@ -101,7 +101,6 @@ public class InviteService {
                     }
                 }
             }
-
         } else if (surveyType.equals("Open")) {
             for (String e : emailIds) {
                 Invites i = new Invites();
@@ -171,7 +170,6 @@ public class InviteService {
             helper.setSubject("SurveyApe - Invitation to Survey");
             helper.setTo(emailID);
             message.setFrom("surveycmpe275@gmail.com");
-
 
             javaMailSender.send(message);
         } catch (Exception e) {

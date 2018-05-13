@@ -28,8 +28,8 @@ class TakeOpenUnique extends Component {
     componentWillMount() {
         alert(this.props.match.params.surveyId);
         var tempSurvey = this.props.match.params.surveyId.split('_');
-        alert(tempSurvey[0]);
-        alert(tempSurvey[1]);
+      //  alert(tempSurvey[0]);
+       // alert(tempSurvey[1]);
         let p=Number.parseInt(tempSurvey[0]);
         let q=Number.parseInt(tempSurvey[1]);
         console.log('surveyId in UniqueLink--' + parseInt(tempSurvey[0]));
@@ -110,7 +110,7 @@ class TakeOpenUnique extends Component {
                             }
                         };
 
-                        alert(temp.inviteId);
+                       // alert(temp.inviteId);
                         var payload = {data: originalFormData};
                         payload.inviteId=temp.inviteId;
 

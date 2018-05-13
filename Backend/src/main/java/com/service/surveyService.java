@@ -500,7 +500,7 @@ public class surveyService {
     public ResponseEntity<?> generalSurvey(JSONObject survey) {
         Survey surveyEntity = surveyrepository.findBySurveyId(survey.getInt("surveyId"));
         surveyEntity.setSurveyType("General");
-        surveyEntity.setIsPublished(0);
+        surveyEntity.setIsPublished(1);
         surveyEntity.setStartDate(new Date());
         surveyrepository.save(surveyEntity);
         String output = inviteService.addInvite(survey.getInt("surveyId"), survey);

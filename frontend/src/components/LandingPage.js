@@ -73,7 +73,7 @@ class LandingPage extends Component{
 
 
     handleSignOutSubmit() {
-
+        this.props.history.push("/");
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -81,25 +81,26 @@ class LandingPage extends Component{
             }
         };
 
-        axios.create({withCredentials: true})
-            .get(`${ROOT_URL}/logout`, axiosConfig)
-            .then(response => {
-                if(response.data.code==200){
-                    this.setState(
-                        {
-                            isLoggedin: false
-                        }
-                    );
-                    this.props.history.push("/");
-                }
-                else{
+        // axios.create({withCredentials: true})
+        //     .get(`${ROOT_URL}/logout`, axiosConfig)
+        //     .then(response => {
+        //         if(response.data.code==200){
+        //             this.setState(
+        //                 {
+        //                     isLoggedin: false
+        //                 }
+        //             );
+        //             this.props.history.push("/");
+        //         }
+        //         else{
+        //
+        //         }
+        //     })
+        //     .catch(error => {
+        //         //swal("got error");
+        //         console.log(error);
+        //     });
 
-                }
-            })
-            .catch(error => {
-                //swal("got error");
-                console.log(error);
-            });
 
 
     }
