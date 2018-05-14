@@ -143,7 +143,7 @@ public class SurveyController {
             System.out.println("---------------------------------------------------------");
             System.out.println("GENERAL SURVEY");
             System.out.println("---------------------------------------------------------");
-            return surveyService.renderQuestions(survey1.getInt("surveyId"));
+            return surveyService.renderQuestions(survey1.getInt("surveyId"),session);
         } else {
             // check if survey is accessed or not
             //get all invites of that survey
@@ -177,7 +177,7 @@ public class SurveyController {
                         System.out.println("---------------------------------------------------------");
                         System.out.println(survey1.getInt("surveyId"));
                         System.out.println(survey1);
-                        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+                        return surveyService.renderQuestions(survey1.getInt("surveyId"),session);
                     }
                 }
             }
@@ -189,9 +189,9 @@ public class SurveyController {
     @PostMapping(path = "/renderquestions", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // Map ONLY POST Requests
     public @ResponseBody
-    ResponseEntity<?> renderquestions(@RequestBody String surveyid) {
+    ResponseEntity<?> renderquestions(@RequestBody String surveyid,HttpSession session) {
         JSONObject survey1 = new JSONObject(surveyid);
-        return surveyService.renderQuestions(survey1.getInt("surveyId"));
+        return surveyService.renderQuestions(survey1.getInt("surveyId"),session);
     }
 
 
