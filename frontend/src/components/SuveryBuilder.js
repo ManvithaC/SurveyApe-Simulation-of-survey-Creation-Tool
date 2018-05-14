@@ -379,7 +379,7 @@ class SurveyBuilder extends Component {
             var ImageOptionTypeToAdd={
                 "type":"radio-group",
                 "label":temp.name,
-                "name":temp.name,
+                "name":"radio-group",
                 "values":temp.values
             }
 
@@ -440,7 +440,7 @@ class SurveyBuilder extends Component {
                 onClick={this.handleClose}
             />,
             <FlatButton
-                label="Submit"
+                label="Add Question"
                 primary={true}
                 onClick={this.SaveImageQuestion}
             />,
