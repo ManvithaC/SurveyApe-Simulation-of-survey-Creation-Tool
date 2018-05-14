@@ -193,11 +193,12 @@ class Surveys extends Component {
         console.log(temp);
         console.log(name);
         var surveyid = {"surveyId": temp};
+        alert("inside");
         axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Close/` + temp, axiosConfig)
+            .post(`${ROOT_URL}/close`, surveyid, axiosConfig)
             .then(response => {
                 if (response.data.code == 200) {
-                    swal1("Success", "Survey closed Succesfully", "success")
+                    swal1("Success", "Survey closed Succesfully", "success");
                     axios.create({withCredentials: true})
                         .get(`${ROOT_URL}/surveys`, axiosConfig)
                         .then(response => {
@@ -221,34 +222,14 @@ class Surveys extends Component {
             });
     };
 
-    CloseSurvey = (temp, name) => {
-
-        let axiosConfig = {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Access-Control-Allow-Origin": true
-            }
-        };
-        console.log(temp);
-        console.log(name);
-        var surveyid = {"surveyId": temp};
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/Close/` + surveyid, surveyid, axiosConfig)
-            .then(response => {
-                if (response.data.code == 200) {
-                    swal1("Success", "Survey closed Succesfully", "success")
-                }
-                else {
-                    swal1("Expiry Date Set", "Sorry, Cannot close this survey", "warning")
-                }
-            })
-            .catch(error => {
-                //swal("got error");
-                console.log(error);
-            });
-    };
 
     render() {
+        {
+            console.log(this.state.surveysCreated)
+        }
+        {
+            console.log(this.state.surveysToSubmit)
+        }
         return (
             <div>
                 <div class="row">
@@ -293,20 +274,23 @@ class Surveys extends Component {
                                             {
                                                 card.status == 'published' || card.status == 'closed' ? (
                                                     <div>
-                                                        <IconButton tooltip="Add Surveyees" touch={true}
-                                                                    tooltipPosition="top-right">
-                                                            <AddSurveyee style={styleAdd}
-                                                                         className="pointer"
-                                                                         onClick={() => {
-                                                                             this.props.history.push({
-                                                                                 pathname: "/AddSurveyee",
-                                                                                 state: {
-                                                                                     surveyId: card.id
-                                                                                 }
-                                                                             });
-                                                                         }}
-                                                            />
-                                                        </IconButton>
+                                                        {card.status != 'closed' ?
+                                                            <IconButton tooltip="Add Surveyees" touch={true}
+                                                                        tooltipPosition="top-right">
+                                                                <AddSurveyee style={styleAdd}
+                                                                             className="pointer"
+                                                                             onClick={() => {
+                                                                                 this.props.history.push({
+                                                                                     pathname: "/AddSurveyee",
+                                                                                     state: {
+                                                                                         surveyId: card.id
+                                                                                     }
+                                                                                 });
+                                                                             }}
+                                                                />
+                                                            </IconButton>
+                                                            : ""
+                                                        }
                                                         <IconButton tooltip="See Statistics" touch={true}
                                                                     tooltipPosition="top-right">
                                                             <Chart className="icon pointer" style={ChartStyle}
@@ -320,15 +304,20 @@ class Surveys extends Component {
                                                                    }}
                                                             />
                                                         </IconButton>
-                                                        <IconButton tooltip="UnPublish Survey" touch={true}
-                                                                    tooltipPosition="top-right">
-                                                            <UnPublish style={ChartStyle}
-                                                                       className="pointer"
-                                                                       onClick={() => {
-                                                                           this.unPublishSurvey(card.id, card.name);
-                                                                       }}
-                                                            />
-                                                        </IconButton>
+
+                                                        {card.status != 'closed' ?
+
+                                                            <IconButton tooltip="UnPublish Survey" touch={true}
+                                                                        tooltipPosition="top-right">
+                                                                <UnPublish style={ChartStyle}
+                                                                           className="pointer"
+                                                                           onClick={() => {
+                                                                               this.unPublishSurvey(card.id, card.name);
+                                                                           }}
+                                                                />
+                                                            </IconButton>
+                                                            : ""}
+
                                                         {
                                                             card.enableclose ? (
                                                                 <IconButton tooltip="Close Survey" touch={true}
