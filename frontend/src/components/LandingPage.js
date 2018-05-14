@@ -70,7 +70,56 @@ class LandingPage extends Component{
         });
     };
 
+    handleSignInSubmit= (userdata)=> {
+        // alert("inside sigin");
+        const temp = userdata;
 
+        const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:8080'
+
+        const headers = {
+            'Accept': 'application/json'
+        };
+
+        const dologin = fetch(`${api}/login`, {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(temp),
+            credentials: 'include'
+        }).then(res => res.json())
+            .catch(error => {
+                swal("Wrong Password", "Please enter a valid password", "warning")
+            });
+
+        dologin.then((data) => {
+            if (data.code == 401) {
+                swal("Wrong Password", "Please enter a valid password", "warning")
+            }
+            else if (data.code == 200) {
+                swal( "Welcome","Successfully Logged in", "success");
+                this.setState(
+                    {
+                        isLoggedin: true
+                    }
+                );
+                this.props.history.push("/SurveyBuilder");
+            }
+            else if (data.code == 400) {
+                //swal("Account UnVerified", "Please verify your Account", "warning")
+                // this.props.history.push("/AccountVerify");
+                this.props.history.push({
+                    pathname: '/AccountVerify',
+                    state: temp.email
+                });
+            }
+            else {
+                swal("Invalid User", "User does not exist.Please Sign up", "error")
+                this.props.history.push("/signUp");
+            }
+        });
+    }
 
 
     handleSignOutSubmit() {
@@ -148,29 +197,34 @@ class LandingPage extends Component{
                                     this.props.history.push("/SurveyBuilder");
                                 }}><button class="signupnav">CREATE A SURVEY</button></a>
                             </li>
-                            <li className="nav-item mynav ">
-                                <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
-                                }}><div>
-                                    <Avatar src={DP} onClick={this.handleClick} />
-                                    <Popover
-                                        open={this.state.open}
-                                        anchorEl={this.state.anchorEl}
-                                        anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                                        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                                        onRequestClose={this.handleRequestClose}
-                                    >
-                                        <Menu>
-                                            <MenuItem primaryText="My Surveys" onClick={() => {
-                                                this.handleRequestClose();
-                                                this.props.history.push("/Surveys");}}/>
-                                            <MenuItem primaryText="Sign out" onClick={() => {
-                                                this.handleRequestClose();
-                                                this.handleSignOutSubmit();
-                                                }}/>
-                                        </Menu>
-                                    </Popover>
-                                </div></a>
-                            </li>
+                            {
+                                this.state.isLoggedin ? (
+                                    <li className="nav-item mynav ">
+                                        <a className="nav-link pointer signIn" style={{'font-size':'1em','color':'black'}} onClick={() => {console.log('User Account');
+                                        }}><div>
+                                            <Avatar src={DP} onClick={this.handleClick} />
+                                            <Popover
+                                                open={this.state.open}
+                                                anchorEl={this.state.anchorEl}
+                                                anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                                                targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                                                onRequestClose={this.handleRequestClose}
+                                            >
+                                                <Menu>
+                                                    <MenuItem primaryText="My Surveys" onClick={() => {
+                                                        this.handleRequestClose();
+                                                        this.props.history.push("/Surveys");}}/>
+                                                    <MenuItem primaryText="Sign out" onClick={() => {
+                                                        this.handleRequestClose();
+                                                        this.handleSignOutSubmit();
+                                                    }}/>
+                                                </Menu>
+                                            </Popover>
+                                        </div></a>
+                                    </li>
+                                ):''
+                            }
+
                         </ul>
                     </nav>
                 </header>
@@ -192,7 +246,7 @@ class LandingPage extends Component{
                     <Route exact path="/signIn" render={(props) => (
                         <StyleRoot>
                             <div className="fadeInDown" style={styles.fadeInDown}>
-                                <SignIn {...props}/>
+                                <SignIn {...props} handleSignInSubmit={this.handleSignInSubmit}/>
                             </div>
                         </StyleRoot>
                     )}/>
