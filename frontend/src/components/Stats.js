@@ -133,6 +133,15 @@ class UserAccount extends Component{
                         </div>
 
                     </div>
+                    <div className="col-md-2 col-xs-12 statsBox" >
+                        <div className="row justify-content-center boxHeading">
+                            Number Of Submissions
+                        </div>
+                        <div className="row justify-content-center boxText">
+                            {/*{this.state.StatsData.NumberofInvitees}*/}
+                        </div>
+
+                    </div>
                 </div>
 
                 <div className="row justify-content-center">
