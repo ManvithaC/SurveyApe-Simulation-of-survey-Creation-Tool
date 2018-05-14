@@ -250,24 +250,24 @@ class LandingPage extends Component{
                             </div>
                         </StyleRoot>
                     )}/>
-                    <Route exact path="/Surveys" render={() => (
+                    <Route exact path="/Surveys" render={(props) => (
                         <StyleRoot>
                             <div className="fadeIn" style={styles.fadeIn}>
-                                <Surveys/>
+                                <Surveys {...props}/>
                             </div>
                         </StyleRoot>
                     )}/>
-                    <Route exact path="/SurveyBuilder" render={() => (
+                    <Route exact path="/SurveyBuilder" render={(props) => (
                         <StyleRoot>
                             <div className="fadeIn" style={styles.fadeIn}>
-                                <SurveyBuilder/>
+                                <SurveyBuilder {...props}/>
                             </div>
                         </StyleRoot>
                     )}/>
-                    <Route exact path="/ShareSurvey" render={() => (
+                    <Route exact path="/ShareSurvey" render={(props) => (
                         <StyleRoot>
                             <div className="fadeIn" style={styles.fadeIn}>
-                                <ShareSurvey/>
+                                <ShareSurvey {...props}/>
                             </div>
                         </StyleRoot>
                     )}/>
