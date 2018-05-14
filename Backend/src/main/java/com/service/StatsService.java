@@ -96,6 +96,26 @@ public class StatsService {
                         eachques.put("Answers", alloptions);
                         allques[j] = eachques;
                         j++;
+                    }else if(q.getType().equals("text") || q.getType().equals("textarea")){
+                        List<Answer> answers = q.getAnswerEntities();
+                        JSONObject eachques = new JSONObject();
+                        eachques.put("QuestionDesc", q.getDescription());
+                        eachques.put("QuestionType", q.getType());
+
+                        String allanwsers[] = new String[answers.size()];
+                        int i = 0;
+                        for (Answer a : answers) {
+                            List<ValuesEntity> vals = a.getValuesEntity();
+                            for (ValuesEntity v : vals) {
+                                allanwsers[i] = v.getValue();
+                                i++;
+                            }
+
+                        }
+                        eachques.put("Answers", allanwsers);
+                        allques[j] = eachques;
+                        j++;
+
                     }
 
                 }
