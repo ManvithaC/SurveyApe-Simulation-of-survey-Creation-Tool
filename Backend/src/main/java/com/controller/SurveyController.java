@@ -310,16 +310,16 @@ public class SurveyController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/Close/{surveyId}") // Map ONLY POST Requests
-    public ResponseEntity<?> closeSurvey(@PathVariable("surveyId") Integer surveyId) {
+    @PostMapping(path = "/close",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) // Map ONLY POST Requests
+    public ResponseEntity<?> closeSurvey(@RequestBody String request) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
+       JSONObject jsonObject=new JSONObject(request);
         System.out.println("------------------------------------");
-        System.out.println("Close Survey" + surveyId);
+        System.out.println("Close Survey" + jsonObject.getInt("surveyId"));
         System.out.println("------------------------------------");
 
-        return surveyService.closeSurvey(surveyId);
-
+        return surveyService.closeSurvey(jsonObject.getInt("surveyId"));
     }
 
 
