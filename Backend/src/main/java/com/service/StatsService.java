@@ -14,10 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class StatsService {
@@ -104,7 +102,17 @@ public class StatsService {
 
                 message.put("Questions", allques);
                 message.put("Startime", surveyEntity.getStartDate());
-                message.put("Endtime", surveyEntity.getExpiry());
+                String dateString = "";
+
+                if(surveyEntity.getExpiry()!=null && surveyEntity.getExpiry()!= 999999999){
+                    Date currentTime = new Date(surveyEntity.getExpiry() * 1000);
+                    SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+                    dateString = formatter.format(currentTime);
+
+                }
+
+
+                message.put("Endtime", dateString);
                 message.put("NumberofInvitees", invs.size());
                 message.put("NumberofRespondents", surveyEntity.getUserEntities().size());
                 message.put("code", 200);
