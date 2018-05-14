@@ -591,7 +591,7 @@ public class surveyService {
             Survey survey=user.getSurveys().get(i);
             long surveyexpiray=survey.getExpiry();
             long millis = System.currentTimeMillis()/1000;
-            if(surveyexpiray<=millis)
+            if(surveyexpiray!=999999999 && surveyexpiray<=millis)
             {
                 survey.setIsOpen(0);
                 surveyrepository.save(survey);
@@ -618,10 +618,10 @@ public class surveyService {
                     message.put("enableclose",false);
                 } else {
                     message.put("expiryDate", "");
-                    if(user.getSurveys().get(i).getIsOpen() == 0)
-                        message.put("enableclose",false);
-                    else
+                    if(user.getSurveys().get(i).getIsOpen() == 1)
                         message.put("enableclose",true);
+                    else
+                        message.put("enableclose",false);
 
                 }
             }else{
