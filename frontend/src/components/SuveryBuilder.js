@@ -175,54 +175,62 @@ class SurveyBuilder extends Component {
     };
 
     saveTheForm = () => {
-        let surveydata = editor.actions.getData('json');
-        console.log(surveydata);
-        let payload = {};
-        let data = JSON.parse(surveydata);
-        payload.questions = data;
-        payload.surveyName = this.refs.surveyName.getValue();
-        payload.surveyType = "";
-        payload.isOpen = 1;
 
-        if(this.state.minDate!=null && this.state.value24!=null) {
-            var dayunix = Date.parse(this.state.minDate) / 1000;
-            var timunix = Date.parse(this.state.value24) / 1000;
-            //time stamp in milli seconds
-            var now = new Date();
-            var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            var timestamp = startOfDay / 1000;
-            var finaltime = dayunix + timunix - timestamp;
-            payload.expiry = finaltime;
+        if(this.refs.surveyName.getValue().length <=0){
+            swal("Survey Name Mandatory","Please Fill the details","warning");
         }
-        else {
-            payload.expiry=999999999;
-            //alert(payload.expiry);
-        }
+        else{
+            let surveydata = editor.actions.getData('json');
+            console.log(surveydata);
+            let payload = {};
+            let data = JSON.parse(surveydata);
+            payload.questions = data;
+            payload.surveyName = this.refs.surveyName.getValue();
+            payload.surveyType = "";
+            payload.isOpen = 1;
 
-        payload.isPublished = 0;
-        // alert(JSON.stringify(payload));
-        if (this.state.surveyId != '') {
-            payload.surveyId = this.state.surveyId
-        }
-        let axiosConfig = {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Access-Control-Allow-Origin": true
+            if(this.state.minDate!=null && this.state.value24!=null) {
+                var dayunix = Date.parse(this.state.minDate) / 1000;
+                var timunix = Date.parse(this.state.value24) / 1000;
+                //time stamp in milli seconds
+                var now = new Date();
+                var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                var timestamp = startOfDay / 1000;
+                var finaltime = dayunix + timunix - timestamp;
+                payload.expiry = finaltime;
             }
-        };
-        axios.create({withCredentials: true})
-            .post(`${ROOT_URL}/survey`, payload, axiosConfig)
-            .then(response => {
-                this.setState({
-                    surveyId:response.data.surveyId
+            else {
+                payload.expiry=999999999;
+                //alert(payload.expiry);
+            }
+
+            payload.isPublished = 0;
+            // alert(JSON.stringify(payload));
+            if (this.state.surveyId != '') {
+                payload.surveyId = this.state.surveyId
+            }
+            let axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Access-Control-Allow-Origin": true
+                }
+            };
+            axios.create({withCredentials: true})
+                .post(`${ROOT_URL}/survey`, payload, axiosConfig)
+                .then(response => {
+                    this.setState({
+                        surveyId:response.data.surveyId
+                    });
+                    swal("Save Successfull");
+                    this.setState({isPublishDisabled:false});
+                })
+                .catch(error => {
+                    swal("Survey Name Mandatory","Please Fill the details","warning");
+                    console.log(error);
                 });
-                swal("Save Successfull");
-                this.setState({isPublishDisabled:false});
-            })
-            .catch(error => {
-                //swal("got error");
-                console.log(error);
-            });
+        }
+
+
     };
 
     addImageOption =() =>{
