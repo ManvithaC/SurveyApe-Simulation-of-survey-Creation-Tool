@@ -131,10 +131,19 @@ public class StatsService {
 
                 }
 
+                Iterable<Survey> allSurveys = surveyrepository.findAll();
+                int allResponses = 0;
+
+                for(Survey s: allSurveys){
+                    allResponses = allResponses+ s.getUserEntities().size();
+
+                }
+
 
                 message.put("Endtime", dateString);
                 message.put("NumberofInvitees", invs.size());
                 message.put("NumberofRespondents", surveyEntity.getUserEntities().size());
+                message.put("AllSurveyResponses" , allResponses);
                 message.put("code", 200);
                 message.put("surveyName", surveyEntity.getSurveyName());
                 return new ResponseEntity<>(message.toString(), HttpStatus.OK);
