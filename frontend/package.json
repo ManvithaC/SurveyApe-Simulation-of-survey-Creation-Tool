@@ -6,7 +6,7 @@
     "axios": "^0.16.2",
     "form-builder": "0.0.1",
     "formBuilder": "^2.9.8",
-    "jquery": "2.1.4",
+    "jquery": "3.5.0",
     "material-datepicker": "0.0.1",
     "material-ui": "^0.20.0",
     "moment": "^2.22.1",
